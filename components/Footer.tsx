@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Sparkles, Heart, Coffee, Copy, Check, ExternalLink, X } from "lucide-react";
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export default function Footer() {
   const [showDonateModal, setShowDonateModal] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
@@ -187,7 +189,7 @@ export default function Footer() {
 
           {/* Copyright & Info Pembuat */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs font-bold text-[#2D2D2D]/70">
-            <p>© {new Date().getFullYear()} Curated OOTD. Hak Cipta Dilindungi.</p>
+            <p>© {CURRENT_YEAR} Curated OOTD. Hak Cipta Dilindungi.</p>
             <div className="flex items-center gap-1.5">
               <span>Dibuat oleh</span>
               <a
