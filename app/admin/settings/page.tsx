@@ -1,27 +1,40 @@
 import { cookies } from "next/headers";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import ProfileEditor from "@/components/ProfileEditor";
-import { ShieldCheck, ArrowLeft, Settings } from "lucide-react";
+import { Settings, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default async function AdminSettingsPage() {
-  const cookieStore = await cookies();
-  const profileCookie = cookieStore.get("admin_profile")?.value;
+async function getAdminProfile() {
+  // Coba ambil dari Supabase (service role)
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  let avatarUrl = "";
-  if (profileCookie) {
+  if (url && key) {
     try {
-      avatarUrl = JSON.parse(profileCookie)?.avatar_url || "";
-    } catch {}
+      const db = createServiceClient(url, key);
+      const { data } = await db
+        .from("admin_settings")
+        .select("username, email, avatar_url")
+        .eq("id", 1)
+        .single();
+      if (data) return data;
+    } catch {
+      // fallback
+    }
   }
 
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
+  // Fallback ke cookie
+  const cookieStore = await cookies();
+  const profileCookie = cookieStore.get("admin_profile")?.value;
+  if (profileCookie) {
+    try { return JSON.parse(profileCookie); } catch {}
+  }
 
-  const currentAvatar = avatarUrl || (user as any)?.user_metadata?.avatar_url || "";
-  const currentEmail = user?.email || "adminootd@gmail.com";
-  const currentUsername = (user as any)?.user_metadata?.username || "adminootd";
+  return { username: "adminootd", email: "adminootd@gmail.com", avatar_url: "" };
+}
+
+export default async function AdminSettingsPage() {
+  const profile = await getAdminProfile();
 
   return (
     <main className="container max-w-4xl py-8 px-4 sm:px-6 space-y-6">
@@ -35,7 +48,7 @@ export default async function AdminSettingsPage() {
               Pengaturan Profil Admin
             </h1>
             <p className="text-xs sm:text-sm font-bold text-[#2D2D2D]/70 mt-0.5">
-              Ubah foto profil dan kata sandi akun administrator.
+              Ubah username, email, foto profil, dan kata sandi akun administrator.
             </p>
           </div>
         </div>
@@ -48,9 +61,9 @@ export default async function AdminSettingsPage() {
       </div>
 
       <ProfileEditor
-        initialUsername={currentUsername}
-        initialEmail={currentEmail}
-        initialAvatarUrl={currentAvatar}
+        initialUsername={profile.username}
+        initialEmail={profile.email}
+        initialAvatarUrl={profile.avatar_url}
         isAdmin={true}
       />
     </main>

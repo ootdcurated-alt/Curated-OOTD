@@ -1,6 +1,35 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 
+// Service role client — bisa akses admin_settings tanpa RLS
+function getAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
+
+// Ambil kredensial admin dari Supabase, fallback ke default
+async function getAdminCredentials() {
+  const db = getAdminClient();
+  if (db) {
+    const { data } = await db
+      .from("admin_settings")
+      .select("username, email, password, avatar_url")
+      .eq("id", 1)
+      .single();
+    if (data) return data;
+  }
+  return {
+    username: "adminootd",
+    email: "adminootd@gmail.com",
+    password: "admin1027",
+    avatar_url: "",
+  };
+}
+
+// ─── GET /api/admin-auth ─────────────────────────────────────
 export async function GET() {
   const cookieStore = await cookies();
   const isAdmin = cookieStore.get("admin_session")?.value === "adminootd_authenticated";
@@ -9,36 +38,41 @@ export async function GET() {
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }
 
-  const profileCookie = cookieStore.get("admin_profile")?.value;
-  let profile = {
-    username: "adminootd",
-    email: "adminootd@gmail.com",
-    avatar_url: "",
-  };
+  const creds = await getAdminCredentials();
 
+  // Gabungkan dengan cookie cache (avatar bisa di-override cookie sementara)
+  const profileCookie = cookieStore.get("admin_profile")?.value;
+  let avatarFromCookie = "";
   if (profileCookie) {
-    try {
-      profile = { ...profile, ...JSON.parse(profileCookie) };
-    } catch {
-      // Ignore
-    }
+    try { avatarFromCookie = JSON.parse(profileCookie)?.avatar_url ?? ""; } catch {}
   }
 
-  return NextResponse.json({ authenticated: true, profile });
+  return NextResponse.json({
+    authenticated: true,
+    profile: {
+      username: creds.username,
+      email: creds.email,
+      avatar_url: avatarFromCookie || creds.avatar_url,
+    },
+  });
 }
 
+// ─── POST /api/admin-auth ────────────────────────────────────
 export async function POST(request: NextRequest) {
   try {
-    const { action, username, password, avatar_url, new_password } = await request.json();
+    const body = await request.json();
+    const { action, username, password, avatar_url, new_password, new_username, new_email } = body;
     const cookieStore = await cookies();
 
+    // ── LOGIN ────────────────────────────────────────────────
     if (action === "login") {
       const cleanUser = (username || "").trim().toLowerCase();
-      const currentPassword = cookieStore.get("admin_password")?.value || "admin1027";
+      const creds = await getAdminCredentials();
 
       const isValidAdmin =
-        (cleanUser === "adminootd" || cleanUser === "adminootd@gmail.com") &&
-        password === currentPassword;
+        (cleanUser === creds.username.toLowerCase() ||
+          cleanUser === creds.email.toLowerCase()) &&
+        password === creds.password;
 
       if (isValidAdmin) {
         cookieStore.set("admin_session", "adminootd_authenticated", {
@@ -49,67 +83,91 @@ export async function POST(request: NextRequest) {
           sameSite: "lax",
         });
 
-        return NextResponse.json({
-          success: true,
-          user: {
-            username: "adminootd",
-            email: "adminootd@gmail.com",
-            role: "admin",
-          },
-        });
+        // Simpan cache profil ke cookie
+        cookieStore.set(
+          "admin_profile",
+          JSON.stringify({
+            username: creds.username,
+            email: creds.email,
+            avatar_url: creds.avatar_url,
+          }),
+          { path: "/", maxAge: 60 * 60 * 24 * 7, sameSite: "lax" }
+        );
+
+        return NextResponse.json({ success: true, user: { username: creds.username, email: creds.email, role: "admin" } });
       }
 
       return NextResponse.json(
-        { success: false, message: "Kredensial admin tidak valid" },
+        { success: false, message: "Username/email atau kata sandi salah." },
         { status: 401 }
       );
     }
 
+    // ── LOGOUT ───────────────────────────────────────────────
     if (action === "logout") {
       cookieStore.delete("admin_session");
+      cookieStore.delete("admin_profile");
       return NextResponse.json({ success: true });
     }
 
+    // ── UPDATE PROFILE ───────────────────────────────────────
     if (action === "update_profile") {
-      const isAdmin = cookieStore.get("admin_session")?.value === "adminootd_authenticated";
-      if (!isAdmin) {
+      const isAdminSession = cookieStore.get("admin_session")?.value === "adminootd_authenticated";
+      if (!isAdminSession) {
         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
       }
 
-      // Simpan perubahan foto profil admin
+      const db = getAdminClient();
+      const updatePayload: Record<string, string> = { updated_at: new Date().toISOString() };
+
+      if (typeof new_username === "string" && new_username.trim()) {
+        updatePayload.username = new_username.trim();
+      }
+      if (typeof new_email === "string" && new_email.trim()) {
+        updatePayload.email = new_email.trim();
+      }
       if (typeof avatar_url === "string") {
-        const existing = cookieStore.get("admin_profile")?.value;
-        let data = { username: "adminootd", email: "adminootd@gmail.com", avatar_url: "" };
-        if (existing) {
-          try {
-            data = JSON.parse(existing);
-          } catch {}
+        updatePayload.avatar_url = avatar_url; // bisa string kosong untuk hapus foto
+      }
+      if (typeof new_password === "string" && new_password.trim()) {
+        updatePayload.password = new_password.trim();
+      }
+
+      // Simpan ke Supabase jika tersedia
+      if (db && Object.keys(updatePayload).length > 1) {
+        const { error } = await db
+          .from("admin_settings")
+          .update(updatePayload)
+          .eq("id", 1);
+
+        if (error) {
+          console.error("Supabase admin_settings update error:", error.message);
+          // Lanjut fallback ke cookie saja
         }
-        data.avatar_url = avatar_url;
-
-        cookieStore.set("admin_profile", JSON.stringify(data), {
-          path: "/",
-          maxAge: 60 * 60 * 24 * 30,
-          sameSite: "lax",
-        });
       }
 
-      // Simpan perubahan password admin
-      if (new_password) {
-        cookieStore.set("admin_password", new_password, {
-          path: "/",
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 60 * 60 * 24 * 30,
-          sameSite: "lax",
-        });
+      // Update cookie cache agar langsung terasa tanpa reload
+      const existing = cookieStore.get("admin_profile")?.value;
+      let profileData: Record<string, string> = { username: "adminootd", email: "adminootd@gmail.com", avatar_url: "" };
+      if (existing) {
+        try { profileData = JSON.parse(existing); } catch {}
       }
+      if (updatePayload.username) profileData.username = updatePayload.username;
+      if (updatePayload.email) profileData.email = updatePayload.email;
+      if (typeof updatePayload.avatar_url === "string") profileData.avatar_url = updatePayload.avatar_url;
+
+      cookieStore.set("admin_profile", JSON.stringify(profileData), {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: "lax",
+      });
 
       return NextResponse.json({ success: true, message: "Profil admin berhasil diperbarui" });
     }
 
     return NextResponse.json({ success: false, message: "Aksi tidak dikenal" }, { status: 400 });
   } catch (error) {
+    console.error("admin-auth error:", error);
     return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
   }
 }
