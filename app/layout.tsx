@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -49,7 +50,9 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Navbar />
+          <Suspense fallback={<div className="h-[72px] w-full border-b-[3px] border-[#2D2D2D] bg-[#FFF8E7]" />}>
+            <Navbar />
+          </Suspense>
           <div className="flex-1">{children}</div>
           <Footer />
         </ThemeProvider>
