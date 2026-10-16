@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Category, getStoredCategories } from "@/lib/categories";
+import { Category, getStoredCategories, syncCategoriesToLocal } from "@/lib/categories";
 
 interface CategoryFilterProps {
   activeCategory: string;
@@ -14,17 +14,27 @@ export default function CategoryFilter({
 }: CategoryFilterProps) {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  useEffect(() => {
+  const loadCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.categories) && json.categories.length > 0) {
+        setCategories(json.categories);
+        syncCategoriesToLocal(json.categories);
+        return;
+      }
+    } catch {
+      // fallback ke localStorage
+    }
     setCategories(getStoredCategories());
+  };
 
-    const handleUpdate = () => {
-      setCategories(getStoredCategories());
-    };
+  useEffect(() => {
+    loadCategories();
 
+    const handleUpdate = () => loadCategories();
     window.addEventListener("categories_updated", handleUpdate);
-    return () => {
-      window.removeEventListener("categories_updated", handleUpdate);
-    };
+    return () => window.removeEventListener("categories_updated", handleUpdate);
   }, []);
 
   return (

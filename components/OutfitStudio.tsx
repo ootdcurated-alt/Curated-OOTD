@@ -9,7 +9,7 @@ import {
   UserCustomOutfit,
   deleteUserCreatedOutfit,
 } from "@/lib/creatorStore";
-import { Category, getStoredCategories } from "@/lib/categories";
+import { Category, getStoredCategories, syncCategoriesToLocal } from "@/lib/categories";
 import OutfitInteractiveCanvas from "@/components/OutfitInteractiveCanvas";
 import {
   Plus,
@@ -65,7 +65,23 @@ export default function OutfitStudio() {
   const [myCreations, setMyCreations] = useState<UserCustomOutfit[]>([]);
 
   useEffect(() => {
-    setCategories(getStoredCategories());
+    // Load kategori: coba dari Supabase via API, fallback ke localStorage
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.categories) && json.categories.length > 0) {
+          setCategories(json.categories);
+          syncCategoriesToLocal(json.categories);
+          return;
+        }
+      } catch {
+        // ignore, fallback ke localStorage
+      }
+      setCategories(getStoredCategories());
+    };
+
+    loadCategories();
     setMyCreations(getUserCreatedOutfits());
 
     const handleCreationsUpdate = () => {

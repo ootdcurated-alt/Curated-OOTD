@@ -106,7 +106,7 @@ export default function Footer() {
     },
     {
       name: "TikTok",
-      href: "https://tiktok.com/@curatedootd",
+      href: "https://tiktok.com/@curatedootd7",
       label: "@curatedootd",
       icon: (
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">

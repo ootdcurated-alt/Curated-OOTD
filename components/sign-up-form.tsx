@@ -132,7 +132,7 @@ export function SignUpForm({
           });
         }
       } catch {
-        // Abaikan jika tabel profiles belum dibuat
+        // Trigger on_auth_user_created akan handle ini otomatis di Supabase
       }
 
       router.push("/auth/sign-up-success");

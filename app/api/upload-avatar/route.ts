@@ -1,11 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-// Gunakan service role key agar bisa upload ke Storage tanpa perlu login
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
-);
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,34 +25,46 @@ export async function POST(request: NextRequest) {
     const ext = file.name.split(".").pop() || "jpg";
     const filename = `avatar-${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
 
-    // Coba upload ke Supabase Storage
-    const { data, error } = await supabaseAdmin.storage
-      .from("avatars")
-      .upload(filename, buffer, {
-        contentType: file.type || "image/jpeg",
-        upsert: false,
-      });
+    // Coba upload ke Supabase Storage jika env vars tersedia
+    if (SUPABASE_URL && SUPABASE_KEY) {
+      try {
+        const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    if (error) {
-      // Jika Supabase Storage gagal (misal bucket belum dibuat), fallback ke lokal
-      console.warn("Supabase Storage upload gagal, fallback ke lokal:", error.message);
+        const { data, error } = await supabaseAdmin.storage
+          .from("avatars")
+          .upload(filename, buffer, {
+            contentType: file.type || "image/jpeg",
+            upsert: false,
+          });
 
-      const { writeFile, mkdir } = await import("fs/promises");
-      const path = await import("path");
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      await mkdir(uploadDir, { recursive: true });
-      const filepath = path.join(uploadDir, filename);
-      await writeFile(filepath, buffer);
-      const publicUrl = `/uploads/${filename}`;
-      return NextResponse.json({ success: true, url: publicUrl, source: "local" });
+        if (!error && data) {
+          const { data: urlData } = supabaseAdmin.storage
+            .from("avatars")
+            .getPublicUrl(data.path);
+
+          return NextResponse.json({
+            success: true,
+            url: urlData.publicUrl,
+            source: "supabase",
+          });
+        }
+        // error dari storage — fallback ke lokal
+        console.warn("Supabase Storage upload gagal:", error?.message);
+      } catch (storageErr) {
+        console.warn("Supabase Storage exception:", storageErr);
+      }
     }
 
-    // Dapatkan public URL dari Supabase
-    const { data: urlData } = supabaseAdmin.storage
-      .from("avatars")
-      .getPublicUrl(data.path);
+    // Fallback: simpan ke /public/uploads lokal
+    const { writeFile, mkdir } = await import("fs/promises");
+    const path = await import("path");
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    await mkdir(uploadDir, { recursive: true });
+    const filepath = path.join(uploadDir, filename);
+    await writeFile(filepath, buffer);
+    const publicUrl = `/uploads/${filename}`;
 
-    return NextResponse.json({ success: true, url: urlData.publicUrl, source: "supabase" });
+    return NextResponse.json({ success: true, url: publicUrl, source: "local" });
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Gagal menyimpan file" }, { status: 500 });

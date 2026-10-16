@@ -1,26 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Category,
-  getStoredCategories,
-  addCategory,
-  deleteCategory,
-} from "@/lib/categories";
+import { Category, syncCategoriesToLocal } from "@/lib/categories";
 
 export default function CategoryManager() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
-  useEffect(() => {
-    setCategories(getStoredCategories());
+  // Ambil kategori dari Supabase via API
+  const fetchCategories = async () => {
+    setFetching(true);
+    try {
+      const res = await fetch("/api/categories");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.categories)) {
+        setCategories(json.categories);
+        syncCategoriesToLocal(json.categories); // cache ke localStorage
+      }
+    } catch {
+      // Fallback sudah ditangani di API route
+    } finally {
+      setFetching(false);
+    }
+  };
 
-    const handleUpdate = () => {
-      setCategories(getStoredCategories());
-    };
+  useEffect(() => {
+    fetchCategories();
+
+    const handleUpdate = () => fetchCategories();
     window.addEventListener("categories_updated", handleUpdate);
     return () => window.removeEventListener("categories_updated", handleUpdate);
   }, []);
@@ -47,22 +58,42 @@ export default function CategoryManager() {
         throw new Error(json.message || "Gagal menambahkan kategori");
       }
 
-      addCategory(name, description);
-
       setName("");
       setDescription("");
       setMessage({ text: `Kategori "${name}" berhasil ditambahkan.`, type: "success" });
+      await fetchCategories(); // refresh dari DB
     } catch (err: any) {
-      setMessage({ text: err.message || "Terjadi kesalahan saat menambahkan kategori.", type: "error" });
+      setMessage({
+        text: err.message || "Terjadi kesalahan saat menambahkan kategori.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = (id: string, catName: string) => {
-    if (confirm(`Yakin ingin menghapus kategori "${catName}"?`)) {
-      deleteCategory(id);
+  const handleDelete = async (id: string, catName: string) => {
+    if (!confirm(`Yakin ingin menghapus kategori "${catName}"?`)) return;
+
+    try {
+      const res = await fetch("/api/categories", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Gagal menghapus kategori");
+      }
+
       setMessage({ text: `Kategori "${catName}" berhasil dihapus.`, type: "success" });
+      await fetchCategories(); // refresh dari DB
+    } catch (err: any) {
+      setMessage({
+        text: err.message || "Terjadi kesalahan saat menghapus kategori.",
+        type: "error",
+      });
     }
   };
 
@@ -145,47 +176,51 @@ export default function CategoryManager() {
                 Daftar Kategori Terdaftar
               </h3>
               <p className="text-xs font-bold text-[#2D2D2D]/70 mt-0.5">
-                Total {categories.length} kategori aktif
+                {fetching ? "Memuat..." : `Total ${categories.length} kategori aktif`}
               </p>
             </div>
           </div>
 
-          <div className="space-y-2.5">
-            {categories.map((cat, index) => (
-              <div
-                key={cat.id}
-                className="flex items-center justify-between p-3.5 bg-[#FFF8E7] rounded-xl border-2 border-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] transition-transform hover:-translate-y-0.5"
-              >
-                <div className="space-y-1 pr-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-black text-[#2D2D2D]/60 w-5">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <h4 className="font-black text-sm text-[#2D2D2D]">
-                      {cat.name}
-                    </h4>
-                    <span className="rounded-lg border-2 border-[#2D2D2D] bg-white px-2 py-0.5 text-[10px] font-mono font-bold text-[#2D2D2D]">
-                      {cat.slug}
-                    </span>
+          {fetching ? (
+            <div className="py-8 text-center text-xs font-bold text-[#2D2D2D]/50">
+              Memuat kategori dari database...
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {categories.map((cat, index) => (
+                <div
+                  key={cat.id}
+                  className="flex items-center justify-between p-3.5 bg-[#FFF8E7] rounded-xl border-2 border-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] transition-transform hover:-translate-y-0.5"
+                >
+                  <div className="space-y-1 pr-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-[#2D2D2D]/60 w-5">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <h4 className="font-black text-sm text-[#2D2D2D]">{cat.name}</h4>
+                      <span className="rounded-lg border-2 border-[#2D2D2D] bg-white px-2 py-0.5 text-[10px] font-mono font-bold text-[#2D2D2D]">
+                        {cat.slug}
+                      </span>
+                    </div>
+                    {cat.description && (
+                      <p className="text-xs font-bold text-[#2D2D2D]/70 pl-7 line-clamp-1">
+                        {cat.description}
+                      </p>
+                    )}
                   </div>
-                  {cat.description && (
-                    <p className="text-xs font-bold text-[#2D2D2D]/70 pl-7 line-clamp-1">
-                      {cat.description}
-                    </p>
+
+                  {cat.slug !== "all" && (
+                    <button
+                      onClick={() => handleDelete(cat.id, cat.name)}
+                      className="cartoon-btn shrink-0 px-3 py-1 text-xs font-black bg-white text-[#FF6B6B] border-2 border-[#2D2D2D] hover:bg-[#FF6B6B] hover:text-white transition-colors"
+                    >
+                      Hapus
+                    </button>
                   )}
                 </div>
-
-                {cat.slug !== "all" && (
-                  <button
-                    onClick={() => handleDelete(cat.id, cat.name)}
-                    className="cartoon-btn shrink-0 px-3 py-1 text-xs font-black bg-white text-[#FF6B6B] border-2 border-[#2D2D2D] hover:bg-[#FF6B6B] hover:text-white transition-colors"
-                  >
-                    Hapus
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

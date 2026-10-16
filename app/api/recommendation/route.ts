@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getConsultationResponse, SKIN_TONE_DATA, RecommendationResponse } from "@/lib/skinToneAdvisor";
+import {
+  getConsultationResponse,
+  SKIN_TONE_DATA,
+  RecommendationResponse,
+} from "@/lib/skinToneAdvisor";
+
+// Model Grok yang digunakan — grok-3-mini hemat token & gratis di free tier
+const GROK_MODEL = "grok-3-mini";
 
 export async function POST(req: NextRequest) {
   try {
     const { question, skinTone } = await req.json();
 
+    // Shortcut: jika request langsung berdasarkan skin tone key
     if (skinTone && SKIN_TONE_DATA[skinTone]) {
       return NextResponse.json({
         success: true,
@@ -20,62 +28,57 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Default fallback lokal terlebih dahulu
     const fallbackRecommendation = getConsultationResponse(question);
-
     const xaiApiKey = process.env.XAI_API_KEY || process.env.GROK_API_KEY;
 
-    // Jika API Key Grok (xAI) belum dikonfigurasi, gunakan engine analitik lokal kami
+    // Jika API Key belum diisi, kembalikan fallback lokal
     if (!xaiApiKey) {
       return NextResponse.json({
         success: true,
         data: fallbackRecommendation,
         source: "local_curator",
-        note: "Tambahkan GROK_API_KEY di file .env.local untuk mengaktifkan Grok AI secara live.",
+        note: "Tambahkan XAI_API_KEY di .env.local untuk mengaktifkan Grok AI.",
       });
     }
 
-    // Panggil xAI (Grok) API endpoint
-    try {
-      const systemPrompt = `Anda adalah Fashion Color & Styling Consultant AI profesional untuk Curated OOTD.
-Tugas Anda adalah menganalisis pertanyaan seputar rekomendasi warna pakaian, tone kulit (misal kulit sawo matang/cokelat, kuning langsat, putih/terang, deep/gelap), potongan outfit, dan etika berbusana (cowok/cewek).
+    const systemPrompt = `Kamu adalah Fashion Color & Styling Consultant AI untuk Curated OOTD, platform fashion Indonesia.
+Tugasmu menganalisis pertanyaan seputar rekomendasi warna pakaian berdasarkan warna kulit (sawo matang/cokelat, kuning langsat, terang/putih, gelap/deep), potongan outfit, dan gaya busana.
 
-Kembalikan respon HANYA dalam format JSON valid persis dengan struktur berikut (tanpa markdown backtick jika memungkinkan, atau format JSON bersih):
+Jawab HANYA dengan JSON valid, tanpa markdown, tanpa backtick, tanpa teks di luar JSON. Gunakan struktur berikut persis:
 {
   "skinToneKey": "cokelat" | "kuning_langsat" | "gelap" | "terang" | "custom",
-  "skinToneTitle": "Judul rekomendasi singkat profesional",
-  "summary": "Penjelasan ringkas 2-3 kalimat mengenai karakteristik warna dan rekomendasi gaya yang tepat sesuai pertanyaan.",
-  "undertoneAnalysis": "Analisis undertone singkat (warm/cool/neutral)",
+  "skinToneTitle": "judul rekomendasi singkat",
+  "summary": "penjelasan 2-3 kalimat tentang karakteristik dan rekomendasi",
+  "undertoneAnalysis": "warm / cool / neutral",
   "tips": {
     "title": "Formula Gaya",
-    "advice": "Saran paduan outfit yang spesifik, proporsional, dan stylish",
+    "advice": "saran paduan outfit yang spesifik",
     "colorPalette": [
-      {"name": "Nama Warna 1", "hex": "#HEXCODE"},
-      {"name": "Nama Warna 2", "hex": "#HEXCODE"},
-      {"name": "Nama Warna 3", "hex": "#HEXCODE"},
-      {"name": "Nama Warna 4", "hex": "#HEXCODE"},
-      {"name": "Nama Warna 5", "hex": "#HEXCODE"},
-      {"name": "Nama Warna 6", "hex": "#HEXCODE"},
-      {"name": "Nama Warna 7", "hex": "#HEXCODE"}
+      {"name": "Nama Warna", "hex": "#XXXXXX"},
+      {"name": "Nama Warna", "hex": "#XXXXXX"},
+      {"name": "Nama Warna", "hex": "#XXXXXX"},
+      {"name": "Nama Warna", "hex": "#XXXXXX"},
+      {"name": "Nama Warna", "hex": "#XXXXXX"},
+      {"name": "Nama Warna", "hex": "#XXXXXX"},
+      {"name": "Nama Warna", "hex": "#XXXXXX"}
     ],
-    "avoidColors": [
-      "Warna yang perlu dihindari 1",
-      "Warna yang perlu dihindari 2"
-    ],
-    "recommendedStyles": ["NamaStyle1", "NamaStyle2", "NamaStyle3"],
+    "avoidColors": ["warna yang perlu dihindari 1", "warna yang perlu dihindari 2"],
+    "recommendedStyles": ["Style1", "Style2", "Style3"],
     "examplePieces": [
-      {"name": "Nama Produk Busana 1", "category": "Atasan", "reason": "Alasan pemilihan"},
-      {"name": "Nama Produk Busana 2", "category": "Bawahan", "reason": "Alasan pemilihan"},
-      {"name": "Nama Produk Busana 3", "category": "Alas Kaki", "reason": "Alasan pemilihan"}
+      {"name": "nama produk busana", "category": "Atasan", "reason": "alasan pemilihan"},
+      {"name": "nama produk busana", "category": "Bawahan", "reason": "alasan pemilihan"},
+      {"name": "nama produk busana", "category": "Alas Kaki", "reason": "alasan pemilihan"},
+      {"name": "nama aksesoris", "category": "Aksesoris", "reason": "alasan pemilihan"}
     ]
   },
   "quickPrompts": [
-    "Contoh pertanyaan lanjutan 1",
-    "Contoh pertanyaan lanjutan 2",
-    "Contoh pertanyaan lanjutan 3"
+    "pertanyaan lanjutan relevan 1",
+    "pertanyaan lanjutan relevan 2",
+    "pertanyaan lanjutan relevan 3"
   ]
 }`;
 
+    try {
       const aiResponse = await fetch("https://api.x.ai/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -83,29 +86,40 @@ Kembalikan respon HANYA dalam format JSON valid persis dengan struktur berikut (
           Authorization: `Bearer ${xaiApiKey}`,
         },
         body: JSON.stringify({
-          model: "grok-beta",
+          model: GROK_MODEL,
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: question },
+            { role: "user", content: question.trim() },
           ],
-          temperature: 0.5,
-          max_tokens: 1200,
+          temperature: 0.4,
+          max_tokens: 1500,
         }),
+        // Timeout 15 detik
+        signal: AbortSignal.timeout(15000),
       });
 
       if (!aiResponse.ok) {
-        console.warn("xAI Grok response error:", await aiResponse.text());
+        const errText = await aiResponse.text();
+        console.warn(`Grok API error ${aiResponse.status}:`, errText);
         return NextResponse.json({
           success: true,
           data: fallbackRecommendation,
-          source: "fallback_after_grok_err",
+          source: "fallback_api_error",
         });
       }
 
       const grokData = await aiResponse.json();
-      const rawContent = grokData.choices?.[0]?.message?.content || "";
+      const rawContent: string = grokData.choices?.[0]?.message?.content || "";
 
-      // Bersihkan kemungkinan markdown formatting pada output JSON
+      if (!rawContent) {
+        return NextResponse.json({
+          success: true,
+          data: fallbackRecommendation,
+          source: "fallback_empty_response",
+        });
+      }
+
+      // Bersihkan kemungkinan markdown wrapping dari output
       const cleanedJson = rawContent
         .replace(/^```json\s*/i, "")
         .replace(/^```\s*/i, "")
@@ -114,13 +128,18 @@ Kembalikan respon HANYA dalam format JSON valid persis dengan struktur berikut (
 
       const parsed: RecommendationResponse = JSON.parse(cleanedJson);
 
+      // Validasi struktur minimal sebelum dikirim
+      if (!parsed.skinToneTitle || !parsed.tips?.colorPalette) {
+        throw new Error("Struktur respons Grok tidak valid");
+      }
+
       return NextResponse.json({
         success: true,
         data: parsed,
         source: "grok_ai",
       });
-    } catch (grokErr) {
-      console.error("Grok processing failed, fallback used:", grokErr);
+    } catch (grokErr: any) {
+      console.error("Grok processing failed:", grokErr?.message || grokErr);
       return NextResponse.json({
         success: true,
         data: fallbackRecommendation,

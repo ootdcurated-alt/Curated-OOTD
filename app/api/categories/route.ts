@@ -2,21 +2,46 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isUserAdmin } from "@/lib/admin";
+import { DEFAULT_CATEGORIES } from "@/lib/categories";
 
+// ─── helper: cek apakah request datang dari admin ────────────────────────────
+async function checkAdmin() {
+  const cookieStore = await cookies();
+  const hasAdminCookie =
+    cookieStore.get("admin_session")?.value === "adminootd_authenticated";
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  return { isAdmin: hasAdminCookie || isUserAdmin(data?.claims), supabase };
+}
+
+// ─── GET /api/categories ─────────────────────────────────────────────────────
+export async function GET() {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("created_at", { ascending: true });
+
+    if (error || !data) {
+      // Supabase belum dikonfigurasi — kembalikan default
+      return NextResponse.json({ success: true, categories: DEFAULT_CATEGORIES });
+    }
+
+    return NextResponse.json({ success: true, categories: data });
+  } catch {
+    return NextResponse.json({ success: true, categories: DEFAULT_CATEGORIES });
+  }
+}
+
+// ─── POST /api/categories ────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const hasAdminCookie = cookieStore.get("admin_session")?.value === "adminootd_authenticated";
-
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getClaims();
-    const user = data?.claims;
-
-    const isAdmin = hasAdminCookie || isUserAdmin(user);
+    const { isAdmin, supabase } = await checkAdmin();
 
     if (!isAdmin) {
       return NextResponse.json(
-        { success: false, message: "Akses ditolak. Fitur kategori hanya dapat dikelola oleh Admin." },
+        { success: false, message: "Akses ditolak. Hanya Admin yang bisa mengelola kategori." },
         { status: 403 }
       );
     }
@@ -31,16 +56,89 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      category: {
-        id: `cat-${Date.now()}`,
+    const slug = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    const { data, error } = await supabase
+      .from("categories")
+      .insert({
         name: name.trim(),
-        slug: name.trim().toLowerCase().replace(/\s+/g, "-"),
+        slug: slug || `category-${Date.now()}`,
         description: description?.trim() || "",
-        created_at: new Date().toISOString(),
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error) {
+      // Jika Supabase belum dikonfigurasi, buat objek lokal saja
+      if (error.message?.includes("not configured") || error.code === "PGRST116") {
+        return NextResponse.json({
+          success: true,
+          category: {
+            id: `cat-${Date.now()}`,
+            name: name.trim(),
+            slug,
+            description: description?.trim() || "",
+            created_at: new Date().toISOString(),
+          },
+          local: true,
+        });
+      }
+      throw error;
+    }
+
+    return NextResponse.json({ success: true, category: data });
+  } catch (err: any) {
+    return NextResponse.json(
+      { success: false, message: err?.message || "Server error" },
+      { status: 500 }
+    );
+  }
+}
+
+// ─── DELETE /api/categories ──────────────────────────────────────────────────
+export async function DELETE(req: NextRequest) {
+  try {
+    const { isAdmin, supabase } = await checkAdmin();
+
+    if (!isAdmin) {
+      return NextResponse.json(
+        { success: false, message: "Akses ditolak." },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json();
+    const { id, slug } = body;
+
+    if (!id && !slug) {
+      return NextResponse.json(
+        { success: false, message: "id atau slug kategori wajib disertakan." },
+        { status: 400 }
+      );
+    }
+
+    if (slug === "all") {
+      return NextResponse.json(
+        { success: false, message: "Kategori 'Semua Koleksi' tidak dapat dihapus." },
+        { status: 400 }
+      );
+    }
+
+    let query = supabase.from("categories").delete();
+    if (id) {
+      const { error } = await query.eq("id", id);
+      if (error) throw error;
+    } else {
+      const { error } = await query.eq("slug", slug);
+      if (error) throw error;
+    }
+
+    return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json(
       { success: false, message: err?.message || "Server error" },
