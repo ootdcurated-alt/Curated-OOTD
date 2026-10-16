@@ -160,7 +160,7 @@ export default async function AnalyticsPage() {
     .slice(0, 5)
     .map(([id, count]) => ({
       id,
-      title: outfits?.find((o) => o.id === id)?.title ?? "Unknown Outfit",
+      title: outfits?.find((o: { id: string; title: string }) => o.id === id)?.title ?? "Unknown Outfit",
       count,
     }));
 
@@ -174,8 +174,8 @@ export default async function AnalyticsPage() {
     .slice(0, 5)
     .map(([id, count]) => ({
       id,
-      name: outfitItems?.find((i) => i.id === id)?.name ?? "Unknown Product",
-      brand: outfitItems?.find((i) => i.id === id)?.brand ?? "",
+      name: outfitItems?.find((i: { id: string; name: string; brand: string | null }) => i.id === id)?.name ?? "Unknown Product",
+      brand: outfitItems?.find((i: { id: string; name: string; brand: string | null }) => i.id === id)?.brand ?? "",
       count,
     }));
 

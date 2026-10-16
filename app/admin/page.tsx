@@ -34,7 +34,7 @@ export default async function AdminDashboardPage() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const recentClicks = clicks?.filter(
-    (c) => new Date(c.clicked_at) >= sevenDaysAgo
+    (c: { id: string; clicked_at: string }) => new Date(c.clicked_at) >= sevenDaysAgo
   ).length ?? 0;
 
   // Estimasi pendapatan/komisi rata-rata
