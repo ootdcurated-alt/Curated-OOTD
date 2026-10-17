@@ -54,10 +54,16 @@ export default function ProfileEditor({
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/upload-avatar", { method: "POST", body: formData });
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        // Upload API not available (deployment issue), keep local preview
+        return;
+      }
       const json = await res.json();
       if (json.success && json.url) setAvatarUrl(json.url);
+      else if (json.error) setMessage({ type: "error", text: json.error });
     } catch {
-      // Tetap pakai data URL
+      // Tetap pakai data URL lokal
     }
   };
 
@@ -94,6 +100,12 @@ export default function ProfileEditor({
             new_password: newPassword || undefined,
           }),
         });
+
+        // Guard: parse JSON safely, handle HTML error responses
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          throw new Error(`Server error (${res.status}). Coba muat ulang halaman.`);
+        }
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Gagal memperbarui profil admin");
       } else {

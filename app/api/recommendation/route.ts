@@ -5,7 +5,7 @@ import {
   RecommendationResponse,
 } from "@/lib/skinToneAdvisor";
 
-// Model Grok yang digunakan — grok-3-mini hemat token & gratis di free tier
+// Model Grok yang digunakan
 const GROK_MODEL = "grok-3-mini";
 
 export async function POST(req: NextRequest) {
@@ -105,6 +105,7 @@ Jawab HANYA dengan JSON valid, tanpa markdown, tanpa backtick, tanpa teks di lua
           success: true,
           data: fallbackRecommendation,
           source: "fallback_api_error",
+          debug: process.env.NODE_ENV === "development" ? `${aiResponse.status}: ${errText.slice(0, 200)}` : undefined,
         });
       }
 

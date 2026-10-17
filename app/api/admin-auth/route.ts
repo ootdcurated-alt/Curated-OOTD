@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
       }
 
       const db = getAdminClient();
-      const updatePayload: Record<string, string> = { updated_at: new Date().toISOString() };
+      const updatePayload: Record<string, string> = {};
 
       if (typeof new_username === "string" && new_username.trim()) {
         updatePayload.username = new_username.trim();
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
         updatePayload.email = new_email.trim();
       }
       if (typeof avatar_url === "string") {
-        updatePayload.avatar_url = avatar_url; // bisa string kosong untuk hapus foto
+        updatePayload.avatar_url = avatar_url;
       }
       if (typeof new_password === "string" && new_password.trim()) {
         updatePayload.password = new_password.trim();

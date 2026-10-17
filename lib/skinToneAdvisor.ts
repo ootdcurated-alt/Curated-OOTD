@@ -43,28 +43,7 @@ export const SKIN_TONE_DATA: Record<string, RecommendationResponse> = {
         "Magenta pucat dingin / Lilac pudar berlebih",
       ],
       recommendedStyles: ["Earth Tone Minimalist", "Urban Streetwear Baggy", "Smart Casual Warm Linen", "Vintage Retro 90s"],
-      examplePieces: [
-        {
-          name: "Cuban Collar Sage Green Linen Shirt",
-          category: "Atasan",
-          reason: "Warna sage memberikan efek segar kontras tanpa menenggelamkan kehangatan kulit.",
-        },
-        {
-          name: "Broken White Boxy Heavyweight T-Shirt",
-          category: "Inner / Atasan",
-          reason: "Broken white jauh lebih ramah dibanding pure optical white dingin yang kadang terlalu kontras kasar.",
-        },
-        {
-          name: "Pleated Wide Leg Pants Deep Olive / Terracotta",
-          category: "Bawahan",
-          reason: "Warna tanah menciptakan ilusi proporsi mewah dan elegan pada pria maupun wanita sawo matang.",
-        },
-        {
-          name: "Dark Brown Polished Loafers / Clean Gumsole Sneakers",
-          category: "Sepatu",
-          reason: "Aksen sol cokelat karet atau kulit cokelat mengikat keseluruhan look natural.",
-        },
-      ],
+      examplePieces: [],
     },
     quickPrompts: [
       "Warna apa yang cocok untuk kulit sawo matang?",
@@ -95,18 +74,7 @@ export const SKIN_TONE_DATA: Record<string, RecommendationResponse> = {
       ],
       avoidColors: ["Kuning neon menyilaukan", "Mustard kusam"],
       recommendedStyles: ["Korean Minimalist", "Smart Casual Blazer", "Casual Weekend Chic"],
-      examplePieces: [
-        {
-          name: "Linen Shirt Sky Blue",
-          category: "Atasan",
-          reason: "Memberikan kilau cerah dan kontras sejuk yang proporsional.",
-        },
-        {
-          name: "Chino Pants Warm Khaki",
-          category: "Bawahan",
-          reason: "Netral serbaguna untuk aktivitas formal maupun kasual.",
-        },
-      ],
+      examplePieces: [],
     },
     quickPrompts: [
       "Warna baju untuk kulit kuning langsat",
@@ -135,18 +103,7 @@ export const SKIN_TONE_DATA: Record<string, RecommendationResponse> = {
       ],
       avoidColors: ["Cokelat kusam yang sama persis dengan warna kulit tanpa pembeda kontras"],
       recommendedStyles: ["High-Street Fashion", "Old Money Monokrom", "Edgy Modern Streetwear"],
-      examplePieces: [
-        {
-          name: "Pure White Oversized Shirt / Tee",
-          category: "Atasan",
-          reason: "Kontras bersih paling ikonik yang membuat aura wajah langsung menyala.",
-        },
-        {
-          name: "Burgundy Oversized Jacket",
-          category: "Outer",
-          reason: "Warna mewah berkarakter yang sangat flattering untuk deep skin tone.",
-        },
-      ],
+      examplePieces: [],
     },
     quickPrompts: [
       "Warna baju untuk kulit hitam / gelap",
@@ -174,13 +131,7 @@ export const SKIN_TONE_DATA: Record<string, RecommendationResponse> = {
       ],
       avoidColors: ["Beige nude pucat tanpa kontras", "Putih pucat total tanpa aksesoris"],
       recommendedStyles: ["Minimalist Smart Casual", "Preppy Look", "Monochrome Streetwear"],
-      examplePieces: [
-        {
-          name: "Navy Blue Relaxed Blazer",
-          category: "Outer",
-          reason: "Menonjolkan garis wajah dengan tegas dan tidak monoton.",
-        },
-      ],
+      examplePieces: [],
     },
     quickPrompts: [
       "Warna baju untuk kulit putih terang",
