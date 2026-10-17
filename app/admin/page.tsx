@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { connection } from "next/server";
 import {
   PlusCircle,
   ListChecks,
@@ -14,8 +13,9 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import AdminOutfitList from "@/components/AdminOutfitList";
 
+export const instant = false;
+
 export default async function AdminDashboardPage() {
-  await connection();
   const supabase = await createClient();
 
   // Ambil data outfit

@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import EditOutfitForm from "@/components/EditOutfitForm";
 
+export const instant = false;
+
 interface EditOutfitPageProps {
   params: Promise<{ id: string }>;
 }

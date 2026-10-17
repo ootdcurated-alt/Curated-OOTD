@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 
+export const instant = false;
+
 interface OutfitPageProps {
   params: Promise<{ id: string }>;
 }

@@ -5,6 +5,8 @@ import CategoryManager from "@/components/CategoryManager";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+export const instant = false;
+
 export default async function AdminCategoriesPage() {
   const cookieStore = await cookies();
   const hasAdminCookie = cookieStore.get("admin_session")?.value === "adminootd_authenticated";

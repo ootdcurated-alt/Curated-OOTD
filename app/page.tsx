@@ -5,6 +5,8 @@ import { Outfit } from "@/components/OutfitCard";
 import { cookies } from "next/headers";
 import { isUserAdmin } from "@/lib/admin";
 
+export const instant = false;
+
 export default async function Home() {
   const cookieStore = await cookies();
   const hasAdminCookie = cookieStore.get("admin_session")?.value === "adminootd_authenticated";
