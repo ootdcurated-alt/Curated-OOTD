@@ -4,7 +4,6 @@ import ProfileEditor from "@/components/ProfileEditor";
 import { Settings, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export const instant = false;
 
 async function getAdminProfile() {
   // Coba ambil dari Supabase (service role)

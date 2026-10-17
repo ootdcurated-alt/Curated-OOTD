@@ -4,7 +4,6 @@ import { ShieldCheck, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import ProfileEditor from "@/components/ProfileEditor";
 
-export const instant = false;
 
 export default async function ProtectedPage() {
   const supabase = await createClient();

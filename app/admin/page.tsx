@@ -10,7 +10,6 @@ import { createClient } from "@/lib/supabase/server";
 import AdminOutfitList from "@/components/AdminOutfitList";
 import AdminStatsCards from "@/components/AdminStatsCards";
 
-export const instant = false;
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();

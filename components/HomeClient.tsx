@@ -7,9 +7,10 @@ import { Outfit } from "@/components/OutfitCard";
 
 interface HomeClientProps {
   outfits: Outfit[];
+  isLoggedIn?: boolean;
 }
 
-export default function HomeClient({ outfits }: HomeClientProps) {
+export default function HomeClient({ outfits, isLoggedIn = true }: HomeClientProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -93,7 +94,7 @@ export default function HomeClient({ outfits }: HomeClientProps) {
           </button>
         </div>
       ) : (
-        <OutfitGrid outfits={filteredOutfits} />
+        <OutfitGrid outfits={filteredOutfits} isLoggedIn={isLoggedIn} />
       )}
     </div>
   );

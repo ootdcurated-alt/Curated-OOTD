@@ -5,7 +5,6 @@ import { Outfit } from "@/components/OutfitCard";
 import { cookies } from "next/headers";
 import { isUserAdmin } from "@/lib/admin";
 
-export const instant = false;
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -22,6 +21,11 @@ export default async function Home() {
     .order("created_at", { ascending: false });
 
   const displayOutfits: Outfit[] = outfits ?? [];
+
+  const isLoggedIn = !!user || hasAdminCookie;
+
+  // Helper: href for auth-gated links
+  const authHref = (path: string) => isLoggedIn ? path : `/auth/login?next=${encodeURIComponent(path)}`;
 
   return (
     <main className="container max-w-7xl py-5 sm:py-10 px-3 sm:px-6 space-y-6 sm:space-y-12">
@@ -55,22 +59,22 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Buttons — 2 column grid on mobile, row on desktop */}
+          {/* Buttons */}
           <div className="w-full pt-1 grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-4">
             <Link
-              href="/creator"
+              href={authHref("/creator")}
               className="cartoon-btn bg-[#FF6B6B] text-white px-3 py-2.5 text-xs sm:px-6 sm:py-3 sm:text-sm text-center"
             >
               Studio Kreasi
             </Link>
             <Link
-              href="/creator#advisor"
+              href={authHref("/creator#advisor")}
               className="cartoon-btn bg-[#4ECDC4] text-[#2D2D2D] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center"
             >
               Warna Kulit
             </Link>
             <Link
-              href="/wishlist"
+              href={authHref("/wishlist")}
               className="cartoon-btn bg-[#FFE66D] text-[#2D2D2D] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center col-span-2 sm:col-span-1"
             >
               Wishlist Saya
@@ -82,7 +86,7 @@ export default async function Home() {
       {/* ====  Feature Cards  ==== */}
       <div className={`grid grid-cols-1 ${isAdmin ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-6`}>
         <Link
-          href="/creator"
+          href={authHref("/creator")}
           className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#FFD8C0]/30"
         >
           <div className="space-y-4">
@@ -101,12 +105,12 @@ export default async function Home() {
             </div>
           </div>
           <span className="text-xs font-black text-[#FF6B6B] mt-5 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            Buka Studio &rarr;
+            {isLoggedIn ? "Buka Studio" : "Masuk untuk Membuka"} &rarr;
           </span>
         </Link>
 
         <Link
-          href="/creator#advisor"
+          href={authHref("/creator#advisor")}
           className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#C8F7DC]/30"
         >
           <div className="space-y-4">
@@ -125,7 +129,7 @@ export default async function Home() {
             </div>
           </div>
           <span className="text-xs font-black text-[#4ECDC4] mt-5 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            Konsultasi Sekarang &rarr;
+            {isLoggedIn ? "Konsultasi Sekarang" : "Masuk untuk Konsultasi"} &rarr;
           </span>
         </Link>
 
@@ -157,7 +161,7 @@ export default async function Home() {
       </div>
 
       {/* ====  Outfit Grid Feed with Category Filter  ==== */}
-      <HomeClient outfits={displayOutfits} />
+      <HomeClient outfits={displayOutfits} isLoggedIn={isLoggedIn} />
     </main>
   );
 }

@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Sparkles, Heart, Coffee, Copy, Check, ExternalLink, X } from "lucide-react";
-
-const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
   const [showDonateModal, setShowDonateModal] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  // Dihitung di client setelah mount. `new Date()` saat prerender dianggap
+  // unstable value oleh Cache Components dan menggagalkan static shell.
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   // Nomor rekening / e-wallet untuk donasi
   const donateAccounts: Record<
@@ -35,7 +40,7 @@ export default function Footer() {
       name: "GoPay",
       number: "085864115336",
       recipient: "Curated OOTD Team",
-      deeplink: "https://gopay.co.id",
+      deeplink: "https://link.gopay.co.id",
       fallback: "https://gopay.co.id",
       appUrl: "gojek://gopay/transfer",
       color: "bg-emerald-600 hover:bg-emerald-700 text-white",
@@ -189,7 +194,7 @@ export default function Footer() {
 
           {/* Copyright & Info Pembuat */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs font-bold text-[#2D2D2D]/70">
-            <p>© {CURRENT_YEAR} Curated OOTD. Hak Cipta Dilindungi.</p>
+            <p>© <span suppressHydrationWarning>{currentYear || ""}</span> Curated OOTD. Hak Cipta Dilindungi.</p>
             <div className="flex items-center gap-1.5">
               <span>Dibuat oleh</span>
               <a
@@ -198,7 +203,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="font-black text-[#2D2D2D] hover:text-[#FF6B6B] transition-colors underline decoration-[#FF6B6B] decoration-2 underline-offset-4"
               >
-                team curateootd
+                Team Curate OOTD
               </a>
             </div>
           </div>

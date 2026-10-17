@@ -14,6 +14,7 @@ export default async function Navbar() {
   const user = data?.claims;
 
   const isAdmin = hasAdminCookie || isUserAdmin(user);
+  const isLoggedIn = !!user || hasAdminCookie;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b-[3px] border-[#2D2D2D] bg-[#FFF8E7]/95 backdrop-blur">
@@ -39,14 +40,14 @@ export default async function Navbar() {
 
         <nav className="flex items-center gap-1.5 sm:gap-3">
           <Link
-            href="/creator"
+            href={isLoggedIn ? "/creator" : "/auth/login?next=%2Fcreator"}
             className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border-2 border-[#2D2D2D] bg-white text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#2D2D2D] transition-all"
           >
             <Brush className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#4ECDC4]" />
             <span className="hidden sm:inline">Kreasi Outfit</span>
           </Link>
           <Link
-            href="/wishlist"
+            href={isLoggedIn ? "/wishlist" : "/auth/login?next=%2Fwishlist"}
             className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border-2 border-[#2D2D2D] bg-white text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#2D2D2D] transition-all"
           >
             <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#FF6B6B]" />

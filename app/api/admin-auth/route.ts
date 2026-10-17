@@ -83,13 +83,12 @@ export async function POST(request: NextRequest) {
           sameSite: "lax",
         });
 
-        // Simpan cache profil ke cookie
+        // Simpan cache profil minimal ke cookie (hindari avatar_url jika terlalu besar)
         cookieStore.set(
           "admin_profile",
           JSON.stringify({
             username: creds.username,
             email: creds.email,
-            avatar_url: creds.avatar_url,
           }),
           { path: "/", maxAge: 60 * 60 * 24 * 7, sameSite: "lax" }
         );
@@ -154,9 +153,12 @@ export async function POST(request: NextRequest) {
       }
       if (updatePayload.username) profileData.username = updatePayload.username;
       if (updatePayload.email) profileData.email = updatePayload.email;
-      if (typeof updatePayload.avatar_url === "string") profileData.avatar_url = updatePayload.avatar_url;
+      // Jangan simpan avatar_url di cookie cache untuk menghindari HTTP 431
 
-      cookieStore.set("admin_profile", JSON.stringify(profileData), {
+      cookieStore.set("admin_profile", JSON.stringify({
+        username: profileData.username,
+        email: profileData.email,
+      }), {
         path: "/",
         maxAge: 60 * 60 * 24 * 30,
         sameSite: "lax",

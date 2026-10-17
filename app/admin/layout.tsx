@@ -14,7 +14,6 @@ import {
 import { LogoutButton } from "@/components/logout-button";
 import AdminAuthGuard from "@/components/AdminAuthGuard";
 
-export const instant = false;
 
 export default async function AdminLayout({
   children,
