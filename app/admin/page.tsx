@@ -1,6 +1,5 @@
 import Link from "next/link";
-
-export const dynamic = "force-dynamic";
+import { connection } from "next/server";
 import {
   PlusCircle,
   ListChecks,
@@ -16,6 +15,7 @@ import { createClient } from "@/lib/supabase/server";
 import AdminOutfitList from "@/components/AdminOutfitList";
 
 export default async function AdminDashboardPage() {
+  await connection();
   const supabase = await createClient();
 
   // Ambil data outfit

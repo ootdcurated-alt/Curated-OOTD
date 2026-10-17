@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { connection } from "next/server";
 import Link from "next/link";
-
-export const dynamic = "force-dynamic";
 import {
   ArrowLeft,
   BarChart3,
@@ -129,6 +128,7 @@ function BarChart({ data }: { data: { label: string; count: number }[] }) {
 // Page
 // ─────────────────────────────────────────────
 export default async function AnalyticsPage() {
+  await connection();
   const supabase = await createClient();
 
   // Fetch all data in parallel
