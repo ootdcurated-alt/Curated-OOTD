@@ -17,9 +17,13 @@ export default async function AnalyticsPage() {
 
   const safeClicks = clicks ?? [];
 
+  type ClickRow = { id: string; outfit_id: string | null; item_id: string | null; target_url: string | null; clicked_at: string };
+  type OutfitRow = { id: string; title: string };
+  type ItemRow = { id: string; name: string; brand: string | null };
+
   // Aggregate top outfits
   const outfitMap: Record<string, number> = {};
-  safeClicks.forEach((c) => {
+  safeClicks.forEach((c: ClickRow) => {
     if (c.outfit_id) outfitMap[c.outfit_id] = (outfitMap[c.outfit_id] ?? 0) + 1;
   });
   const topOutfits = Object.entries(outfitMap)
@@ -27,13 +31,13 @@ export default async function AnalyticsPage() {
     .slice(0, 5)
     .map(([id, count]) => ({
       id,
-      title: outfits?.find((o) => o.id === id)?.title ?? "Unknown Outfit",
+      title: (outfits as OutfitRow[] | null)?.find((o) => o.id === id)?.title ?? "Unknown Outfit",
       count,
     }));
 
   // Aggregate top items
   const itemMap: Record<string, number> = {};
-  safeClicks.forEach((c) => {
+  safeClicks.forEach((c: ClickRow) => {
     if (c.item_id) itemMap[c.item_id] = (itemMap[c.item_id] ?? 0) + 1;
   });
   const topItems = Object.entries(itemMap)
@@ -41,8 +45,8 @@ export default async function AnalyticsPage() {
     .slice(0, 5)
     .map(([id, count]) => ({
       id,
-      name: outfitItems?.find((i) => i.id === id)?.name ?? "Unknown Product",
-      brand: outfitItems?.find((i) => i.id === id)?.brand ?? "",
+      name: (outfitItems as ItemRow[] | null)?.find((i) => i.id === id)?.name ?? "Unknown Product",
+      brand: (outfitItems as ItemRow[] | null)?.find((i) => i.id === id)?.brand ?? "",
       count,
     }));
 
