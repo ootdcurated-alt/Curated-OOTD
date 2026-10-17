@@ -24,53 +24,54 @@ export default async function Home() {
   const displayOutfits: Outfit[] = outfits ?? [];
 
   return (
-    <main className="container max-w-7xl py-10 px-4 sm:px-6 space-y-12">
+    <main className="container max-w-7xl py-5 sm:py-10 px-3 sm:px-6 space-y-6 sm:space-y-12">
       {/* ====  Hero Section  ==== */}
-      <div className="relative overflow-hidden cartoon-card bg-[#FFF8E7] p-8 sm:p-14 text-center">
-        {/* Playful background decorative shapes */}
-        <div className="absolute -top-10 -left-10 h-32 w-32 rounded-full bg-[#FFE66D] border-[3px] border-[#2D2D2D] opacity-40 animate-float pointer-events-none" />
-        <div className="absolute -bottom-10 -right-10 h-36 w-36 rounded-3xl bg-[#C8F7DC] border-[3px] border-[#2D2D2D] opacity-40 rotate-12 animate-float-delay pointer-events-none" />
+      <div className="relative overflow-hidden cartoon-card bg-[#FFF8E7] p-5 sm:p-14 text-center">
+        {/* Decorative shapes — hidden on mobile to reduce clutter */}
+        <div className="absolute -top-10 -left-10 h-32 w-32 rounded-full bg-[#FFE66D] border-[3px] border-[#2D2D2D] opacity-40 animate-float pointer-events-none hidden sm:block" />
+        <div className="absolute -bottom-10 -right-10 h-36 w-36 rounded-3xl bg-[#C8F7DC] border-[3px] border-[#2D2D2D] opacity-40 rotate-12 animate-float-delay pointer-events-none hidden sm:block" />
         <div className="absolute top-8 right-12 h-14 w-14 rounded-2xl bg-[#E8D5FF] border-[3px] border-[#2D2D2D] opacity-50 -rotate-12 animate-wiggle pointer-events-none hidden sm:block" />
 
-        <div className="relative z-10 space-y-6 max-w-3xl mx-auto flex flex-col items-center">
+        <div className="relative z-10 space-y-4 sm:space-y-6 max-w-3xl mx-auto flex flex-col items-center">
           {/* Logo badge */}
-          <div className="inline-flex items-center gap-2.5 rounded-full border-[3px] border-[#2D2D2D] bg-[#FFE66D] px-4 py-1.5 shadow-[3px_3px_0px_#2D2D2D] font-black text-xs text-[#2D2D2D] tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2 rounded-full border-[3px] border-[#2D2D2D] bg-[#FFE66D] px-3 py-1 shadow-[3px_3px_0px_#2D2D2D] font-black text-[10px] sm:text-xs text-[#2D2D2D] tracking-wide uppercase">
             <img
               src="/logo-icon.png"
               alt="Curated OOTD Icon"
-              className="h-5 w-5 object-contain"
+              className="h-4 w-4 sm:h-5 sm:w-5 object-contain"
             />
             <span>Pakaian Pilihan • Gaya Lebih Baik • Setiap Hari</span>
           </div>
 
-          <div className="space-y-3">
-            <h1 className="text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl text-[#2D2D2D] font-nunito leading-tight">
+          <div className="space-y-2 sm:space-y-3">
+            <h1 className="text-2xl font-black tracking-tight sm:text-5xl lg:text-6xl text-[#2D2D2D] font-nunito leading-tight">
               Eksplorasi Gaya Outfit{" "}
-              <span className="text-[#FF6B6B] underline decoration-[#FFE66D] decoration-wavy underline-offset-8">
+              <span className="text-[#FF6B6B] underline decoration-[#FFE66D] decoration-wavy underline-offset-4 sm:underline-offset-8">
                 Terkurasi
               </span>
             </h1>
-            <p className="text-sm sm:text-base font-bold text-[#2D2D2D]/80 max-w-xl mx-auto leading-relaxed">
-              Temukan kurasi busana harian, padu padankan gaya di Studio Kreasi Outfit, dan temukan produk terbaik untuk melengkapi penampilanmu!
+            <p className="text-xs sm:text-base font-bold text-[#2D2D2D]/80 max-w-xl mx-auto leading-relaxed">
+              Temukan kurasi busana harian, padu padankan gaya di Studio Kreasi, dan belanja produk lewat link afiliasi pilihan.
             </p>
           </div>
 
-          <div className="pt-2 flex flex-wrap justify-center gap-3 sm:gap-4">
+          {/* Buttons — 2 column grid on mobile, row on desktop */}
+          <div className="w-full pt-1 grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-4">
             <Link
               href="/creator"
-              className="cartoon-btn bg-[#FF6B6B] text-white px-6 py-3 text-xs sm:text-sm"
+              className="cartoon-btn bg-[#FF6B6B] text-white px-3 py-2.5 text-xs sm:px-6 sm:py-3 sm:text-sm text-center"
             >
-              Studio Kreasi Outfit
+              Studio Kreasi
             </Link>
             <Link
               href="/creator#advisor"
-              className="cartoon-btn bg-[#4ECDC4] text-[#2D2D2D] px-5 py-3 text-xs sm:text-sm"
+              className="cartoon-btn bg-[#4ECDC4] text-[#2D2D2D] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center"
             >
-              Konsultasi Warna Kulit
+              Warna Kulit
             </Link>
             <Link
               href="/wishlist"
-              className="cartoon-btn bg-[#FFE66D] text-[#2D2D2D] px-5 py-3 text-xs sm:text-sm"
+              className="cartoon-btn bg-[#FFE66D] text-[#2D2D2D] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center col-span-2 sm:col-span-1"
             >
               Wishlist Saya
             </Link>
