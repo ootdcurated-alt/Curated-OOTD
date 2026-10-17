@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { LogoutButton } from "@/components/logout-button";
 
+export const instant = false;
+
 export default async function AdminLayout({
   children,
 }: {

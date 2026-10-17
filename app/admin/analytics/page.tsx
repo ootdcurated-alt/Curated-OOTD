@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowLeft, BarChart3 } from "lucide-react";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 
+export const instant = false;
+
 export default async function AnalyticsPage() {
   const supabase = await createClient();
 
