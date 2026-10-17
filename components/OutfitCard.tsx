@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Lock } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useState } from "react";
 
 export interface OutfitItem {
@@ -26,10 +26,9 @@ export interface Outfit {
 
 interface OutfitCardProps {
   outfit: Outfit;
-  isLoggedIn?: boolean;
 }
 
-export default function OutfitCard({ outfit, isLoggedIn = true }: OutfitCardProps) {
+export default function OutfitCard({ outfit }: OutfitCardProps) {
   const [liked, setLiked] = useState(false);
 
   const toggleWishlist = (e: React.MouseEvent) => {
@@ -38,13 +37,9 @@ export default function OutfitCard({ outfit, isLoggedIn = true }: OutfitCardProp
     setLiked(!liked);
   };
 
-  const href = isLoggedIn
-    ? `/outfit/${outfit.id}`
-    : `/auth/login?next=${encodeURIComponent(`/outfit/${outfit.id}`)}`;
-
   return (
     <div className="group relative overflow-hidden cartoon-card bg-white transition-all duration-300">
-      <Link href={href} className="block">
+      <Link href={`/outfit/${outfit.id}`} className="block">
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#FFE66D]/20 border-b-[3px] border-[#2D2D2D]">
           <img
             src={outfit.image_url}
@@ -52,17 +47,6 @@ export default function OutfitCard({ outfit, isLoggedIn = true }: OutfitCardProp
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
-
-          {/* Lock overlay for guests */}
-          {!isLoggedIn && (
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="flex flex-col items-center gap-1.5 text-white">
-                <Lock className="h-7 w-7" />
-                <span className="text-xs font-black">Masuk untuk melihat</span>
-              </div>
-            </div>
-          )}
-
           <button
             onClick={toggleWishlist}
             aria-label="Save to Wishlist"

@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Heart, Sparkles, PlusCircle, BarChart3, Brush, Palette } from "lucide-react";
+import { Heart, PlusCircle, Brush } from "lucide-react";
 import { AuthButton } from "./auth-button";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isUserAdmin } from "@/lib/admin";
+import GuestGuardLink from "./GuestGuardLink";
 
 export default async function Navbar() {
   const cookieStore = await cookies();
@@ -21,11 +22,7 @@ export default async function Navbar() {
       <div className="container flex h-14 sm:h-18 max-w-7xl items-center justify-between px-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl border-[3px] border-[#2D2D2D] bg-white p-1 sm:p-1.5 shadow-[3px_3px_0px_#2D2D2D] transition-transform duration-200 group-hover:rotate-6">
-            <img
-              src="/logo-icon.png"
-              alt="Curated OOTD Logo"
-              className="h-full w-full object-contain"
-            />
+            <img src="/logo-icon.png" alt="Curated OOTD Logo" className="h-full w-full object-contain" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center text-lg sm:text-2xl font-black tracking-tight font-nunito leading-none text-[#2D2D2D]">
@@ -39,20 +36,23 @@ export default async function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-1.5 sm:gap-3">
-          <Link
-            href={isLoggedIn ? "/creator" : "/auth/login?next=%2Fcreator"}
+          <GuestGuardLink
+            href="/creator"
+            isLoggedIn={isLoggedIn}
             className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border-2 border-[#2D2D2D] bg-white text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#2D2D2D] transition-all"
           >
             <Brush className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#4ECDC4]" />
             <span className="hidden sm:inline">Kreasi Outfit</span>
-          </Link>
-          <Link
-            href={isLoggedIn ? "/wishlist" : "/auth/login?next=%2Fwishlist"}
+          </GuestGuardLink>
+
+          <GuestGuardLink
+            href="/wishlist"
+            isLoggedIn={isLoggedIn}
             className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border-2 border-[#2D2D2D] bg-white text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#2D2D2D] transition-all"
           >
             <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#FF6B6B]" />
             <span className="hidden sm:inline">Wishlist</span>
-          </Link>
+          </GuestGuardLink>
 
           {isAdmin && (
             <Link
@@ -65,8 +65,6 @@ export default async function Navbar() {
           )}
 
           <div className="h-5 w-[2px] bg-[#2D2D2D]/30 mx-0.5 sm:mx-1 hidden sm:block" />
-
-          {/* Tombol Auth */}
           <AuthButton />
         </nav>
       </div>

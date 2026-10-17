@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Outfit } from "@/components/OutfitCard";
 import { cookies } from "next/headers";
 import { isUserAdmin } from "@/lib/admin";
-
+import GuestGuardLink from "@/components/GuestGuardLink";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -14,6 +14,7 @@ export default async function Home() {
   const { data: claimsData } = await supabase.auth.getClaims();
   const user = claimsData?.claims;
   const isAdmin = hasAdminCookie || isUserAdmin(user);
+  const isLoggedIn = !!user || hasAdminCookie;
 
   const { data: outfits } = await supabase
     .from("outfits")
@@ -21,11 +22,6 @@ export default async function Home() {
     .order("created_at", { ascending: false });
 
   const displayOutfits: Outfit[] = outfits ?? [];
-
-  const isLoggedIn = !!user || hasAdminCookie;
-
-  // Helper: href for auth-gated links
-  const authHref = (path: string) => isLoggedIn ? path : `/auth/login?next=${encodeURIComponent(path)}`;
 
   return (
     <main className="container max-w-7xl py-5 sm:py-10 px-3 sm:px-6 space-y-6 sm:space-y-12">
@@ -59,35 +55,39 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Buttons */}
+          {/* Buttons — 2 column grid on mobile, row on desktop */}
           <div className="w-full pt-1 grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-4">
-            <Link
-              href={authHref("/creator")}
+            <GuestGuardLink
+              href="/creator"
+              isLoggedIn={isLoggedIn}
               className="cartoon-btn bg-[#FF6B6B] text-white px-3 py-2.5 text-xs sm:px-6 sm:py-3 sm:text-sm text-center"
             >
               Studio Kreasi
-            </Link>
-            <Link
-              href={authHref("/creator#advisor")}
+            </GuestGuardLink>
+            <GuestGuardLink
+              href="/creator#advisor"
+              isLoggedIn={isLoggedIn}
               className="cartoon-btn bg-[#4ECDC4] text-[#2D2D2D] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center"
             >
               Warna Kulit
-            </Link>
-            <Link
-              href={authHref("/wishlist")}
+            </GuestGuardLink>
+            <GuestGuardLink
+              href="/wishlist"
+              isLoggedIn={isLoggedIn}
               className="cartoon-btn bg-[#FFE66D] text-[#2D2D2D] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center col-span-2 sm:col-span-1"
             >
               Wishlist Saya
-            </Link>
+            </GuestGuardLink>
           </div>
         </div>
       </div>
 
       {/* ====  Feature Cards  ==== */}
       <div className={`grid grid-cols-1 ${isAdmin ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-6`}>
-        <Link
-          href={authHref("/creator")}
-          className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#FFD8C0]/30"
+        <GuestGuardLink
+          href="/creator"
+          isLoggedIn={isLoggedIn}
+          className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#FFD8C0]/30 text-left w-full"
         >
           <div className="space-y-4">
             <div className="h-12 w-12 rounded-2xl border-[3px] border-[#2D2D2D] bg-[#FF6B6B] shadow-[3px_3px_0px_#2D2D2D] flex items-center justify-center text-white group-hover:rotate-6 transition-transform">
@@ -105,13 +105,14 @@ export default async function Home() {
             </div>
           </div>
           <span className="text-xs font-black text-[#FF6B6B] mt-5 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            {isLoggedIn ? "Buka Studio" : "Masuk untuk Membuka"} &rarr;
+            Buka Studio &rarr;
           </span>
-        </Link>
+        </GuestGuardLink>
 
-        <Link
-          href={authHref("/creator#advisor")}
-          className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#C8F7DC]/30"
+        <GuestGuardLink
+          href="/creator#advisor"
+          isLoggedIn={isLoggedIn}
+          className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#C8F7DC]/30 text-left w-full"
         >
           <div className="space-y-4">
             <div className="h-12 w-12 rounded-2xl border-[3px] border-[#2D2D2D] bg-[#4ECDC4] shadow-[3px_3px_0px_#2D2D2D] flex items-center justify-center text-[#2D2D2D] group-hover:rotate-6 transition-transform">
@@ -129,9 +130,9 @@ export default async function Home() {
             </div>
           </div>
           <span className="text-xs font-black text-[#4ECDC4] mt-5 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            {isLoggedIn ? "Konsultasi Sekarang" : "Masuk untuk Konsultasi"} &rarr;
+            Konsultasi Sekarang &rarr;
           </span>
-        </Link>
+        </GuestGuardLink>
 
         {isAdmin && (
           <Link

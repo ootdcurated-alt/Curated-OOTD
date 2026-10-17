@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 import { cookies } from "next/headers";
 import { User, ShieldCheck } from "lucide-react";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 export async function AuthButton() {
   const cookieStore = await cookies();
@@ -14,14 +15,42 @@ export async function AuthButton() {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
-  // Ambil avatar admin dari cookie jika ada
+  // Ambil avatar admin dari database atau cookie
   let adminAvatar = "";
+  let adminUsername = "adminootd";
+
   if (hasAdminCookie) {
-    const adminProf = cookieStore.get("admin_profile")?.value;
-    if (adminProf) {
+    // Selalu coba ambil dari database untuk admin agar foto profil muncul
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+    if (url && key) {
       try {
-        adminAvatar = JSON.parse(adminProf)?.avatar_url || "";
-      } catch {}
+        const db = createServiceClient(url, key);
+        const { data: adminData } = await db
+          .from("admin_settings")
+          .select("avatar_url, username")
+          .eq("id", 1)
+          .single();
+        if (adminData) {
+          adminAvatar = adminData.avatar_url || "";
+          adminUsername = adminData.username || "adminootd";
+        }
+      } catch (err) {
+        console.error("AuthButton: Gagal mengambil profil admin dari DB", err);
+      }
+    }
+
+    // Fallback ke cookie jika DB gagal
+    if (!adminAvatar) {
+      const adminProf = cookieStore.get("admin_profile")?.value;
+      if (adminProf) {
+        try {
+          const prof = JSON.parse(adminProf);
+          adminAvatar = prof.avatar_url || "";
+          if (prof.username) adminUsername = prof.username;
+        } catch {}
+      }
     }
   }
 
@@ -33,13 +62,17 @@ export async function AuthButton() {
           className="flex items-center gap-2 text-primary font-medium hover:opacity-80 transition-opacity"
         >
           {adminAvatar ? (
-            <img src={adminAvatar} alt="Admin" className="h-7 w-7 rounded-full object-cover border border-primary/30" />
+            <img
+              src={adminAvatar}
+              alt="Admin"
+              className="h-7 w-7 rounded-full object-cover border border-primary/30"
+            />
           ) : (
             <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
               <ShieldCheck className="h-4 w-4" />
             </div>
           )}
-          <span>adminootd</span>
+          <span>{adminUsername}</span>
         </Link>
         <LogoutButton />
       </div>

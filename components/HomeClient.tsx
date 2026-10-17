@@ -10,7 +10,7 @@ interface HomeClientProps {
   isLoggedIn?: boolean;
 }
 
-export default function HomeClient({ outfits, isLoggedIn = true }: HomeClientProps) {
+export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
