@@ -9,10 +9,10 @@ interface SkinToneAdvisorProps {
   onApplyPalette?: (paletteColors: string[]) => void;
 }
 
-type SourceType = "grok_ai" | "preset" | "fallback" | "fallback_api_error" | "fallback_empty_response" | "local_curator" | null;
+type SourceType = "grok_ai" | "gemini_ai" | "preset" | "fallback" | "fallback_api_error" | "fallback_empty_response" | "fallback_no_api_response" | "local_curator" | null;
 
 export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps) {
-  const [query, setQuery] = useState("outfit apa yang cocok untuk kulit cokelat?");
+  const [query, setQuery] = useState("");
   const [activeSkinKey, setActiveSkinKey] = useState<string>("cokelat");
   const [result, setResult] = useState<RecommendationResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,7 +37,9 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
       if (json.success && json.data) {
         setResult(json.data);
         setSource(json.source || "fallback");
-        if (json.data.skinToneKey) setActiveSkinKey(json.data.skinToneKey);
+        if (json.data.skinToneKey && json.data.skinToneKey !== "custom") {
+          setActiveSkinKey(json.data.skinToneKey);
+        }
       } else {
         const fallback = getConsultationResponse(textToQuery);
         setResult(fallback);
@@ -62,12 +64,12 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
     if (data) {
       setResult(data);
       setSource("preset");
-      setQuery(data.quickPrompts[0] || `Outfit untuk kulit ${key}`);
+      setQuery(""); // Clear query when selecting preset
     }
   };
 
-  const isFromAI = source === "grok_ai";
-  const isFromFallback = source && source !== "grok_ai" && source !== "preset";
+  const isFromAI = source === "grok_ai" || source === "gemini_ai";
+  const isFromFallback = source && !isFromAI && source !== "preset";
 
   return (
     <div id="advisor" className="cartoon-card bg-white p-5 sm:p-8 space-y-6">
@@ -78,10 +80,10 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
             <Sparkles className="h-3 w-3" /> Konsultasi Grok AI
           </span>
           <h2 className="text-xl sm:text-2xl font-black font-nunito tracking-tight text-[#2D2D2D]">
-            Rekomendasi Busana Berdasarkan Warna Kulit
+            {result && source !== "preset" ? "Hasil Konsultasi Fashion" : "Rekomendasi Busana & Styling"}
           </h2>
           <p className="text-xs sm:text-sm font-semibold text-[#2D2D2D]/75 leading-relaxed">
-            Ketik pertanyaan fashion kamu — dijawab langsung oleh Grok AI.
+            Tanyakan apapun seputar fashion — dijawab langsung oleh AI.
           </p>
         </div>
 
@@ -116,7 +118,7 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !loading && handleAsk()}
-            placeholder="Contoh: outfit apa yang cocok untuk kulit sawo matang pria?"
+            placeholder="Tanya rekomendasi outfit (contoh: outfit untuk berat badan 70kg)"
             className="w-full rounded-2xl border-[3px] border-[#2D2D2D] bg-[#FFF8E7] px-4 py-3 pr-36 text-xs sm:text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/40 focus:outline-none shadow-[3px_3px_0px_#2D2D2D]"
           />
           <button
