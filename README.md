@@ -73,11 +73,12 @@ If you wish to just develop locally and not deploy to Vercel, [follow the steps 
    cd with-supabase-app
    ```
 
-4. Rename `.env.example` to `.env.local` and update the following:
+4. Buat file `.env.local` di root project (file ini tidak di-commit). Isi minimal:
 
   ```env
   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
+  GEMINI_API_KEY=[GEMINI API KEY dari AI Studio — opsional untuk Tanya AI]
   ```
   > [!NOTE]
   > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
