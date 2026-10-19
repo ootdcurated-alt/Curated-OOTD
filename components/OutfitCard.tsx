@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  isInWishlist,
+  toggleWishlistEntry,
+  WISHLIST_UPDATED_EVENT,
+} from "@/lib/wishlist";
 
 export interface OutfitItem {
   id: string;
@@ -31,14 +36,28 @@ interface OutfitCardProps {
 export default function OutfitCard({ outfit }: OutfitCardProps) {
   const [liked, setLiked] = useState(false);
 
+  useEffect(() => {
+    setLiked(isInWishlist(outfit.id));
+    const sync = () => setLiked(isInWishlist(outfit.id));
+    window.addEventListener(WISHLIST_UPDATED_EVENT, sync);
+    return () => window.removeEventListener(WISHLIST_UPDATED_EVENT, sync);
+  }, [outfit.id]);
+
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setLiked(!liked);
+    const nowLiked = toggleWishlistEntry({
+      id: outfit.id,
+      title: outfit.title,
+      image_url: outfit.image_url,
+      description: outfit.description,
+      tags: outfit.tags,
+    });
+    setLiked(nowLiked);
   };
 
   return (
-    <div className="group relative overflow-hidden cartoon-card bg-white/60 backdrop-blur-xl transition-all duration-500 border-white/40 hover:scale-[1.02] hover:shadow-cartoon-lg">
+    <div className="group relative overflow-hidden cartoon-card bg-white/60 backdrop-blur-xl transition-all duration-500 border-white/40">
       <Link href={`/outfit/${outfit.id}`} className="block">
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-primary/5 border-b border-border">
           <img
@@ -47,15 +66,6 @@ export default function OutfitCard({ outfit }: OutfitCardProps) {
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
           />
-          <button
-            onClick={toggleWishlist}
-            aria-label="Simpan ke Favorit"
-            className="absolute top-4 right-4 rounded-full border border-white/40 bg-white/80 backdrop-blur-md p-3 text-foreground shadow-cartoon-sm transition-all duration-300 hover:scale-110 active:scale-90"
-          >
-            <Heart
-              className={`h-5 w-5 transition-colors duration-300 ${liked ? "fill-primary text-primary scale-110" : "text-foreground/40"}`}
-            />
-          </button>
         </div>
 
         <div className="p-5 sm:p-6 space-y-3">
@@ -81,6 +91,18 @@ export default function OutfitCard({ outfit }: OutfitCardProps) {
           )}
         </div>
       </Link>
+
+      <button
+        type="button"
+        onClick={toggleWishlist}
+        aria-label={liked ? "Hapus dari Favorit" : "Simpan ke Favorit"}
+        aria-pressed={liked}
+        className="touch-target absolute top-3 right-3 sm:top-4 sm:right-4 z-10 rounded-full border border-white/40 bg-white/80 backdrop-blur-md p-3 text-foreground shadow-cartoon-sm transition-all duration-300 hover:scale-110 active:scale-90"
+      >
+        <Heart
+          className={`h-5 w-5 transition-colors duration-300 ${liked ? "fill-primary text-primary scale-110" : "text-foreground/40"}`}
+        />
+      </button>
     </div>
   );
 }

@@ -78,6 +78,16 @@ export default {
         "cartoon-sm": "0 4px 12px -2px rgba(255, 79, 168, 0.12)",
         "cartoon-lg": "0 20px 40px -12px rgba(255, 79, 168, 0.25)",
         "cartoon-btn": "0 8px 20px -6px rgba(255, 79, 168, 0.4)",
+        "3d-card":
+          "0 1px 0 rgba(255,255,255,0.85) inset, 0 14px 28px -10px rgba(255, 79, 168, 0.22), 0 28px 56px -20px rgba(50, 26, 40, 0.12)",
+        "3d-lift": "0 20px 40px -12px rgba(255, 79, 168, 0.28), 0 40px 80px -24px rgba(50, 26, 40, 0.14)",
+        "3d-btn":
+          "0 5px 0 rgba(255, 31, 143, 0.38), 0 12px 24px -6px rgba(255, 79, 168, 0.45)",
+        "3d-btn-press": "0 2px 0 rgba(255, 31, 143, 0.45), 0 4px 12px -4px rgba(255, 79, 168, 0.35)",
+      },
+      perspective: {
+        scene: "1400px",
+        card: "900px",
       },
     },
   },

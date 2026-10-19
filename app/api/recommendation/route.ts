@@ -4,16 +4,34 @@ import {
   SKIN_TONE_DATA,
   RecommendationResponse,
 } from "@/lib/skinToneAdvisor";
+import { generateGeminiText } from "@/lib/geminiClient";
 
-// Model AI yang digunakan (Gunakan Gemini untuk gratis/free tier)
-const GEMINI_MODEL = "gemini-1.5-flash";
-const GROK_MODEL = "grok-2-1212"; // Fallback model
+const GROK_MODEL = process.env.GROK_MODEL || "grok-2-1212";
+
+function parseRecommendationJson(raw: string): RecommendationResponse {
+  const cleaned = raw
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+
+  try {
+    return JSON.parse(cleaned) as RecommendationResponse;
+  } catch {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("JSON AI tidak valid");
+    return JSON.parse(match[0]) as RecommendationResponse;
+  }
+}
+
+function isValidRecommendation(data: RecommendationResponse): boolean {
+  return Boolean(data.skinToneTitle && data.tips?.colorPalette?.length);
+}
 
 export async function POST(req: NextRequest) {
   try {
     const { question, skinTone } = await req.json();
 
-    // Shortcut: jika request langsung berdasarkan skin tone key
     if (skinTone && SKIN_TONE_DATA[skinTone]) {
       return NextResponse.json({
         success: true,
@@ -30,93 +48,63 @@ export async function POST(req: NextRequest) {
     }
 
     const fallbackRecommendation = getConsultationResponse(question);
-    
-    // Gunakan Gemini API Key sebagai prioritas untuk fitur gratis
-    const geminiApiKey = process.env.GEMINI_API_KEY;
-    const xaiApiKey = process.env.XAI_API_KEY || process.env.GROK_API_KEY;
+    const geminiApiKey = process.env.GEMINI_API_KEY?.trim();
+    const xaiApiKey = (process.env.XAI_API_KEY || process.env.GROK_API_KEY)?.trim();
 
-    // Jika tidak ada API Key sama sekali, kembalikan fallback lokal
     if (!geminiApiKey && !xaiApiKey) {
       return NextResponse.json({
         success: true,
         data: fallbackRecommendation,
         source: "local_curator",
-        note: "Tambahkan GEMINI_API_KEY di .env.local untuk mengaktifkan AI Gratis.",
+        note: "Tambahkan GEMINI_API_KEY di .env.local lalu restart npm run dev.",
       });
     }
 
-    const systemPrompt = `Kamu adalah Fashion & Styling Consultant AI untuk Curated OOTD, platform fashion Indonesia.
-Tugasmu memberikan rekomendasi fashion yang akurat berdasarkan pertanyaan user. Pertanyaan bisa seputar:
-1. Warna pakaian berdasarkan warna kulit (sawo matang, kuning langsat, cerah, gelap).
-2. Potongan outfit berdasarkan bentuk tubuh atau berat badan.
-3. Padu padan gaya busana (streetwear, formal, casual, dll).
-4. Tips fashion umum.
-
-Jawab HANYA dengan JSON valid, tanpa markdown, tanpa teks di luar JSON. Gunakan struktur berikut:
+    const systemPrompt = `Kamu Fashion Consultant AI untuk Curated OOTD (Indonesia). Jawab HANYA JSON valid tanpa markdown:
 {
-  "skinToneKey": "cokelat" | "kuning_langsat" | "gelap" | "terang" | "custom",
-  "skinToneTitle": "Judul rekomendasi yang menjawab pertanyaan user (misal: Tips Outfit untuk Berat Badan 70kg)",
-  "summary": "Jawaban langsung dan penjelasan singkat (2-3 kalimat) yang menjawab inti pertanyaan user.",
-  "undertoneAnalysis": "Analisis singkat terkait pertanyaan (misal: analisis siluet untuk berat badan tertentu atau undertone warna).",
+  "skinToneKey": "cokelat"|"kuning_langsat"|"gelap"|"terang"|"custom",
+  "skinToneTitle": "judul spesifik jawaban",
+  "summary": "2-3 kalimat jawaban",
+  "undertoneAnalysis": "analisis singkat",
   "tips": {
     "title": "Formula Gaya",
-    "advice": "Saran spesifik dan praktis untuk menjawab pertanyaan user.",
-    "colorPalette": [
-      {"name": "Nama Warna 1", "hex": "#XXXXXX"},
-      {"name": "Nama Warna 2", "hex": "#XXXXXX"},
-      {"name": "Nama Warna 3", "hex": "#XXXXXX"},
-      {"name": "Nama Warna 4", "hex": "#XXXXXX"},
-      {"name": "Nama Warna 5", "hex": "#XXXXXX"}
-    ],
-    "avoidColors": ["hal yang perlu dihindari 1", "hal yang perlu dihindari 2"],
-    "recommendedStyles": ["Style1", "Style2", "Style3"],
-    "examplePieces": [
-      {"name": "Produk atasan", "category": "Atasan", "reason": "Alasan kenapa cocok"},
-      {"name": "Produk bawahan", "category": "Bawahan", "reason": "Alasan kenapa cocok"}
-    ]
+    "advice": "saran praktis",
+    "colorPalette": [{"name":"...","hex":"#XXXXXX"} x5],
+    "avoidColors": ["..."],
+    "recommendedStyles": ["..."],
+    "examplePieces": [{"name":"...","category":"Atasan|Bawahan","reason":"..."}]
   },
-  "quickPrompts": [
-    "Pertanyaan lanjutan relevan 1",
-    "Pertanyaan lanjutan relevan 2",
-    "Pertanyaan lanjutan relevan 3"
-  ]
-}
+  "quickPrompts": ["...","...","..."]
+}`;
 
-PENTING: Pastikan "skinToneTitle" dan "summary" benar-benar menjawab pertanyaan user secara spesifik, bukan hanya template warna kulit.`;
+    const fullPrompt = `${systemPrompt}\n\nPertanyaan: ${question.trim()}`;
 
-    try {
-      let rawContent = "";
-      let usedSource = "grok_ai";
+    if (geminiApiKey) {
+      const gemini = await generateGeminiText(
+        geminiApiKey,
+        fullPrompt,
+        process.env.GEMINI_MODEL
+      );
 
-      if (geminiApiKey) {
-        // Gunakan Google Gemini API (Free Tier)
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiApiKey}`;
-        const geminiRes = await fetch(geminiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `${systemPrompt}\n\nPertanyaan User: ${question.trim()}` }] }],
-            generationConfig: {
-              temperature: 0.4,
-              maxOutputTokens: 1500,
-              responseMimeType: "application/json"
-            }
-          }),
-          signal: AbortSignal.timeout(15000),
-        });
-
-        if (geminiRes.ok) {
-          const geminiData = await geminiRes.json();
-          rawContent = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "";
-          usedSource = "gemini_ai";
-        } else {
-          const errText = await geminiRes.text();
-          console.error(`Gemini API Error (${geminiRes.status}):`, errText);
+      if (gemini?.text) {
+        try {
+          const parsed = parseRecommendationJson(gemini.text);
+          if (isValidRecommendation(parsed)) {
+            return NextResponse.json({
+              success: true,
+              data: parsed,
+              source: "gemini_ai",
+              model: gemini.model,
+            });
+          }
+        } catch (parseErr: unknown) {
+          console.error("Gemini JSON parse error:", parseErr);
         }
-      } 
-      
-      // Fallback ke Grok jika Gemini gagal atau tidak ada
-      if (!rawContent && xaiApiKey) {
+      }
+    }
+
+    if (xaiApiKey && xaiApiKey.startsWith("xai-")) {
+      try {
         const grokRes = await fetch("https://api.x.ai/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -132,55 +120,38 @@ PENTING: Pastikan "skinToneTitle" dan "summary" benar-benar menjawab pertanyaan 
             temperature: 0.4,
             max_tokens: 1500,
           }),
-          signal: AbortSignal.timeout(15000),
+          signal: AbortSignal.timeout(12000),
         });
 
         if (grokRes.ok) {
           const grokData = await grokRes.json();
-          rawContent = grokData.choices?.[0]?.message?.content || "";
-          usedSource = "grok_ai";
+          const rawContent = grokData.choices?.[0]?.message?.content || "";
+          if (rawContent) {
+            const parsed = parseRecommendationJson(rawContent);
+            if (isValidRecommendation(parsed)) {
+              return NextResponse.json({
+                success: true,
+                data: parsed,
+                source: "grok_ai",
+              });
+            }
+          }
+        } else {
+          console.error("Grok API Error:", await grokRes.text());
         }
+      } catch (grokErr) {
+        console.error("Grok request failed:", grokErr);
       }
-
-      if (!rawContent) {
-        return NextResponse.json({
-          success: true,
-          data: fallbackRecommendation,
-          source: "fallback_no_api_response",
-        });
-      }
-
-      // Bersihkan kemungkinan markdown wrapping dari output
-      const cleanedJson = rawContent
-        .replace(/^```json\s*/i, "")
-        .replace(/^```\s*/i, "")
-        .replace(/\s*```$/i, "")
-        .trim();
-
-      const parsed: RecommendationResponse = JSON.parse(cleanedJson);
-
-      // Validasi struktur minimal sebelum dikirim
-      if (!parsed.skinToneTitle || !parsed.tips?.colorPalette) {
-        throw new Error("Struktur respons Grok tidak valid");
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: parsed,
-        source: usedSource,
-      });
-    } catch (grokErr: any) {
-      console.error("Grok processing failed:", grokErr?.message || grokErr);
-      return NextResponse.json({
-        success: true,
-        data: fallbackRecommendation,
-        source: "fallback",
-      });
     }
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, message: error?.message || "Internal server error" },
-      { status: 500 }
-    );
+
+    return NextResponse.json({
+      success: true,
+      data: fallbackRecommendation,
+      source: "fallback_no_api_response",
+      note: "Gemini sibuk atau quota habis — coba lagi beberapa menit. Pastikan GEMINI_API_KEY valid di .env.local.",
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal server error";
+    return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }

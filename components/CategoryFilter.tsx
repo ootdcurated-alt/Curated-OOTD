@@ -52,10 +52,10 @@ export default function CategoryFilter({
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.slug)}
-              className={`shrink-0 rounded-full border px-4 py-2 text-xs font-black tracking-tight transition-all ${
+              className={`pill-3d shrink-0 rounded-full border px-4 py-2 text-xs font-black tracking-tight transition-all ${
                 isActive
-                  ? "border-primary bg-primary text-white shadow-cartoon"
-                  : "border-border bg-white/60 text-foreground backdrop-blur-md hover:bg-secondary hover:shadow-cartoon-sm"
+                  ? "pill-3d-active border-primary bg-primary text-white"
+                  : "border-border bg-white/60 text-foreground backdrop-blur-md hover:bg-secondary"
               }`}
             >
               {cat.name}

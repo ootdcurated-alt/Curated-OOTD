@@ -56,25 +56,26 @@ export async function AuthButton() {
 
   if (hasAdminCookie && !user) {
     return (
-      <div className="flex items-center gap-3 text-sm">
+      <div className="flex items-center gap-1.5 sm:gap-3 text-sm">
         <Link
           href="/admin/settings"
-          className="flex items-center gap-2 text-primary font-medium hover:opacity-80 transition-opacity"
+          className="touch-target flex items-center gap-2 text-primary font-medium hover:opacity-80 transition-opacity"
+          aria-label={`Profil ${adminUsername}`}
         >
           {adminAvatar ? (
             <img
               src={adminAvatar}
               alt="Admin"
-              className="h-7 w-7 rounded-full object-cover border border-primary/30"
+              className="h-8 w-8 sm:h-7 sm:w-7 rounded-full object-cover border border-primary/30"
             />
           ) : (
-            <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+            <div className="h-8 w-8 sm:h-7 sm:w-7 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
               <ShieldCheck className="h-4 w-4" />
             </div>
           )}
-          <span>{adminUsername}</span>
+          <span className="hidden md:inline max-w-[88px] truncate">{adminUsername}</span>
         </Link>
-        <LogoutButton />
+        <LogoutButton compact />
       </div>
     );
   }
@@ -89,28 +90,29 @@ export async function AuthButton() {
     "Pengguna";
 
   return user ? (
-    <div className="flex items-center gap-3 text-sm">
+    <div className="flex items-center gap-1.5 sm:gap-3 text-sm">
       <Link
         href="/protected"
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        className="touch-target flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        aria-label={`Akun ${displayName}`}
       >
         {avatarUrl ? (
-          <img src={avatarUrl} alt="Avatar" className="h-7 w-7 rounded-full object-cover border border-border" />
+          <img src={avatarUrl} alt="Avatar" className="h-8 w-8 sm:h-7 sm:w-7 rounded-full object-cover border border-border" />
         ) : (
-          <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center border border-border">
+          <div className="h-8 w-8 sm:h-7 sm:w-7 rounded-full bg-muted flex items-center justify-center border border-border">
             <User className="h-3.5 w-3.5" />
           </div>
         )}
-        <span className="font-medium text-foreground">{displayName}</span>
+        <span className="hidden md:inline font-medium text-foreground max-w-[88px] truncate">{displayName}</span>
       </Link>
-      <LogoutButton />
+      <LogoutButton compact />
     </div>
   ) : (
-    <div className="flex items-center gap-2">
-      <Button asChild size="sm" variant="ghost" className="text-xs sm:text-sm font-medium">
+    <div className="flex items-center gap-1 sm:gap-2">
+      <Button asChild size="sm" variant="ghost" className="touch-target h-9 px-2.5 sm:px-3 text-xs sm:text-sm font-medium">
         <Link href="/auth/login">Masuk</Link>
       </Button>
-      <Button asChild size="sm" variant="default" className="text-xs sm:text-sm font-medium">
+      <Button asChild size="sm" variant="default" className="touch-target h-9 px-2.5 sm:px-3 text-xs sm:text-sm font-medium">
         <Link href="/auth/sign-up">Daftar</Link>
       </Button>
     </div>

@@ -11,18 +11,21 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = await createClient();
-    
-    // Log click event into analytics/clicks table if exists
-    await supabase.from("click_events").insert({
+
+    const { error: insertError } = await supabase.from("click_events").insert({
       outfit_id: outfit_id || null,
       item_id: item_id || null,
       target_url,
       clicked_at: new Date().toISOString(),
     });
 
+    if (insertError) {
+      console.error("Error tracking click:", insertError.message);
+    }
+
     return NextResponse.json({ success: true, redirect_url: target_url });
   } catch (error) {
     console.error("Error tracking click:", error);
-    return NextResponse.json({ error: "Gagal melacak klik" }, { status: 500 });
+    return NextResponse.json({ success: true });
   }
 }

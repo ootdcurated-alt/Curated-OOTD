@@ -31,39 +31,33 @@ export default async function AdminLayout({
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
-  const isSupabaseConfigured =
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("your-project.supabase.co");
-
   // Allow if: admin cookie set OR Supabase user is admin
   const isAdminUser = isUserAdmin(user);
 
   if (!hasAdminCookie && !isAdminUser) {
-    if (isSupabaseConfigured) {
-      if (!user) {
-        redirect("/auth/login?next=/admin");
-      }
-      // User is logged in but not admin
-      return (
-        <div className="container max-w-lg py-16 px-4">
-          <div className="rounded-[2rem] border border-destructive/30 bg-destructive/5 p-8 text-center space-y-4 shadow-cartoon-sm">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-              <ShieldAlert className="h-7 w-7" />
-            </div>
-            <h1 className="text-2xl font-black tracking-tighter font-nunito text-foreground">Akses Ditolak (403)</h1>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Akun Anda (<span className="font-semibold text-foreground">{user?.email || "Pengguna"}</span>) tidak memiliki izin Administrator.
-            </p>
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-white/80 backdrop-blur-md px-4 py-2.5 text-sm font-black text-foreground shadow-cartoon-sm hover:scale-105 hover:shadow-cartoon transition-all"
-            >
-              <ArrowLeft className="h-4 w-4" /> Kembali ke Beranda
-            </Link>
-          </div>
-        </div>
-      );
+    if (!user) {
+      redirect("/auth/login?next=/admin");
     }
+    // User is logged in but not admin
+    return (
+      <div className="container max-w-lg py-16 px-4">
+        <div className="rounded-[2rem] border border-destructive/30 bg-destructive/5 p-8 text-center space-y-4 shadow-cartoon-sm">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+            <ShieldAlert className="h-7 w-7" />
+          </div>
+          <h1 className="text-2xl font-black tracking-tighter font-nunito text-foreground">Akses Ditolak (403)</h1>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Akun Anda (<span className="font-semibold text-foreground">{user?.email || "Pengguna"}</span>) tidak memiliki izin Administrator.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-white/80 backdrop-blur-md px-4 py-2.5 text-sm font-black text-foreground shadow-cartoon-sm hover:scale-105 hover:shadow-cartoon transition-all"
+          >
+            <ArrowLeft className="h-4 w-4" /> Kembali ke Beranda
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const adminProfile = await getAdminProfile();
@@ -97,7 +91,7 @@ export default async function AdminLayout({
       <AdminAuthGuard />
 
       {/* Admin bar — fixed (navbar utama disembunyikan di /admin) */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-white/80 backdrop-blur-xl shadow-cartoon-sm">
+      <header className="panel-3d fixed top-0 left-0 right-0 z-50 border-b border-border bg-white/85 backdrop-blur-xl shadow-cartoon-sm pt-[env(safe-area-inset-top,0px)]">
         <div className="container max-w-7xl px-3 sm:px-6 py-2.5 space-y-2.5">
           <div className="flex items-center justify-between gap-3 min-w-0">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -172,7 +166,7 @@ export default async function AdminLayout({
         </div>
       </header>
 
-      <div className="pb-16 pt-[7.25rem] sm:pt-[8.5rem]">{children}</div>
+      <div className="pb-16 pt-[6.75rem] sm:pt-[8.5rem] px-3 sm:px-0">{children}</div>
     </div>
   );
 }

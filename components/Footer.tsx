@@ -126,9 +126,9 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="w-full border-t border-border bg-white/40 backdrop-blur-xl">
-        <div className="container max-w-7xl py-16 px-6 sm:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 pb-12 border-b border-border">
+      <footer className="panel-3d w-full border-t border-border bg-white/50 backdrop-blur-xl">
+        <div className="container max-w-7xl py-10 sm:py-16 px-4 sm:px-8">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-12 pb-8 sm:pb-12 border-b border-border">
             {/* Logo & Deskripsi */}
             <div className="text-center lg:text-left space-y-4 max-w-md">
               <Link href="/" className="inline-flex items-center gap-3 group">

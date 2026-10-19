@@ -10,6 +10,7 @@ interface GuestGuardLinkProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  "aria-label"?: string;
 }
 
 /**
@@ -22,12 +23,13 @@ export default function GuestGuardLink({
   children,
   className,
   onClick,
+  "aria-label": ariaLabel,
 }: GuestGuardLinkProps) {
   const router = useRouter();
 
   if (isLoggedIn) {
     return (
-      <Link href={href} className={className} onClick={onClick}>
+      <Link href={href} className={className} onClick={onClick} aria-label={ariaLabel}>
         {children}
       </Link>
     );
@@ -37,6 +39,7 @@ export default function GuestGuardLink({
     <button
       type="button"
       className={className}
+      aria-label={ariaLabel}
       onClick={() => {
         onClick?.();
         router.push(`/auth/login?next=${encodeURIComponent(href)}`);

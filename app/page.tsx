@@ -37,71 +37,64 @@ export default async function Home() {
   const currentUserId = (user as any)?.sub ?? null;
 
   return (
-    <main className="container max-w-7xl py-5 sm:py-10 px-3 sm:px-6 space-y-6 sm:space-y-12">
-      {/* ====  Hero Section  ==== */}
-      <div className="relative overflow-hidden cartoon-card bg-white/40 p-6 sm:p-20 text-center border-white/50 backdrop-blur-2xl">
-        {/* Decorative elements — Gen Z Neon Shapes */}
-        <div className="absolute -top-16 -left-16 h-48 w-48 rounded-full bg-primary/20 blur-3xl animate-float pointer-events-none" />
-        <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-accent/20 blur-3xl animate-float-delay pointer-events-none" />
-        <div className="absolute top-1/4 right-10 h-20 w-20 rounded-[2rem] bg-cartoon-yellow/20 blur-2xl -rotate-12 animate-wiggle pointer-events-none hidden sm:block" />
+    <main className="container max-w-7xl py-3 sm:py-8 px-3 sm:px-6 space-y-5 sm:space-y-8 w-full min-w-0">
+      {/* ====  Hero Section — tanpa kotak, rata tengah atas ==== */}
+      <section className="mx-auto w-full max-w-2xl pt-1 sm:pt-4 pb-1 text-center flex flex-col items-center justify-start gap-3 sm:gap-5 px-1">
+        <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[9px] sm:text-xs font-black uppercase tracking-wide sm:tracking-[0.2em] text-foreground/50 leading-snug max-w-[320px] sm:max-w-none">
+          <img
+            src="/logo-icon.png"
+            alt=""
+            className="h-4 w-4 object-contain opacity-80"
+            aria-hidden
+          />
+          <span>Kurasi Premium</span>
+          <span className="text-foreground/30 hidden sm:inline" aria-hidden>·</span>
+          <span>Vibe Gen Z</span>
+          <span className="text-foreground/30" aria-hidden>·</span>
+          <span>Inspirasi Harian</span>
+        </p>
 
-        <div className="relative z-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto flex flex-col items-center">
-          {/* Logo badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-4 py-1.5 shadow-cartoon-sm font-black text-[10px] sm:text-xs text-foreground tracking-widest uppercase backdrop-blur-md">
-            <img
-              src="/logo-icon.png"
-              alt="Ikon Curated OOTD"
-              className="h-5 w-5 object-contain"
-            />
-            <span>Kurasi Premium • Vibe Gen Z • Inspirasi Harian</span>
-          </div>
-
-          <div className="space-y-4 sm:space-y-5">
-            <h1 className="text-4xl font-black tracking-tighter sm:text-7xl lg:text-8xl text-foreground font-nunito leading-[0.9] text-balance">
-              Tingkatkan{" "}
-              <span className="text-primary italic relative">
-                Gaya Kamu
-                <span className="absolute -bottom-2 left-0 w-full h-3 bg-accent/30 -z-10 rounded-full blur-sm" />
-              </span>
-            </h1>
-            <p className="text-sm sm:text-lg font-bold text-foreground/70 max-w-2xl mx-auto leading-relaxed text-balance">
-              Jelajahi inspirasi outfit harian, padu padan gaya di Studio, dan belanja gaya terbaik secara langsung.
-            </p>
-          </div>
-
-          {/* Buttons — Modern Pill Shapes */}
-          <div className="w-full pt-4 grid grid-cols-1 sm:flex sm:flex-wrap sm:justify-center gap-3 sm:gap-5">
-            <GuestGuardLink
-              href="/creator"
-              isLoggedIn={isLoggedIn}
-              className="cartoon-btn bg-primary text-white px-8 py-4 text-sm sm:text-base text-center shadow-cartoon-lg hover:scale-105 active:scale-95 transition-all"
-            >
-              Mulai Berkarya
-            </GuestGuardLink>
-            <GuestGuardLink
-              href="/creator#advisor"
-              isLoggedIn={isLoggedIn}
-              className="cartoon-btn bg-white text-foreground border border-border px-8 py-4 text-sm sm:text-base text-center shadow-cartoon-sm hover:scale-105 active:scale-95 transition-all"
-            >
-              Panduan Warna Kulit
-            </GuestGuardLink>
-          </div>
+        <div className="space-y-2.5 sm:space-y-4 w-full">
+          <h1 className="text-[1.65rem] leading-tight font-black tracking-tight sm:text-4xl md:text-[2.75rem] text-foreground font-nunito text-balance px-1">
+            Tingkatkan{" "}
+            <span className="text-primary italic">Gaya Kamu</span>
+          </h1>
+          <p className="text-sm sm:text-base font-semibold text-muted-foreground max-w-lg mx-auto leading-relaxed text-balance">
+            Jelajahi inspirasi outfit harian, padu padan gaya di Studio, dan belanja gaya terbaik secara langsung.
+          </p>
         </div>
-      </div>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3 w-full sm:w-auto pt-1 max-w-sm sm:max-w-none mx-auto">
+          <GuestGuardLink
+            href="/creator"
+            isLoggedIn={isLoggedIn}
+            className="cartoon-btn touch-target bg-primary text-white px-6 py-3 sm:py-2.5 text-sm text-center shadow-cartoon-sm min-h-[44px] flex items-center justify-center"
+          >
+            Mulai Berkarya
+          </GuestGuardLink>
+          <GuestGuardLink
+            href="/creator#advisor"
+            isLoggedIn={isLoggedIn}
+            className="cartoon-btn touch-target bg-white/90 text-foreground border border-border px-6 py-3 sm:py-2.5 text-sm text-center shadow-cartoon-sm min-h-[44px] flex items-center justify-center"
+          >
+            Panduan Warna Kulit
+          </GuestGuardLink>
+        </div>
+      </section>
 
       {/* ====  Feature Cards  ==== */}
-      <div className={`grid grid-cols-1 ${isAdmin ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-8`}>
+      <div className={`grid grid-cols-1 ${isAdmin ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-5 sm:gap-6`}>
         <GuestGuardLink
           href="/creator"
           isLoggedIn={isLoggedIn}
-          className="group cartoon-card bg-white/60 p-8 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
+          className="group cartoon-card bg-white/60 p-5 sm:p-7 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
         >
           <div className="space-y-6">
-            <div className="h-14 w-14 rounded-3xl border border-border bg-primary/10 shadow-cartoon-sm flex items-center justify-center text-primary group-hover:rotate-12 group-hover:scale-110 transition-all">
+            <div className="icon-3d h-14 w-14 rounded-3xl border border-border bg-primary/10 flex items-center justify-center text-primary group-hover:rotate-12 group-hover:scale-110 transition-all">
               <Brush className="h-7 w-7" />
             </div>
             <div>
-              <h3 className="font-black text-2xl text-foreground font-nunito tracking-tight">
+              <h3 className="font-black text-xl sm:text-2xl text-foreground font-nunito tracking-tight">
                 Studio Kreasi
               </h3>
               <p className="mt-2 text-sm font-bold text-foreground/60 leading-relaxed">
@@ -117,16 +110,16 @@ export default async function Home() {
         <GuestGuardLink
           href="/creator#advisor"
           isLoggedIn={isLoggedIn}
-          className="group cartoon-card bg-white/60 p-8 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
+          className="group cartoon-card bg-white/60 p-5 sm:p-7 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
         >
           <div className="space-y-6">
-            <div className="h-14 w-14 rounded-3xl border border-border bg-accent/10 shadow-cartoon-sm flex items-center justify-center text-accent group-hover:-rotate-12 group-hover:scale-110 transition-all">
+            <div className="icon-3d h-14 w-14 rounded-3xl border border-border bg-accent/10 flex items-center justify-center text-accent group-hover:-rotate-12 group-hover:scale-110 transition-all">
               <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 21a4 4 0 01-4-4 4 4 0 014-4h4a4 4 0 014 4 4 4 0 01-4 4H7zm10-10a4 4 0 100-8 4 4 0 000 8zm-8-3a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
             <div>
-              <h3 className="font-black text-2xl text-foreground font-nunito tracking-tight">
+              <h3 className="font-black text-xl sm:text-2xl text-foreground font-nunito tracking-tight">
                 Analisis Warna Pribadi
               </h3>
               <p className="mt-2 text-sm font-bold text-foreground/60 leading-relaxed">
@@ -142,16 +135,16 @@ export default async function Home() {
         {isAdmin && (
           <Link
             href="/admin/categories"
-            className="group cartoon-card bg-white/60 p-8 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
+            className="group cartoon-card bg-white/60 p-5 sm:p-7 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
           >
             <div className="space-y-6">
-              <div className="h-14 w-14 rounded-3xl border border-border bg-cartoon-purple/10 shadow-cartoon-sm flex items-center justify-center text-cartoon-purple group-hover:rotate-6 group-hover:scale-110 transition-all">
+              <div className="icon-3d h-14 w-14 rounded-3xl border border-border bg-cartoon-purple/10 flex items-center justify-center text-cartoon-purple group-hover:rotate-6 group-hover:scale-110 transition-all">
                 <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-black text-2xl text-foreground font-nunito tracking-tight">
+                <h3 className="font-black text-xl sm:text-2xl text-foreground font-nunito tracking-tight">
                   Dasbor Admin
                 </h3>
                 <p className="mt-2 text-sm font-bold text-foreground/60 leading-relaxed">

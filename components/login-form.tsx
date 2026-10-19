@@ -16,10 +16,17 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
+function sanitizeNext(next?: string): string {
+  if (!next || !next.startsWith("/") || next.startsWith("//")) return "/";
+  return next;
+}
+
 export function LoginForm({
   className,
+  nextPath = "/",
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div"> & { nextPath?: string }) {
+  const redirectTo = sanitizeNext(nextPath);
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +56,7 @@ export function LoginForm({
             password: "admin1027",
           });
           if (!supaErr) {
-            router.push("/admin");
+            router.push(redirectTo.startsWith("/admin") ? redirectTo : "/admin");
             router.refresh();
             return;
           }
@@ -70,7 +77,7 @@ export function LoginForm({
           });
 
           if (res.ok) {
-            window.location.href = "/admin";
+            window.location.href = redirectTo.startsWith("/admin") ? redirectTo : "/admin";
             return;
           }
         } catch {
@@ -79,7 +86,7 @@ export function LoginForm({
 
         // Fallback terakhir: simpan flag di sessionStorage dan redirect
         sessionStorage.setItem("admin_fallback_auth", "adminootd_authenticated");
-        window.location.href = "/admin";
+        window.location.href = redirectTo.startsWith("/admin") ? redirectTo : "/admin";
         return;
       }
 
@@ -112,7 +119,7 @@ export function LoginForm({
         throw error;
       }
 
-      router.push("/");
+      router.push(redirectTo);
       router.refresh();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Terjadi kesalahan saat masuk";
@@ -135,7 +142,7 @@ export function LoginForm({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
         },
       });
       if (error) throw error;

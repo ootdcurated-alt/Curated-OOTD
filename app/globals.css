@@ -60,49 +60,207 @@
     font-family: var(--font-nunito), "Nunito", sans-serif;
   }
 
-  /* Kartu bergaya Gen Z: Glassmorphism, radius besar, bayangan berwarna (glow) */
+  /* Ruang 3D — konteks perspektif untuk kartu & hero */
+  .depth-root {
+    perspective: 1400px;
+    transform-style: preserve-3d;
+  }
+
+  /* Kartu 3D: glass + bevel + lift saat hover */
   .cartoon-card {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px -4px rgba(255, 79, 168, 0.15);
+    position: relative;
+    isolation: isolate;
+    transform-style: preserve-3d;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.88) 0%,
+      rgba(255, 255, 255, 0.62) 48%,
+      rgba(255, 232, 244, 0.55) 100%
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 -1px 0 rgba(255, 79, 168, 0.06) inset,
+      0 10px 24px -8px rgba(255, 79, 168, 0.2),
+      0 22px 44px -18px rgba(50, 26, 40, 0.1);
     border-radius: 2.5rem;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition:
+      transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.45s ease,
+      border-color 0.35s ease,
+      background 0.35s ease;
+  }
+
+  .cartoon-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 42%,
+      rgba(0, 204, 255, 0.06) 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .cartoon-card::after {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: -6px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 79, 168, 0.22) 0%, transparent 70%);
+    filter: blur(6px);
+    opacity: 0.65;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+    z-index: -1;
   }
 
   .cartoon-card:hover {
-    transform: translateY(-8px) scale(1.01);
-    background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(255, 79, 168, 0.3);
-    box-shadow: 0 20px 40px -12px rgba(255, 79, 168, 0.25);
+    transform: translateY(-6px) rotateX(3deg) scale(1.01);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.78) 50%,
+      rgba(255, 240, 248, 0.72) 100%
+    );
+    border-color: rgba(255, 79, 168, 0.28);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 18px 36px -12px rgba(255, 79, 168, 0.28),
+      0 36px 72px -24px rgba(50, 26, 40, 0.14);
   }
 
-  /* Tombol bergaya Gen Z: Vibrant, pill-shaped, soft glow elevation */
+  .cartoon-card:hover::after {
+    opacity: 1;
+    transform: scaleX(1.08);
+  }
+
+  .cartoon-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Tombol 3D — efek tekan fisik */
   .cartoon-btn {
-    border: 1px solid transparent;
-    box-shadow: 0 8px 20px -6px rgba(255, 79, 168, 0.4);
+    position: relative;
+    transform-style: preserve-3d;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.45) inset,
+      0 5px 0 rgba(255, 31, 143, 0.35),
+      0 12px 24px -6px rgba(255, 79, 168, 0.42);
     border-radius: 9999px;
     font-weight: 800;
     letter-spacing: -0.01em;
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition:
+      transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.22s ease,
+      filter 0.22s ease;
     cursor: pointer;
   }
 
   .cartoon-btn:hover {
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 12px 28px -8px rgba(255, 79, 168, 0.5);
-    filter: saturate(1.1) brightness(1.05);
+    transform: translateY(-3px) translateZ(6px) scale(1.03);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.55) inset,
+      0 7px 0 rgba(255, 31, 143, 0.32),
+      0 16px 32px -8px rgba(255, 79, 168, 0.5);
+    filter: saturate(1.08) brightness(1.04);
   }
 
   .cartoon-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 3px 9px -3px rgba(255, 79, 168, 0.5);
+    transform: translateY(4px) translateZ(0) scale(0.99);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.3) inset,
+      0 2px 0 rgba(255, 31, 143, 0.4),
+      0 6px 14px -6px rgba(255, 79, 168, 0.45);
   }
 
   .cartoon-btn:disabled {
     box-shadow: none;
     filter: none;
+    transform: none;
+  }
+
+  /* Panel navbar / header — lipatan 3D tipis */
+  .panel-3d {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.75) inset,
+      0 4px 0 rgba(255, 214, 230, 0.85),
+      0 12px 28px -10px rgba(255, 79, 168, 0.18);
+  }
+
+  /* Ikon logo — kubus mini */
+  .icon-3d {
+    transform-style: preserve-3d;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 4px 0 rgba(255, 214, 230, 0.9),
+      0 8px 16px -6px rgba(255, 79, 168, 0.2);
+  }
+
+  /* Judul hero — depth typographic */
+  .text-3d-pop {
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95),
+      0 2px 0 rgba(255, 143, 200, 0.55),
+      0 4px 0 rgba(255, 79, 168, 0.25),
+      0 8px 16px rgba(255, 79, 168, 0.22),
+      0 16px 32px rgba(50, 26, 40, 0.12);
+  }
+
+  .hero-3d {
+    transform-style: preserve-3d;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 16px 40px -16px rgba(255, 79, 168, 0.25),
+      0 32px 64px -28px rgba(0, 204, 255, 0.12);
+  }
+
+  /* Input & pill — sedikit raised */
+  .input-3d {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.85) inset,
+      0 3px 0 rgba(255, 214, 230, 0.75),
+      0 6px 14px -8px rgba(255, 79, 168, 0.15);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .input-3d:focus {
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 4px 0 rgba(255, 214, 230, 0.8),
+      0 0 0 3px rgba(255, 79, 168, 0.12),
+      0 10px 24px -10px rgba(255, 79, 168, 0.22);
+  }
+
+  .pill-3d {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.75) inset,
+      0 2px 0 rgba(255, 214, 230, 0.85),
+      0 5px 12px -6px rgba(255, 79, 168, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .pill-3d:hover {
+    transform: translateY(-1px);
+  }
+
+  .pill-3d-active {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.35) inset,
+      0 3px 0 rgba(255, 31, 143, 0.42),
+      0 8px 18px -6px rgba(255, 79, 168, 0.35);
   }
 
   .section-padding {
@@ -112,11 +270,43 @@
     padding-right: 1rem;
   }
 
+  .touch-target {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
   @media (max-width: 640px) {
     .section-padding {
       padding-top: 2.5rem;
       padding-bottom: 2.5rem;
     }
+
+    .cartoon-card {
+      border-radius: 1.75rem;
+    }
+
+    .cartoon-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .scene-3d-layer {
+      opacity: 0.45;
+    }
+
+    .shape-3d-cube,
+    .shape-3d-ring {
+      display: none;
+    }
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .cartoon-card:hover {
+    transform: none;
+  }
+
+  .cartoon-btn:hover {
+    transform: none;
   }
 }
 
@@ -147,6 +337,33 @@
   50% { transform: translateX(6px); }
 }
 
+@keyframes drift-3d {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotateX(18deg) rotateY(-22deg);
+  }
+  50% {
+    transform: translate3d(0, -18px, 24px) rotateX(24deg) rotateY(12deg);
+  }
+}
+
+@keyframes spin-3d {
+  from {
+    transform: rotateX(55deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(55deg) rotateY(360deg);
+  }
+}
+
+@keyframes float-orb-3d {
+  0%, 100% {
+    transform: translate3d(0, 0, 40px) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -24px, 80px) scale(1.06);
+  }
+}
+
 .animate-wiggle {
   animation: wiggle 2s ease-in-out infinite;
 }
@@ -175,6 +392,115 @@
   animation: bounce-x 1s ease-in-out infinite;
 }
 
+/* —— Dekorasi scene 3D (background) —— */
+.scene-3d-layer {
+  perspective: 1200px;
+}
+
+.scene-3d-stage {
+  transform-style: preserve-3d;
+  transform: rotateX(8deg) rotateY(-6deg);
+}
+
+.orb-3d {
+  position: absolute;
+  border-radius: 9999px;
+  transform-style: preserve-3d;
+  filter: blur(0.5px);
+  animation: float-orb-3d 9s ease-in-out infinite;
+}
+
+.orb-3d-a {
+  top: 8%;
+  left: 6%;
+  width: 88px;
+  height: 88px;
+  background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.55), rgba(255, 79, 168, 0.35) 45%, rgba(255, 79, 168, 0.08) 70%);
+  box-shadow:
+    inset -12px -16px 32px rgba(255, 31, 143, 0.25),
+    inset 8px 10px 20px rgba(255, 255, 255, 0.45),
+    0 24px 48px -12px rgba(255, 79, 168, 0.25);
+}
+
+.orb-3d-b {
+  top: 52%;
+  right: 8%;
+  width: 120px;
+  height: 120px;
+  animation-delay: 1.2s;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), rgba(0, 204, 255, 0.28) 50%, rgba(0, 204, 255, 0.06) 72%);
+  box-shadow:
+    inset -14px -18px 36px rgba(0, 140, 180, 0.2),
+    inset 10px 12px 24px rgba(255, 255, 255, 0.4),
+    0 28px 56px -14px rgba(0, 204, 255, 0.2);
+}
+
+.orb-3d-c {
+  bottom: 12%;
+  left: 28%;
+  width: 64px;
+  height: 64px;
+  animation-delay: 2s;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.55), rgba(200, 125, 184, 0.35) 48%, transparent 72%);
+  box-shadow:
+    inset -8px -10px 20px rgba(160, 80, 140, 0.22),
+    inset 6px 8px 16px rgba(255, 255, 255, 0.42),
+    0 16px 32px -10px rgba(200, 125, 184, 0.22);
+}
+
+.shape-3d {
+  position: absolute;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.shape-3d-cube {
+  top: 22%;
+  right: 22%;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, rgba(255, 204, 0, 0.55), rgba(255, 79, 168, 0.35));
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 8px 0 rgba(255, 143, 200, 0.35),
+    0 20px 40px -12px rgba(255, 79, 168, 0.25);
+  animation: drift-3d 11s ease-in-out infinite;
+}
+
+.shape-3d-ring {
+  bottom: 28%;
+  right: 34%;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  border: 10px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  box-shadow:
+    0 0 0 1px rgba(255, 79, 168, 0.15),
+    inset 0 0 20px rgba(255, 79, 168, 0.12),
+    0 16px 32px -12px rgba(255, 79, 168, 0.2);
+  animation: spin-3d 18s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartoon-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .cartoon-btn:hover,
+  .cartoon-btn:active {
+    transform: none;
+  }
+
+  .orb-3d,
+  .shape-3d-cube,
+  .shape-3d-ring {
+    animation: none;
+  }
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -183,17 +509,24 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
   }
 
   body {
     font-family: var(--font-nunito), "Nunito", sans-serif;
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
     /* Mesh Gradient Gen Z — Vibrant, Fluid, Modern */
+    background-color: hsl(var(--background));
     background-image:
-      radial-gradient(at 0% 0%, rgba(255, 79, 168, 0.18) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(0, 204, 255, 0.1) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(255, 204, 0, 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(200, 125, 184, 0.1) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(255, 79, 168, 0.2) 0px, transparent 52%),
+      radial-gradient(at 100% 0%, rgba(0, 204, 255, 0.12) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(255, 204, 0, 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(200, 125, 184, 0.12) 0px, transparent 50%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 28%, transparent 72%, rgba(255, 232, 244, 0.25) 100%);
     background-attachment: fixed;
   }
 

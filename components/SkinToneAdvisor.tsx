@@ -18,6 +18,7 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
   const [loading, setLoading] = useState<boolean>(false);
   const [source, setSource] = useState<SourceType>(null);
   const [error, setError] = useState<string | null>(null);
+  const [apiNote, setApiNote] = useState<string | null>(null);
 
   const handleAsk = async (customText?: string) => {
     const textToQuery = customText !== undefined ? customText : query;
@@ -25,6 +26,7 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
 
     setLoading(true);
     setError(null);
+    setApiNote(null);
 
     try {
       const res = await fetch("/api/recommendation", {
@@ -37,8 +39,19 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
       if (json.success && json.data) {
         setResult(json.data);
         setSource(json.source || "fallback");
+        setApiNote(json.note || null);
         if (json.data.skinToneKey && json.data.skinToneKey !== "custom") {
           setActiveSkinKey(json.data.skinToneKey);
+        }
+        if (json.source === "fallback_no_api_response") {
+          setError(
+            json.note ||
+              "AI cloud sementara tidak tersedia. Rekomendasi lokal ditampilkan — coba lagi beberapa menit."
+          );
+        } else if (json.source === "local_curator") {
+          setError(json.note || "Set GEMINI_API_KEY di .env.local lalu restart server dev.");
+        } else {
+          setError(null);
         }
       } else {
         const fallback = getConsultationResponse(textToQuery);
@@ -69,7 +82,12 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
   };
 
   const isFromAI = source === "grok_ai" || source === "gemini_ai";
-  const isFromFallback = source && !isFromAI && source !== "preset";
+  const aiBadgeLabel =
+    source === "gemini_ai"
+      ? "Analisis Gemini AI"
+      : source === "grok_ai"
+        ? "Analisis Grok AI"
+        : "Kurator Lokal";
 
   return (
     <div id="advisor" className="cartoon-card bg-white/40 p-6 sm:p-10 space-y-8 backdrop-blur-2xl border-white/40">
@@ -83,7 +101,7 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
             {result && source !== "preset" ? "Laporan Gaya AI" : "Panduan Warna Kulit & Gaya"}
           </h2>
           <p className="text-sm sm:text-base font-bold text-foreground/60 leading-relaxed">
-            Dapatkan rekomendasi outfit yang dipersonalisasi dengan Grok AI.
+            Dapatkan rekomendasi outfit dipersonalisasi dengan Gemini AI (gratis) atau Grok sebagai cadangan.
           </p>
         </div>
 
@@ -183,10 +201,10 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
       )}
 
       {/* Error banner */}
-      {error && !loading && (
+      {(error || apiNote) && !loading && (
         <div className="flex items-center gap-3 rounded-[1.5rem] border-2 border-primary/20 bg-primary/5 px-6 py-4 text-sm font-black text-primary">
           <AlertCircle className="h-5 w-5 shrink-0" />
-          {error}
+          <span>{error || apiNote}</span>
         </div>
       )}
 
@@ -208,9 +226,9 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
               isFromAI ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
             }`}>
               {isFromAI ? (
-                <><Bot className="h-3.5 w-3.5" /> Analisis Grok AI</>
+                <><Bot className="h-3.5 w-3.5" /> {aiBadgeLabel}</>
               ) : (
-                <><BookOpen className="h-3.5 w-3.5" /> Kurator Lokal</>
+                <><BookOpen className="h-3.5 w-3.5" /> {aiBadgeLabel}</>
               )}
             </span>
           </div>

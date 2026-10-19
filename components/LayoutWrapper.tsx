@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Scene3DDecor from "@/components/Scene3DDecor";
 
 interface LayoutWrapperProps {
   children: React.ReactNode;
@@ -20,14 +21,20 @@ export default function LayoutWrapper({
   const isAdminPage = pathname?.startsWith("/admin");
 
   if (isAuthPage || isAdminPage) {
-    return <div className="flex-1 flex flex-col w-full">{children}</div>;
+    return (
+      <div className="relative flex-1 flex flex-col w-full depth-root">
+        <Scene3DDecor />
+        <div className="relative z-[1] flex-1 flex flex-col w-full">{children}</div>
+      </div>
+    );
   }
 
   return (
-    <>
+    <div className="relative flex-1 flex flex-col w-full depth-root">
+      <Scene3DDecor />
       {navbar}
-      <div className="flex-1 w-full">{children}</div>
+      <div className="relative z-[1] flex-1 w-full">{children}</div>
       {footer}
-    </>
+    </div>
   );
 }

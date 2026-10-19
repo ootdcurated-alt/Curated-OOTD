@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import ShopTheLook from "@/components/ShopTheLook";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { notFound } from "next/navigation";
+import { normalizeOutfitItems } from "@/lib/outfitItems";
 
 
 interface OutfitPageProps {
@@ -60,7 +60,7 @@ export default async function OutfitDetailPage({ params }: OutfitPageProps) {
 
       <ShopTheLook
         imageUrl={outfit.image_url}
-        items={outfit.outfit_items || []}
+        items={normalizeOutfitItems(outfit.outfit_items)}
         outfitId={outfit.id}
       />
     </main>
