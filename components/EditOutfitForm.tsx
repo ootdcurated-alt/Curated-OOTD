@@ -114,7 +114,7 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <Sparkles className="h-6 w-6 text-primary" />
-          <h1 className="text-2xl font-bold tracking-tight">Edit Outfit</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Ubah Outfit</h1>
         </div>
 
         {/* Delete button */}
@@ -171,7 +171,7 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Minimalist Casual Summer Look"
+              placeholder="mis. Gaya Kasual Musim Panas Minimalis"
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -205,7 +205,7 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                placeholder="summer, casual, earth-tone"
+                placeholder="musim panas, kasual, warna bumi"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -214,10 +214,10 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
           {/* Image preview */}
           {imageUrl && (
             <div className="mt-2">
-              <p className="text-xs text-muted-foreground mb-2">Preview gambar:</p>
+              <p className="text-xs text-muted-foreground mb-2">Pratinjau gambar:</p>
               <img
                 src={imageUrl}
-                alt="Preview"
+                alt="Pratinjau"
                 className="h-48 w-auto rounded-lg object-cover border border-border"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";

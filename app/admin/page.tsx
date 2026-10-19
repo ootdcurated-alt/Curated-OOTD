@@ -29,18 +29,18 @@ export default async function AdminDashboardPage() {
   return (
     <main className="container max-w-7xl py-8 px-4 sm:px-6 space-y-8">
       {/* Hero Welcome & Quick Action */}
-      <div className="relative overflow-hidden cartoon-card bg-white p-6 sm:p-8">
+      <div className="relative overflow-hidden cartoon-card bg-white/60 backdrop-blur-2xl p-6 sm:p-8 border-white/40">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2.5 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-[#FFC2D9] px-3.5 py-1 text-xs font-black text-[#4A3B45] shadow-sm">
-              <Sparkles className="h-3.5 w-3.5 text-[#CC3D72]" />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-3.5 py-1 text-xs font-black text-foreground shadow-cartoon-sm">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
               Pusat Kontrol Kurasi & Afiliasi
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black font-nunito tracking-tight text-[#4A3B45]">
-              Dashboard Administrator
+            <h1 className="text-2xl sm:text-4xl font-black font-nunito tracking-tighter text-foreground">
+              Dasbor Administrator
             </h1>
-            <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/75 leading-relaxed">
-              Pantau performa lookbook inspirasi OOTD, kelola hotspot interaktif produk, dan monitor konversi tautan afiliasi belanja.
+            <p className="text-xs sm:text-sm font-bold text-foreground/75 leading-relaxed">
+              Pantau performa koleksi inspirasi OOTD, kelola hotspot interaktif produk, dan monitor konversi tautan afiliasi belanja.
             </p>
           </div>
 
@@ -48,23 +48,23 @@ export default async function AdminDashboardPage() {
             <Link
               href="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-[#FFF5F8] px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white/80 backdrop-blur-md px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm hover:-translate-y-0.5 hover:shadow-cartoon transition-all"
             >
               Lihat Web Live <ExternalLink className="h-3.5 w-3.5" />
             </Link>
             <Link
               href="/admin/analytics"
-              className="inline-flex items-center gap-2 rounded-full border border-[#F5D0E0] bg-[#FFE0EC] px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm hover:-translate-y-0.5 hover:shadow-cartoon transition-all"
             >
-              <BarChart3 className="h-4 w-4 text-[#4A3B45]" />
+              <BarChart3 className="h-4 w-4 text-primary" />
               Laporan Analitik
             </Link>
             <Link
               href="/admin/outfit/new"
-              className="cartoon-btn inline-flex items-center gap-2 bg-[#CC3D72] text-white px-5 py-2.5 text-xs font-black"
+              className="cartoon-btn inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 text-xs font-black"
             >
               <PlusCircle className="h-4 w-4" />
-              Tambah Look Baru
+              Tambah Gaya Baru
             </Link>
           </div>
         </div>
@@ -82,10 +82,10 @@ export default async function AdminDashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3">
           <div className="flex items-center gap-2">
             <ListChecks className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-bold tracking-tight">
-              Manajemen Outfit & Hotspot Lookbook
+            <h2 className="text-lg font-black font-nunito tracking-tighter text-foreground">
+              Manajemen Outfit & Hotspot Koleksi
             </h2>
-            <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+            <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-black text-primary">
               {totalOutfits} item
             </span>
           </div>

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import LayoutWrapper from "@/components/LayoutWrapper";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -12,7 +13,7 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Curated OOTD - Temukan Inspirasi Outfit & Belanja Produk",
-  description: "Kurasi lookbook outfit harian dengan hotspot interaktif untuk belanja produk fashion",
+  description: "Kurasi koleksi outfit harian dengan hotspot interaktif untuk belanja produk fashion",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -50,11 +51,16 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Suspense fallback={<div className="h-[72px] w-full border-b border-[#F5D0E0] bg-[#FFF5F8]" />}>
-            <Navbar />
-          </Suspense>
-          <div className="flex-1">{children}</div>
-          <Footer />
+          <LayoutWrapper
+            navbar={
+              <Suspense fallback={<div className="h-[72px] w-full border-b border-border bg-white/60 backdrop-blur-xl" />}>
+                <Navbar />
+              </Suspense>
+            }
+            footer={<Footer />}
+          >
+            {children}
+          </LayoutWrapper>
         </ThemeProvider>
       </body>
     </html>

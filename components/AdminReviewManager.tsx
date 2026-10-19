@@ -34,21 +34,21 @@ type FilterKey = "all" | ReviewStatus;
 
 const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "all", label: "Semua" },
-  { key: "pending", label: "Pending" },
-  { key: "approved", label: "Approved" },
-  { key: "rejected", label: "Rejected" },
+  { key: "pending", label: "Menunggu" },
+  { key: "approved", label: "Disetujui" },
+  { key: "rejected", label: "Ditolak" },
 ];
 
 const STATUS_STYLE: Record<ReviewStatus, string> = {
-  pending: "bg-[#FFC2D9] text-[#4A3B45]",
-  approved: "bg-[#FFE0EC] text-[#4A3B45]",
-  rejected: "bg-[#CC3D72] text-white",
+  pending: "bg-secondary text-foreground",
+  approved: "bg-primary/10 text-foreground",
+  rejected: "bg-primary text-white",
 };
 
 function StatusBadge({ status }: { status: ReviewStatus }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border border-[#F5D0E0] px-2 py-0.5 text-[9px] font-black uppercase ${STATUS_STYLE[status]}`}
+      className={`inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[9px] font-black uppercase ${STATUS_STYLE[status]}`}
     >
       {status === "approved" && <Check className="h-2.5 w-2.5" />}
       {status === "pending" && <Clock className="h-2.5 w-2.5" />}
@@ -65,7 +65,7 @@ function StarRow({ value, className = "h-4 w-4" }: { value: number; className?: 
         <Star
           key={n}
           strokeWidth={2.5}
-          className={`${className} ${n <= value ? "fill-[#FFC2D9] text-[#4A3B45]" : "text-[#4A3B45]/25"}`}
+          className={`${className} ${n <= value ? "fill-primary text-primary" : "text-foreground/25"}`}
         />
       ))}
     </div>
@@ -97,12 +97,12 @@ function StarPicker({
           <Star
             strokeWidth={2.5}
             className={`${size} transition-colors ${
-              n <= (hover || value) ? "fill-[#FFC2D9] text-[#4A3B45]" : "text-[#4A3B45]/25"
+              n <= (hover || value) ? "fill-primary text-primary" : "text-foreground/25"
             }`}
           />
         </button>
       ))}
-      <span className="ml-2 text-sm font-black text-[#4A3B45]">{hover || value}/5</span>
+      <span className="ml-2 text-sm font-black text-foreground">{hover || value}/5</span>
     </div>
   );
 }
@@ -113,12 +113,12 @@ function Avatar({ name, url }: { name: string; url: string }) {
       <img
         src={url}
         alt={name}
-        className="h-10 w-10 shrink-0 rounded-full border border-[#F5D0E0] object-cover"
+        className="h-10 w-10 shrink-0 rounded-full border border-border object-cover"
       />
     );
   }
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#F5D0E0] bg-[#FFC2D9] text-sm font-black text-[#4A3B45]">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-secondary text-sm font-black text-foreground">
       {(name || "P").charAt(0).toUpperCase()}
     </div>
   );
@@ -254,7 +254,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id, status }),
         }),
-      "Gagal memperbarui status testimony."
+      "Gagal memperbarui status testimoni."
     );
 
   // ─── CREATE ───
@@ -355,45 +355,45 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
     <div className="space-y-6">
       {/* ─── Statistik status testimony ─── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="cartoon-card bg-white p-4">
-          <p className="text-[10px] font-black uppercase tracking-wider text-[#4A3B45]/60">Pending</p>
-          <p className="mt-1 text-3xl font-black font-nunito text-[#CC3D72]">{counts.pending}</p>
+        <div className="cartoon-card bg-white/60 backdrop-blur-xl p-4">
+          <p className="text-[10px] font-black uppercase tracking-wider text-foreground/60">Menunggu</p>
+          <p className="mt-1 text-3xl font-black font-nunito text-primary">{counts.pending}</p>
         </div>
-        <div className="cartoon-card bg-white p-4">
-          <p className="text-[10px] font-black uppercase tracking-wider text-[#4A3B45]/60">Approved</p>
-          <p className="mt-1 text-3xl font-black font-nunito text-[#F48FB1]">{counts.approved}</p>
+        <div className="cartoon-card bg-white/60 backdrop-blur-xl p-4">
+          <p className="text-[10px] font-black uppercase tracking-wider text-foreground/60">Disetujui</p>
+          <p className="mt-1 text-3xl font-black font-nunito text-primary/70">{counts.approved}</p>
         </div>
-        <div className="cartoon-card bg-white p-4">
-          <p className="text-[10px] font-black uppercase tracking-wider text-[#4A3B45]/60">Rejected</p>
-          <p className="mt-1 text-3xl font-black font-nunito text-[#4A3B45]/70">{counts.rejected}</p>
+        <div className="cartoon-card bg-white/60 backdrop-blur-xl p-4">
+          <p className="text-[10px] font-black uppercase tracking-wider text-foreground/60">Ditolak</p>
+          <p className="mt-1 text-3xl font-black font-nunito text-foreground/70">{counts.rejected}</p>
         </div>
-        <div className="cartoon-card bg-white p-4">
-          <p className="text-[10px] font-black uppercase tracking-wider text-[#4A3B45]/60">Total</p>
-          <p className="mt-1 text-3xl font-black font-nunito text-[#4A3B45]">{counts.total}</p>
+        <div className="cartoon-card bg-white/60 backdrop-blur-xl p-4">
+          <p className="text-[10px] font-black uppercase tracking-wider text-foreground/60">Total</p>
+          <p className="mt-1 text-3xl font-black font-nunito text-foreground">{counts.total}</p>
         </div>
       </div>
 
       {error && (
-        <div className="flex items-start gap-2 rounded-xl border border-[#F5D0E0] bg-[#CC3D72]/20 px-3 py-2">
-          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#4A3B45]" />
-          <p className="text-xs font-bold text-[#4A3B45]">{error}</p>
+        <div className="flex items-start gap-2 rounded-2xl border border-border bg-primary/10 px-3 py-2">
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-foreground" />
+          <p className="text-xs font-bold text-foreground">{error}</p>
         </div>
       )}
       {notice && (
-        <p className="rounded-xl border border-[#F5D0E0] bg-[#FFE0EC] px-3 py-2 text-xs font-bold text-[#4A3B45]">
+        <p className="rounded-2xl border border-border bg-secondary px-3 py-2 text-xs font-bold text-foreground">
           {notice}
         </p>
       )}
 
       {/* ─── CREATE: form testimony manual admin ─── */}
-      <div className="cartoon-card bg-[#FFF5F8] p-5 sm:p-6 space-y-4">
+      <div className="cartoon-card bg-white/60 backdrop-blur-xl p-5 sm:p-6 space-y-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#F5D0E0] bg-[#F48FB1] shadow-sm text-[#4A3B45]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-2xl border border-border bg-primary/20 shadow-cartoon-sm text-foreground">
             <MessageSquareQuote className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-base font-black font-nunito text-[#4A3B45]">Tambah Testimony Manual</h3>
-            <p className="text-[11px] font-semibold text-[#4A3B45]/70">
+            <h3 className="text-base font-black font-nunito text-foreground">Tambah Testimoni Manual</h3>
+            <p className="text-[11px] font-semibold text-foreground/70">
               Testimoni yang dibuat admin otomatis ditandai lencana Admin.
             </p>
           </div>
@@ -404,7 +404,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
             <div>
               <label
                 htmlFor="admin-review-name"
-                className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70"
+                className="text-[11px] font-black uppercase tracking-wider text-foreground/70"
               >
                 Nama Pengirim (opsional)
               </label>
@@ -415,13 +415,13 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                 onChange={(e) => setNewName(e.target.value)}
                 maxLength={60}
                 placeholder="Kosongkan untuk memakai nama tim"
-                className="mt-1.5 w-full rounded-2xl border border-[#F5D0E0] bg-white px-4 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 shadow-sm focus:outline-none"
+                className="mt-1.5 w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 shadow-cartoon-sm focus:outline-none"
               />
             </div>
             <div>
               <label
                 htmlFor="admin-review-status"
-                className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70"
+                className="text-[11px] font-black uppercase tracking-wider text-foreground/70"
               >
                 Status Awal
               </label>
@@ -429,17 +429,17 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                 id="admin-review-status"
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value as ReviewStatus)}
-                className="mt-1.5 w-full rounded-2xl border border-[#F5D0E0] bg-white px-4 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus:outline-none"
+                className="mt-1.5 w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus:outline-none"
               >
-                <option value="approved">Approved — langsung tayang</option>
-                <option value="pending">Pending — perlu diperiksa</option>
-                <option value="rejected">Rejected — tidak tayang</option>
+                <option value="approved">Disetujui — langsung tayang</option>
+                <option value="pending">Menunggu — perlu diperiksa</option>
+                <option value="rejected">Ditolak — tidak tayang</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70">
+            <label className="text-[11px] font-black uppercase tracking-wider text-foreground/70">
               Penilaian
             </label>
             <div className="mt-1.5">
@@ -452,17 +452,17 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
             onChange={(e) => setNewComment(e.target.value)}
             maxLength={600}
             rows={3}
-            placeholder="Tulis isi testimony..."
-            className="w-full resize-none rounded-2xl border border-[#F5D0E0] bg-white px-4 py-3 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 shadow-sm focus:outline-none"
+            placeholder="Tulis isi testimoni..."
+            className="w-full resize-none rounded-2xl border border-border bg-white px-4 py-3 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 shadow-cartoon-sm focus:outline-none"
           />
 
           <button
             type="submit"
             disabled={isCreating}
-            className="cartoon-btn inline-flex items-center gap-2 bg-[#CC3D72] px-5 py-2.5 text-xs text-white disabled:opacity-60"
+            className="cartoon-btn inline-flex items-center gap-2 bg-primary px-5 py-2.5 text-xs text-white disabled:opacity-60"
           >
             {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            {isCreating ? "Menyimpan..." : "Simpan Testimony"}
+            {isCreating ? "Menyimpan..." : "Simpan Testimoni"}
           </button>
         </form>
       </div>
@@ -470,13 +470,13 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
       {/* ─── Pencarian + filter status ─── */}
       <div className="space-y-3">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#4A3B45]/50" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/50" />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nama pengirim atau isi testimony..."
-            className="w-full rounded-2xl border border-[#F5D0E0] bg-white pl-10 pr-4 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 shadow-sm focus:outline-none"
+            placeholder="Cari nama pengirim atau isi testimoni..."
+            className="w-full rounded-2xl border border-border bg-white pl-10 pr-4 py-2.5 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 shadow-cartoon-sm focus:outline-none"
           />
         </div>
 
@@ -489,21 +489,21 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                 key={item.key}
                 type="button"
                 onClick={() => setFilter(item.key)}
-                className={`inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] px-4 py-2 text-xs font-black shadow-sm transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-black shadow-cartoon-sm transition-all ${
                   filter === item.key
-                    ? "bg-[#FFC2D9] text-[#4A3B45]"
-                    : "bg-white text-[#4A3B45]/70 hover:bg-[#FFF5F8]"
+                    ? "bg-secondary text-foreground"
+                    : "bg-white text-foreground/70 hover:bg-primary/5"
                 }`}
               >
                 {item.label}
-                <span className="ml-1 rounded-full border border-[#F5D0E0] bg-white px-1.5 text-[9px] font-black text-[#4A3B45]">
+                <span className="ml-1 rounded-full border border-border bg-white px-1.5 text-[9px] font-black text-foreground">
                   {count}
                 </span>
               </button>
             );
           })}
           {isRefreshing && (
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#4A3B45]/60">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-foreground/60">
               <Loader2 className="h-3 w-3 animate-spin" /> Memuat ulang...
             </span>
           )}
@@ -512,15 +512,15 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
 
       {/* ─── READ: daftar testimony ─── */}
       {filteredReviews.length === 0 ? (
-        <div className="cartoon-card space-y-2 bg-white p-10 text-center">
-          <Inbox className="mx-auto h-8 w-8 text-[#4A3B45]/40" />
-          <p className="text-sm font-black font-nunito text-[#4A3B45]">Tidak Ada Testimony</p>
-          <p className="text-xs font-semibold text-[#4A3B45]/70">
+        <div className="cartoon-card space-y-2 bg-white/60 backdrop-blur-xl p-10 text-center">
+          <Inbox className="mx-auto h-8 w-8 text-foreground/40" />
+          <p className="text-sm font-black font-nunito text-foreground">Tidak Ada Testimoni</p>
+          <p className="text-xs font-semibold text-foreground/70">
             {search.trim()
-              ? "Tidak ada testimony yang cocok dengan pencarian Anda."
+              ? "Tidak ada testimoni yang cocok dengan pencarian Anda."
               : filter === "pending"
-                ? "Semua testimony sudah ditinjau. Kerja bagus!"
-                : "Belum ada testimony pada kategori ini."}
+                ? "Semua testimoni sudah ditinjau. Kerja bagus!"
+                : "Belum ada testimoni pada kategori ini."}
           </p>
         </div>
       ) : (
@@ -529,24 +529,24 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
             <article
               key={review.id}
               id={`review-${review.id}`}
-              className={`cartoon-card bg-white p-5 space-y-3 ${
-                highlightId === review.id ? "ring-4 ring-[#CC3D72]" : ""
+              className={`cartoon-card bg-white/60 backdrop-blur-xl p-5 space-y-3 ${
+                highlightId === review.id ? "ring-4 ring-primary" : ""
               }`}
             >
               <div className="flex flex-wrap items-center gap-3">
                 <Avatar name={review.display_name} url={review.avatar_url} />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black font-nunito text-[#4A3B45]">
+                  <p className="truncate text-sm font-black font-nunito text-foreground">
                     {review.display_name}
                   </p>
-                  <p className="text-[10px] font-bold text-[#4A3B45]/60">
+                  <p className="text-[10px] font-bold text-foreground/60">
                     Dikirim {formatReviewDateTime(review.created_at)}
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-1.5">
                   {review.is_admin_review && (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[#F5D0E0] bg-[#F48FB1] px-2 py-0.5 text-[9px] font-black uppercase text-[#4A3B45]">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-border bg-primary/20 px-2 py-0.5 text-[9px] font-black uppercase text-foreground">
                       <ShieldCheck className="h-2.5 w-2.5" /> Admin
                     </span>
                   )}
@@ -557,19 +557,19 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
               <StarRow value={review.rating} />
 
               {review.comment && (
-                <p className="whitespace-pre-line text-xs font-semibold leading-relaxed text-[#4A3B45]/80">
+                <p className="whitespace-pre-line text-xs font-semibold leading-relaxed text-foreground/80">
                   {review.comment}
                 </p>
               )}
 
               {review.status !== "pending" && review.reviewed_at && (
-                <p className="text-[10px] font-bold text-[#4A3B45]/50">
+                <p className="text-[10px] font-bold text-foreground/50">
                   {review.status === "approved" ? "Disetujui" : "Ditolak"} oleh{" "}
                   {review.reviewed_by || "admin"} pada {formatReviewDateTime(review.reviewed_at)}
                 </p>
               )}
               {review.status === "pending" && (
-                <p className="text-[10px] font-bold text-[#4A3B45]/50">
+                <p className="text-[10px] font-bold text-foreground/50">
                   Menunggu pemeriksaan admin — belum tampil di halaman publik.
                 </p>
               )}
@@ -580,14 +580,14 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                     type="button"
                     onClick={() => handleModerate(review.id, "approved")}
                     disabled={busyId === review.id}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-[#FFE0EC] px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm transition-all hover:-translate-y-1 hover:shadow-cartoon disabled:opacity-60"
                   >
                     {busyId === review.id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     ) : (
                       <Check className="h-3.5 w-3.5" />
                     )}
-                    Approve
+                    Setujui
                   </button>
                 )}
 
@@ -596,10 +596,10 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                     type="button"
                     onClick={() => handleModerate(review.id, "rejected")}
                     disabled={busyId === review.id}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-[#CC3D72]/15 px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-primary/10 px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm transition-all hover:-translate-y-1 hover:shadow-cartoon disabled:opacity-60"
                   >
                     <CircleSlash className="h-3.5 w-3.5" />
-                    Reject
+                    Tolak
                   </button>
                 )}
 
@@ -607,10 +607,10 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                   type="button"
                   onClick={() => openEdit(review)}
                   disabled={busyId === review.id}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-white px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm transition-all hover:-translate-y-1 hover:shadow-cartoon disabled:opacity-60"
                 >
                   <Pencil className="h-3.5 w-3.5" />
-                  Edit
+                  Ubah
                 </button>
 
                 <button
@@ -621,7 +621,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                     setDeleteTarget(review);
                   }}
                   disabled={busyId === review.id}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-[#CC3D72] px-4 py-2 text-xs font-black text-white shadow-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-primary px-4 py-2 text-xs font-black text-white shadow-cartoon-sm transition-all hover:-translate-y-1 hover:shadow-cartoon disabled:opacity-60"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Hapus
@@ -634,15 +634,15 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
 
       {/* ─── UPDATE: modal edit testimony ─── */}
       {editingReview && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#4A3B45]/50 px-4 py-6">
-          <div className="w-full max-w-lg rounded-2xl border border-[#F5D0E0] bg-white p-5 shadow-lg max-h-full overflow-y-auto">
-            <div className="flex items-center justify-between gap-3 border-b border-[#F5D0E0] pb-3">
-              <h3 className="text-base font-black font-nunito text-[#4A3B45]">Edit Testimony</h3>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-md px-4 py-6">
+          <div className="w-full max-w-lg rounded-[2rem] border border-white/40 bg-white/80 backdrop-blur-xl p-5 shadow-cartoon-lg max-h-full overflow-y-auto">
+            <div className="flex items-center justify-between gap-3 border-b border-border pb-3">
+              <h3 className="text-base font-black font-nunito text-foreground">Ubah Testimoni</h3>
               <button
                 type="button"
                 onClick={() => setEditingReview(null)}
                 aria-label="Tutup"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#F5D0E0] bg-white text-[#4A3B45]"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white text-foreground"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -652,7 +652,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
               <div>
                 <label
                   htmlFor="edit-review-name"
-                  className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70"
+                  className="text-[11px] font-black uppercase tracking-wider text-foreground/70"
                 >
                   Nama Pengirim
                 </label>
@@ -662,12 +662,12 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   maxLength={60}
-                  className="mt-1.5 w-full rounded-2xl border border-[#F5D0E0] bg-white px-4 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus:outline-none"
+                  className="mt-1.5 w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70">
+                <label className="text-[11px] font-black uppercase tracking-wider text-foreground/70">
                   Penilaian
                 </label>
                 <div className="mt-1.5">
@@ -678,9 +678,9 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
               <div>
                 <label
                   htmlFor="edit-review-comment"
-                  className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70"
+                  className="text-[11px] font-black uppercase tracking-wider text-foreground/70"
                 >
-                  Isi Testimony
+                  Isi Testimoni
                 </label>
                 <textarea
                   id="edit-review-comment"
@@ -688,7 +688,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                   onChange={(e) => setEditComment(e.target.value)}
                   maxLength={600}
                   rows={4}
-                  className="mt-1.5 w-full resize-none rounded-2xl border border-[#F5D0E0] bg-white px-4 py-3 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus:outline-none"
+                  className="mt-1.5 w-full resize-none rounded-2xl border border-border bg-white px-4 py-3 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus:outline-none"
                 />
               </div>
 
@@ -696,7 +696,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                 <button
                   type="submit"
                   disabled={isSavingEdit}
-                  className="cartoon-btn inline-flex items-center gap-2 bg-[#F48FB1] px-5 py-2.5 text-xs text-[#4A3B45] disabled:opacity-60"
+                  className="cartoon-btn inline-flex items-center gap-2 bg-primary px-5 py-2.5 text-xs text-white disabled:opacity-60"
                 >
                   {isSavingEdit ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -709,7 +709,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                   type="button"
                   onClick={() => setEditingReview(null)}
                   disabled={isSavingEdit}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-white px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm disabled:opacity-60"
                 >
                   Batal
                 </button>
@@ -721,17 +721,17 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
 
       {/* ─── DELETE: modal konfirmasi ─── */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#4A3B45]/50 px-4 py-6">
-          <div className="w-full max-w-md rounded-2xl border border-[#F5D0E0] bg-white p-5 shadow-lg">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-md px-4 py-6">
+          <div className="w-full max-w-md rounded-[2rem] border border-white/40 bg-white/80 backdrop-blur-xl p-5 shadow-cartoon-lg">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#F5D0E0] bg-[#CC3D72] text-white shadow-sm">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-border bg-primary text-white shadow-cartoon-sm">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base font-black font-nunito text-[#4A3B45]">Hapus Testimony?</h3>
-                <p className="text-xs font-semibold leading-relaxed text-[#4A3B45]/75">
-                  Testimony dari{" "}
-                  <span className="font-black text-[#4A3B45]">{deleteTarget.display_name}</span> akan
+                <h3 className="text-base font-black font-nunito text-foreground">Hapus Testimoni?</h3>
+                <p className="text-xs font-semibold leading-relaxed text-foreground/75">
+                  Testimoni dari{" "}
+                  <span className="font-black text-foreground">{deleteTarget.display_name}</span> akan
                   dihapus permanen dari database. Tindakan ini tidak bisa dibatalkan.
                 </p>
               </div>
@@ -742,7 +742,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="cartoon-btn inline-flex items-center gap-2 bg-[#CC3D72] px-5 py-2.5 text-xs text-white disabled:opacity-60"
+                className="cartoon-btn inline-flex items-center gap-2 bg-primary px-5 py-2.5 text-xs text-white disabled:opacity-60"
               >
                 {isDeleting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -755,7 +755,7 @@ export default function AdminReviewManager({ initialReviews }: AdminReviewManage
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={isDeleting}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-white px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm disabled:opacity-60"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm disabled:opacity-60"
               >
                 Batal
               </button>

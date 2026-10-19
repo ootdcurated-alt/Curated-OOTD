@@ -62,7 +62,7 @@ export default function HotspotEditor({
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt="Preview"
+              alt="Pratinjau"
               className="h-full w-full object-cover select-none pointer-events-none"
             />
           ) : (
@@ -79,7 +79,7 @@ export default function HotspotEditor({
                 e.stopPropagation();
                 setSelectedIdx(idx);
               }}
-              className={`absolute -translate-x-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-lg cursor-pointer ${
+              className={`absolute -translate-x-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-cartoon cursor-pointer ${
                 selectedIdx === idx ? "bg-red-500 scale-125 ring-4 ring-red-300" : "bg-primary"
               }`}
             >
@@ -134,7 +134,7 @@ export default function HotspotEditor({
                       type="text"
                       value={item.name}
                       onChange={(e) => updateItem(idx, "name", e.target.value)}
-                      placeholder="e.g. Oversized Linen Shirt"
+                      placeholder="mis. Kemeja Linen Oversize"
                       className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
                     />
                   </div>
@@ -144,7 +144,7 @@ export default function HotspotEditor({
                       type="text"
                       value={item.brand || ""}
                       onChange={(e) => updateItem(idx, "brand", e.target.value)}
-                      placeholder="e.g. Uniqlo"
+                      placeholder="mis. Uniqlo"
                       className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
                     />
                   </div>
@@ -157,7 +157,7 @@ export default function HotspotEditor({
                       type="number"
                       value={item.price || ""}
                       onChange={(e) => updateItem(idx, "price", Number(e.target.value))}
-                      placeholder="e.g. 299000"
+                      placeholder="mis. 299000"
                       className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
                     />
                   </div>

@@ -19,9 +19,9 @@ export const REVIEW_COLUMNS =
   "id, user_id, rating, comment, display_name, avatar_url, status, is_admin_review, reviewed_at, reviewed_by, created_at, updated_at";
 
 export const REVIEW_STATUS_LABEL: Record<ReviewStatus, string> = {
-  pending: "Pending",
-  approved: "Approved",
-  rejected: "Rejected",
+  pending: "Menunggu",
+  approved: "Disetujui",
+  rejected: "Ditolak",
 };
 
 /** Menormalkan nilai status apa pun dari database/request menjadi status valid. */

@@ -72,36 +72,36 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
   const isFromFallback = source && !isFromAI && source !== "preset";
 
   return (
-    <div id="advisor" className="cartoon-card bg-white p-5 sm:p-8 space-y-6">
+    <div id="advisor" className="cartoon-card bg-white/40 p-6 sm:p-10 space-y-8 backdrop-blur-2xl border-white/40">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-[#F0CBDC] pb-5">
-        <div className="space-y-1.5 max-w-xl">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider bg-[#FFC2D9] text-[#4A3B45] px-3 py-0.5 rounded-full border border-[#F5D0E0] shadow-sm">
-            <Sparkles className="h-3 w-3" /> Konsultasi Grok AI
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-border pb-8">
+        <div className="space-y-2 max-w-xl">
+          <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-accent/10 text-accent px-4 py-1 rounded-full border border-accent/20 shadow-sm">
+            <Sparkles className="h-3.5 w-3.5" /> Penasihat Fashion AI
           </span>
-          <h2 className="text-xl sm:text-2xl font-black font-nunito tracking-tight text-[#4A3B45]">
-            {result && source !== "preset" ? "Hasil Konsultasi Fashion" : "Rekomendasi Busana & Styling"}
+          <h2 className="text-2xl sm:text-4xl font-black font-nunito tracking-tighter text-foreground">
+            {result && source !== "preset" ? "Laporan Gaya AI" : "Panduan Warna Kulit & Gaya"}
           </h2>
-          <p className="text-xs sm:text-sm font-semibold text-[#4A3B45]/75 leading-relaxed">
-            Tanyakan apapun seputar fashion — dijawab langsung oleh AI.
+          <p className="text-sm sm:text-base font-bold text-foreground/60 leading-relaxed">
+            Dapatkan rekomendasi outfit yang dipersonalisasi dengan Grok AI.
           </p>
         </div>
 
         {/* Quick Tone Selectors */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[#FFF5F8] rounded-2xl border border-[#F5D0E0] shadow-sm text-xs font-black">
+        <div className="flex flex-wrap items-center gap-2 p-2 bg-white/60 rounded-[1.5rem] border border-border shadow-cartoon-sm text-xs font-black backdrop-blur-md">
           {[
-            { key: "cokelat", label: "Sawo Matang", active: "bg-[#CC3D72] text-white" },
-            { key: "kuning_langsat", label: "Kuning Langsat", active: "bg-[#FFC2D9] text-[#4A3B45]" },
-            { key: "gelap", label: "Deep / Gelap", active: "bg-[#C87DB8] text-white" },
-            { key: "terang", label: "Cerah / Fair", active: "bg-[#F48FB1] text-[#4A3B45]" },
+            { key: "cokelat", label: "Sawo Matang", active: "bg-primary text-white" },
+            { key: "kuning_langsat", label: "Ivory Hangat", active: "bg-accent text-white" },
+            { key: "gelap", label: "Gelap", active: "bg-cartoon-purple text-white" },
+            { key: "terang", label: "Terang", active: "bg-cartoon-mint text-foreground" },
           ].map(({ key, label, active }) => (
             <button
               key={key}
               onClick={() => handleQuickSelect(key)}
-              className={`px-3 py-1.5 rounded-xl transition-all ${
+              className={`px-4 py-2 rounded-2xl transition-all duration-300 ${
                 activeSkinKey === key
-                  ? `${active} shadow-sm -translate-x-0.5 -translate-y-0.5`
-                  : "text-[#4A3B45]/70 hover:text-[#4A3B45] hover:bg-white"
+                  ? `${active} shadow-cartoon-sm scale-105`
+                  : "text-foreground/60 hover:text-foreground hover:bg-white/80"
               }`}
             >
               {label}
@@ -111,30 +111,30 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
       </div>
 
       {/* Input Bar */}
-      <div className="space-y-3">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <div className="space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !loading && handleAsk()}
-            placeholder="Tanya rekomendasi outfit (contoh: outfit untuk berat badan 70kg)"
-            className="w-full sm:flex-1 rounded-2xl border border-[#F5D0E0] bg-[#FFF5F8] px-4 py-3 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none shadow-sm"
+            placeholder="Tanya apa saja... (mis: warna terbaik untuk pesta pantai musim panas)"
+            className="w-full sm:flex-1 rounded-[1.5rem] border border-border bg-white/60 px-6 py-4 text-sm font-bold text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-cartoon-sm transition-all"
           />
           <button
             onClick={() => handleAsk()}
             disabled={loading}
-            className="cartoon-btn w-full sm:w-auto shrink-0 bg-[#CC3D72] text-white px-4 py-3 sm:py-3 text-xs font-black disabled:opacity-50 flex items-center gap-1.5 sm:min-w-[130px] justify-center"
+            className="cartoon-btn w-full sm:w-auto shrink-0 bg-primary text-white px-8 py-4 text-sm font-black disabled:opacity-50 flex items-center gap-2 sm:min-w-[160px] justify-center"
           >
             {loading ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Menganalisis...
               </>
             ) : (
               <>
-                <Bot className="h-3.5 w-3.5" />
-                Tanya Grok AI
+                <Bot className="h-4 w-4" />
+                Tanya AI
               </>
             )}
           </button>
@@ -142,13 +142,13 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
 
         {/* Quick Prompts */}
         {result && (
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-[#4A3B45] font-black">Topik cepat:</span>
+          <div className="flex flex-wrap items-center gap-2.5 text-xs">
+            <span className="text-foreground/60 font-black uppercase tracking-widest text-[10px]">Topik Populer:</span>
             {result.quickPrompts.slice(0, 3).map((prompt, idx) => (
               <button
                 key={idx}
                 onClick={() => { setQuery(prompt); handleAsk(prompt); }}
-                className="rounded-full border border-[#F5D0E0] bg-[#FFF5F8] px-3 py-1 text-[11px] font-bold text-[#4A3B45] shadow-sm hover:bg-[#FFC2D9] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
+                className="rounded-full border border-border bg-white/80 px-4 py-1.5 text-[11px] font-black text-foreground shadow-cartoon-sm hover:bg-secondary hover:scale-105 transition-all"
               >
                 {prompt}
               </button>
@@ -159,107 +159,104 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
 
       {/* Loading skeleton */}
       {loading && (
-        <div className="rounded-2xl border border-[#F5D0E0] bg-[#FFF5F8] p-6 space-y-4 shadow-md animate-pulse">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-[#FFC2D9] border border-[#F5D0E0] flex items-center justify-center">
-              <Bot className="h-5 w-5 text-[#4A3B45] animate-bounce" />
+        <div className="rounded-[2rem] border border-border bg-white/40 p-8 space-y-6 shadow-cartoon animate-pulse backdrop-blur-md">
+          <div className="flex items-center gap-4">
+            <div className="h-14 w-14 rounded-2xl bg-primary/20 border border-primary/20 flex items-center justify-center">
+              <Bot className="h-7 w-7 text-primary animate-bounce" />
             </div>
-            <div className="space-y-1.5">
-              <div className="h-4 w-48 bg-[#4A3B45]/10 rounded-lg" />
-              <div className="h-3 w-64 bg-[#4A3B45]/10 rounded-lg" />
+            <div className="space-y-2">
+              <div className="h-5 w-64 bg-foreground/10 rounded-full" />
+              <div className="h-3 w-80 bg-foreground/10 rounded-full" />
             </div>
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
             {Array.from({ length: 7 }).map((_, i) => (
-              <div key={i} className="rounded-xl border border-[#F0CBDC] bg-[#4A3B45]/5 h-16" />
+              <div key={i} className="rounded-2xl border border-border bg-foreground/5 h-20" />
             ))}
           </div>
-          <div className="space-y-2">
-            <div className="h-3 w-full bg-[#4A3B45]/10 rounded" />
-            <div className="h-3 w-4/5 bg-[#4A3B45]/10 rounded" />
-            <div className="h-3 w-3/5 bg-[#4A3B45]/10 rounded" />
+          <div className="space-y-3">
+            <div className="h-3 w-full bg-foreground/10 rounded-full" />
+            <div className="h-3 w-4/5 bg-foreground/10 rounded-full" />
+            <div className="h-3 w-3/5 bg-foreground/10 rounded-full" />
           </div>
-          <p className="text-center text-xs font-black text-[#4A3B45]/50">
-            Grok AI sedang menganalisis pertanyaan kamu...
-          </p>
         </div>
       )}
 
       {/* Error banner */}
       {error && !loading && (
-        <div className="flex items-center gap-2 rounded-xl border-2 border-[#CC3D72] bg-[#FFE3EC] px-4 py-3 text-xs font-bold text-[#4A3B45]">
-          <AlertCircle className="h-4 w-4 text-[#CC3D72] shrink-0" />
+        <div className="flex items-center gap-3 rounded-[1.5rem] border-2 border-primary/20 bg-primary/5 px-6 py-4 text-sm font-black text-primary">
+          <AlertCircle className="h-5 w-5 shrink-0" />
           {error}
         </div>
       )}
 
       {/* Result Card */}
       {result && !loading && (
-        <div className="space-y-5 rounded-2xl border border-[#F5D0E0] bg-[#FFF5F8] p-5 sm:p-6 shadow-md">
+        <div className="space-y-8 rounded-[2.5rem] border border-white/40 bg-white/60 p-6 sm:p-10 shadow-cartoon backdrop-blur-2xl">
 
           {/* Source badge */}
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="space-y-0.5">
-              <h3 className="text-lg sm:text-xl font-black font-nunito tracking-tight text-[#4A3B45]">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="space-y-2">
+              <h3 className="text-3xl sm:text-4xl font-black font-nunito tracking-tighter text-foreground">
                 {result.skinToneTitle}
               </h3>
-              <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[#4A3B45]/80">
+              <p className="text-sm sm:text-base font-bold leading-relaxed text-foreground/60 max-w-2xl">
                 {result.summary}
               </p>
             </div>
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#F5D0E0] text-[11px] font-black shadow-sm shrink-0 ${
-              isFromAI ? "bg-[#FFE0EC] text-[#4A3B45]" : "bg-[#FFC2D9] text-[#4A3B45]"
+            <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border text-[10px] font-black tracking-widest uppercase shadow-cartoon-sm shrink-0 ${
+              isFromAI ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
             }`}>
               {isFromAI ? (
-                <><Bot className="h-3 w-3" /> Dijawab Grok AI</>
+                <><Bot className="h-3.5 w-3.5" /> Analisis Grok AI</>
               ) : (
-                <><BookOpen className="h-3 w-3" /> Basis Data Lokal</>
+                <><BookOpen className="h-3.5 w-3.5" /> Kurator Lokal</>
               )}
             </span>
           </div>
 
           {/* Undertone */}
           {result.undertoneAnalysis && (
-            <div className="rounded-xl border border-[#F5D0E0] bg-white px-4 py-3 shadow-sm">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#4A3B45]/60">Analisis Undertone</span>
-              <p className="text-xs sm:text-sm font-semibold text-[#4A3B45] mt-0.5">{result.undertoneAnalysis}</p>
+            <div className="rounded-[1.5rem] border border-border bg-white/80 px-6 py-4 shadow-cartoon-sm backdrop-blur-md">
+              <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Analisis Warna Dasar Kulit</span>
+              <p className="text-sm sm:text-base font-bold text-foreground mt-1 leading-relaxed">{result.undertoneAnalysis}</p>
             </div>
           )}
 
           {/* Color Palette */}
-          <div className="space-y-3 rounded-2xl border border-[#F5D0E0] bg-white p-4 shadow-sm">
+          <div className="space-y-4 rounded-[2rem] border border-border bg-white/80 p-6 shadow-cartoon-sm backdrop-blur-md">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-[#4A3B45]">
-                Palet Warna Rekomendasi
+              <span className="text-xs font-black uppercase tracking-widest text-foreground">
+                Palet Rekomendasi
               </span>
               {onApplyPalette && (
                 <button
                   onClick={() => onApplyPalette(result.tips.colorPalette.map(c => c.hex))}
-                  className="text-[11px] font-black text-[#CC3D72] hover:underline"
+                  className="text-[11px] font-black text-primary hover:underline underline-offset-4"
                 >
-                  Terapkan ke Studio →
+                  Terapkan ke Studio &rarr;
                 </button>
               )}
             </div>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2 pt-1">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3 pt-2">
               {result.tips.colorPalette.map((color, idx) => (
-                <div key={idx} className="flex flex-col items-center p-2 rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] text-center shadow-sm">
-                  <div className="h-9 w-full rounded-lg border border-[#F5D0E0]" style={{ backgroundColor: color.hex }} />
-                  <span className="mt-1.5 text-[10px] font-black line-clamp-2 text-[#4A3B45] leading-tight">{color.name}</span>
-                  <span className="text-[9px] font-mono font-bold text-[#4A3B45]/50 uppercase">{color.hex}</span>
+                <div key={idx} className="flex flex-col items-center p-3 rounded-2xl border border-border bg-white text-center shadow-cartoon-sm hover:scale-105 transition-all">
+                  <div className="h-12 w-full rounded-xl border border-border/50 shadow-inner" style={{ backgroundColor: color.hex }} />
+                  <span className="mt-2 text-[10px] font-black line-clamp-1 text-foreground leading-tight">{color.name}</span>
+                  <span className="text-[9px] font-mono font-bold text-foreground/30 uppercase">{color.hex}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Advice + Avoid grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-[#F5D0E0] bg-white p-4 space-y-2 shadow-sm">
-              <h4 className="text-xs font-black uppercase tracking-wider text-[#4A3B45]">Panduan Padu Padan</h4>
-              <p className="text-xs sm:text-sm font-semibold text-[#4A3B45]/80 leading-relaxed">{result.tips.advice}</p>
-              <div className="pt-2 flex flex-wrap gap-1.5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="rounded-[2rem] border border-border bg-white/80 p-6 space-y-4 shadow-cartoon-sm">
+              <h4 className="text-xs font-black uppercase tracking-widest text-foreground">Panduan Gaya</h4>
+              <p className="text-sm font-bold text-foreground/70 leading-relaxed">{result.tips.advice}</p>
+              <div className="pt-2 flex flex-wrap gap-2">
                 {result.tips.recommendedStyles.map((style, i) => (
-                  <span key={i} className="rounded-full border border-[#F5D0E0] bg-[#FFC2D9] px-2.5 py-0.5 text-[11px] font-black text-[#4A3B45] shadow-sm">
+                  <span key={i} className="rounded-full border border-border bg-accent/10 px-4 py-1 text-[11px] font-black text-accent shadow-cartoon-sm">
                     #{style}
                   </span>
                 ))}
@@ -267,12 +264,12 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
             </div>
 
             {result.tips.avoidColors && result.tips.avoidColors.length > 0 && (
-              <div className="rounded-2xl border border-[#F5D0E0] bg-white p-4 space-y-2 shadow-sm">
-                <h4 className="text-xs font-black uppercase tracking-wider text-[#CC3D72]">Warna yang Perlu Dihindari</h4>
-                <ul className="space-y-1.5">
+              <div className="rounded-[2rem] border border-border bg-white/80 p-6 space-y-4 shadow-cartoon-sm">
+                <h4 className="text-xs font-black uppercase tracking-widest text-primary">Yang Dihindari</h4>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {result.tips.avoidColors.map((avoid, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs sm:text-sm font-semibold text-[#4A3B45]/80">
-                      <span className="text-[#CC3D72] font-black mt-0.5">✕</span>
+                    <li key={i} className="flex items-center gap-3 text-sm font-bold text-foreground/70 bg-primary/5 p-2 rounded-xl border border-primary/10">
+                      <span className="text-primary font-black">✕</span>
                       <span>{avoid}</span>
                     </li>
                   ))}
@@ -283,32 +280,32 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
 
           {/* Example Pieces — only if AI returned them */}
           {result.tips.examplePieces && result.tips.examplePieces.length > 0 && (
-            <div className="space-y-3 pt-1">
+            <div className="space-y-4 pt-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-[#4A3B45]">
-                  Item Rekomendasi AI
+                <span className="text-xs font-black uppercase tracking-widest text-foreground">
+                  Pilihan Kurasi AI
                 </span>
-                <Link href="/creator" className="text-xs text-[#CC3D72] font-black hover:underline">
-                  Susun di Outfit Studio →
+                <Link href="/creator" className="text-xs text-primary font-black hover:underline underline-offset-4">
+                  Ke Studio &rarr;
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {result.tips.examplePieces.map((piece, idx) => (
-                  <div key={idx} className="rounded-2xl border border-[#F5D0E0] bg-white p-3.5 flex flex-col justify-between space-y-3 shadow-sm">
-                    <div className="space-y-1">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#FFE0EC] border border-[#F5D0E0] text-[#4A3B45]">
+                  <div key={idx} className="cartoon-card bg-white p-6 flex flex-col justify-between space-y-4 shadow-cartoon-sm border-border hover:shadow-cartoon transition-all">
+                    <div className="space-y-2">
+                      <span className="inline-block px-3 py-1 rounded-full text-[9px] font-black bg-secondary border border-border text-primary uppercase tracking-widest">
                         {piece.category}
                       </span>
-                      <h5 className="text-xs font-black text-[#4A3B45] line-clamp-2">{piece.name}</h5>
-                      <p className="text-[11px] font-semibold text-[#4A3B45]/70 leading-snug">{piece.reason}</p>
+                      <h5 className="text-sm font-black text-foreground line-clamp-2 leading-tight">{piece.name}</h5>
+                      <p className="text-[11px] font-bold text-foreground/50 leading-relaxed">{piece.reason}</p>
                     </div>
                     <a
                       href={`https://shopee.co.id/search?keyword=${encodeURIComponent(piece.name)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="cartoon-btn text-center bg-[#CC3D72] text-white py-2 text-xs font-black w-full"
+                      className="cartoon-btn text-center bg-primary text-white py-3 text-xs font-black w-full shadow-cartoon-sm"
                     >
-                      Cek di Shopee →
+                      Belanja Sekarang &rarr;
                     </a>
                   </div>
                 ))}
@@ -318,8 +315,8 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
 
           {/* AI disclaimer */}
           {isFromAI && (
-            <p className="text-[10px] font-bold text-[#4A3B45]/40 text-center pt-1">
-              Jawaban dihasilkan oleh Grok AI · Dapat bervariasi tiap konsultasi
+            <p className="text-[10px] font-black text-foreground/30 text-center pt-4 uppercase tracking-widest">
+              Konten dibuat AI · Dapat berbeda tiap konsultasi
             </p>
           )}
         </div>
@@ -327,14 +324,16 @@ export default function SkinToneAdvisor({ onApplyPalette }: SkinToneAdvisorProps
 
       {/* Empty state — belum ada hasil */}
       {!result && !loading && (
-        <div className="rounded-2xl border border-dashed border-[#F5D0E0] bg-[#FFF5F8] p-10 text-center space-y-3">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm">
-            <Bot className="h-7 w-7 text-[#4A3B45]" />
+        <div className="rounded-[2.5rem] border-2 border-dashed border-border bg-white/20 p-16 text-center space-y-4 backdrop-blur-sm">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl border border-border bg-white shadow-cartoon-sm">
+            <Bot className="h-10 w-10 text-primary animate-pulse" />
           </div>
-          <p className="text-sm font-black text-[#4A3B45]">Belum ada hasil konsultasi</p>
-          <p className="text-xs font-bold text-[#4A3B45]/60">
-            Ketik pertanyaan fashion kamu di atas atau pilih warna kulit untuk memulai
-          </p>
+          <div className="space-y-1">
+            <p className="text-xl font-black text-foreground font-nunito tracking-tight">Stylist AI Anda Siap</p>
+            <p className="text-sm font-bold text-foreground/50">
+              Tulis pertanyaan fashion di atas atau pilih warna kulit untuk memulai.
+            </p>
+          </div>
         </div>
       )}
     </div>

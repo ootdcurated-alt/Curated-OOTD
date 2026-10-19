@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Eye, EyeOff, Check, X } from "lucide-react";
+import Link from "next/link";
 
 export function UpdatePasswordForm({
   className,
@@ -63,9 +64,20 @@ export function UpdatePasswordForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="border-border/60 shadow-lg">
+      <Card className="cartoon-card border-white/40 bg-white/60">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Kata Sandi Baru</CardTitle>
+          <Link 
+            href="/" 
+            className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-secondary shadow-cartoon-sm hover:scale-110 hover:rotate-6 transition-all duration-300 group"
+            title="Kembali ke Beranda"
+          >
+            <img
+              src="/logo-icon.png"
+              alt="Logo"
+              className="h-8 w-8 object-contain group-hover:scale-110 transition-transform"
+            />
+          </Link>
+          <CardTitle className="text-2xl font-black tracking-tighter font-nunito">Kata Sandi Baru</CardTitle>
           <CardDescription>
             Silakan buat kata sandi baru yang aman untuk akun Anda.
           </CardDescription>

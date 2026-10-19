@@ -52,19 +52,19 @@ function StatCard({
   accentBg?: string;
 }) {
   return (
-    <div className={`cartoon-card ${accentBg ?? "bg-white"} p-5 sm:p-6 space-y-2`}>
+    <div className={`cartoon-card ${accentBg ?? "bg-white/60 backdrop-blur-xl"} p-5 sm:p-6 space-y-2`}>
       <div className="flex items-center justify-between">
-        <span className="text-xs font-black uppercase tracking-wider text-[#4A3B45]">
+        <span className="text-xs font-black uppercase tracking-wider text-foreground">
           {label}
         </span>
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#F5D0E0] bg-white shadow-sm">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-white shadow-cartoon-sm">
           {icon}
         </div>
       </div>
-      <div className="text-2xl sm:text-3xl font-black font-nunito text-[#4A3B45] tracking-tight">
+      <div className="text-2xl sm:text-3xl font-black font-nunito text-foreground tracking-tighter">
         {value}
       </div>
-      {sub && <p className="text-xs font-bold text-[#4A3B45]/70">{sub}</p>}
+      {sub && <p className="text-xs font-bold text-foreground/70">{sub}</p>}
     </div>
   );
 }
@@ -77,16 +77,16 @@ function BarChart({ data }: { data: { label: string; count: number }[] }) {
         const pct = Math.round((d.count / max) * 100);
         return (
           <div key={i} className="group flex flex-1 flex-col items-center gap-1.5">
-            <span className="text-[10px] font-black text-[#4A3B45] opacity-0 transition-opacity group-hover:opacity-100">
+            <span className="text-[10px] font-black text-foreground opacity-0 transition-opacity group-hover:opacity-100">
               {d.count}
             </span>
-            <div className="relative w-full overflow-hidden rounded-t-xl bg-[#FFF5F8] border border-[#F5D0E0] border-b-0 h-32 flex items-end">
+            <div className="relative w-full overflow-hidden rounded-t-2xl bg-primary/5 border border-border border-b-0 h-32 flex items-end">
               <div
-                className="w-full bg-[#CC3D72] transition-all duration-700"
+                className="w-full bg-primary transition-all duration-700"
                 style={{ height: `${Math.max(pct, pct > 0 ? 8 : 0)}%` }}
               />
             </div>
-            <span className="text-[10px] font-black text-[#4A3B45] leading-tight text-center">
+            <span className="text-[10px] font-black text-foreground leading-tight text-center">
               {d.label}
             </span>
           </div>
@@ -136,51 +136,51 @@ export default function AnalyticsDashboard({ clicks, totalOutfits, topOutfits, t
       {/* Stats Cards */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
-          icon={<MousePointerClick className="h-5 w-5 text-[#CC3D72]" />}
+          icon={<MousePointerClick className="h-5 w-5 text-primary" />}
           label="Total Klik"
           value={totalClicks.toLocaleString("id-ID")}
           sub="Sepanjang waktu"
-          accentBg="bg-[#FFF5F8]"
+          accentBg="bg-white/60 backdrop-blur-xl"
         />
         <StatCard
-          icon={<Activity className="h-5 w-5 text-[#F48FB1]" />}
+          icon={<Activity className="h-5 w-5 text-primary/70" />}
           label="Klik Hari Ini"
           value={todayClicks.toLocaleString("id-ID")}
           sub={todayLabel}
-          accentBg="bg-[#FFE0EC]"
+          accentBg="bg-secondary/50 backdrop-blur-xl"
         />
         <StatCard
-          icon={<Calendar className="h-5 w-5 text-[#C87DB8]" />}
+          icon={<Calendar className="h-5 w-5 text-cartoon-purple" />}
           label="Klik Bulan Ini"
           value={monthClicks.toLocaleString("id-ID")}
           sub={monthLabel}
-          accentBg="bg-[#F6E0F2]"
+          accentBg="bg-primary/5 backdrop-blur-xl"
         />
         <StatCard
-          icon={<TrendingUp className="h-5 w-5 text-[#CC3D72]" />}
-          label="Est. Komisi"
+          icon={<TrendingUp className="h-5 w-5 text-primary" />}
+          label="Estimasi Komisi"
           value={`Rp ${estimatedRevenue.toLocaleString("id-ID")}`}
-          sub="Asumsi 2% × Rp 150rb avg"
-          accentBg="bg-[#FFC2D9]"
+          sub="Asumsi 2% × Rp 150rb rata-rata"
+          accentBg="bg-primary/10 backdrop-blur-xl"
         />
       </div>
 
       {/* 7-Day Chart */}
-      <div className="cartoon-card bg-white p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-[#F0CBDC] pb-4">
+      <div className="cartoon-card bg-white/60 backdrop-blur-xl p-6 space-y-4">
+        <div className="flex items-center justify-between border-b border-border pb-4">
           <div>
-            <h2 className="text-base sm:text-lg font-black font-nunito text-[#4A3B45]">
+            <h2 className="text-base sm:text-lg font-black font-nunito text-foreground">
               Klik 7 Hari Terakhir
             </h2>
-            <p className="text-xs font-bold text-[#4A3B45]/70">Puncak: {maxDaily} klik</p>
+            <p className="text-xs font-bold text-foreground/70">Puncak: {maxDaily} klik</p>
           </div>
-          <span className="rounded-full border border-[#F5D0E0] bg-[#FFF5F8] px-3 py-1 text-xs font-black text-[#4A3B45] shadow-sm">
+          <span className="rounded-full border border-border bg-primary/5 px-3 py-1 text-xs font-black text-foreground shadow-cartoon-sm">
             7 Hari Terakhir
           </span>
         </div>
         {totalClicks === 0 ? (
-          <div className="py-12 text-center text-xs font-bold text-[#4A3B45]/60">
-            Belum ada data klik. Klik produk di lookbook untuk melihat grafik performa.
+          <div className="py-12 text-center text-xs font-bold text-foreground/60">
+            Belum ada data klik. Klik produk di koleksi untuk melihat grafik performa.
           </div>
         ) : (
           <BarChart data={dailyData} />
@@ -190,26 +190,26 @@ export default function AnalyticsDashboard({ clicks, totalOutfits, topOutfits, t
       {/* Tables */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Top Outfits */}
-        <div className="cartoon-card bg-white p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#F0CBDC] pb-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#F5D0E0] bg-[#FFC2D9]">
-              <Shirt className="h-4 w-4 text-[#4A3B45]" />
+        <div className="cartoon-card bg-white/60 backdrop-blur-xl p-6 space-y-4">
+          <div className="flex items-center gap-2 border-b border-border pb-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-secondary">
+              <Shirt className="h-4 w-4 text-foreground" />
             </div>
-            <h2 className="font-black font-nunito text-base text-[#4A3B45]">Top Outfit Terpopuler</h2>
+            <h2 className="font-black font-nunito text-base text-foreground">Outfit Terpopuler</h2>
           </div>
           {topOutfits.length === 0 ? (
-            <p className="py-8 text-center text-xs font-bold text-[#4A3B45]/60">Belum ada data klik outfit.</p>
+            <p className="py-8 text-center text-xs font-bold text-foreground/60">Belum ada data klik outfit.</p>
           ) : (
             <div className="space-y-2.5">
               {topOutfits.map((o, i) => (
-                <div key={o.id} className="flex items-center gap-3 rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-4 py-3 shadow-sm">
-                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-[#F5D0E0] bg-[#CC3D72] text-xs font-black text-white">
+                <div key={o.id} className="flex items-center gap-3 rounded-2xl border border-border bg-primary/5 px-4 py-3 shadow-cartoon-sm">
+                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-border bg-primary text-xs font-black text-white">
                     {i + 1}
                   </span>
-                  <p className="flex-1 truncate text-xs sm:text-sm font-black text-[#4A3B45]">{o.title}</p>
-                  <div className="flex items-center gap-1.5 flex-shrink-0 bg-white px-2.5 py-1 rounded-lg border border-[#F5D0E0]">
-                    <MousePointerClick className="h-3.5 w-3.5 text-[#CC3D72]" />
-                    <span className="text-xs font-black text-[#4A3B45]">{o.count}</span>
+                  <p className="flex-1 truncate text-xs sm:text-sm font-black text-foreground">{o.title}</p>
+                  <div className="flex items-center gap-1.5 flex-shrink-0 bg-white px-2.5 py-1 rounded-lg border border-border">
+                    <MousePointerClick className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-xs font-black text-foreground">{o.count}</span>
                   </div>
                 </div>
               ))}
@@ -218,29 +218,29 @@ export default function AnalyticsDashboard({ clicks, totalOutfits, topOutfits, t
         </div>
 
         {/* Top Products */}
-        <div className="cartoon-card bg-white p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#F0CBDC] pb-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#F5D0E0] bg-[#F48FB1]">
-              <ShoppingBag className="h-4 w-4 text-[#4A3B45]" />
+        <div className="cartoon-card bg-white/60 backdrop-blur-xl p-6 space-y-4">
+          <div className="flex items-center gap-2 border-b border-border pb-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-primary/20">
+              <ShoppingBag className="h-4 w-4 text-foreground" />
             </div>
-            <h2 className="font-black font-nunito text-base text-[#4A3B45]">Top Produk Terpopuler</h2>
+            <h2 className="font-black font-nunito text-base text-foreground">Produk Terpopuler</h2>
           </div>
           {topItems.length === 0 ? (
-            <p className="py-8 text-center text-xs font-bold text-[#4A3B45]/60">Belum ada data klik produk.</p>
+            <p className="py-8 text-center text-xs font-bold text-foreground/60">Belum ada data klik produk.</p>
           ) : (
             <div className="space-y-2.5">
               {topItems.map((it, i) => (
-                <div key={it.id} className="flex items-center gap-3 rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-4 py-3 shadow-sm">
-                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-[#F5D0E0] bg-[#F48FB1] text-xs font-black text-[#4A3B45]">
+                <div key={it.id} className="flex items-center gap-3 rounded-2xl border border-border bg-primary/5 px-4 py-3 shadow-cartoon-sm">
+                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-border bg-primary/20 text-xs font-black text-foreground">
                     {i + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="truncate text-xs sm:text-sm font-black text-[#4A3B45]">{it.name}</p>
-                    {it.brand && <p className="text-[11px] font-bold text-[#4A3B45]/70">{it.brand}</p>}
+                    <p className="truncate text-xs sm:text-sm font-black text-foreground">{it.name}</p>
+                    {it.brand && <p className="text-[11px] font-bold text-foreground/70">{it.brand}</p>}
                   </div>
-                  <div className="flex items-center gap-1.5 flex-shrink-0 bg-white px-2.5 py-1 rounded-lg border border-[#F5D0E0]">
-                    <MousePointerClick className="h-3.5 w-3.5 text-[#F48FB1]" />
-                    <span className="text-xs font-black text-[#4A3B45]">{it.count}</span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0 bg-white px-2.5 py-1 rounded-lg border border-border">
+                    <MousePointerClick className="h-3.5 w-3.5 text-primary/70" />
+                    <span className="text-xs font-black text-foreground">{it.count}</span>
                   </div>
                 </div>
               ))}
@@ -250,22 +250,22 @@ export default function AnalyticsDashboard({ clicks, totalOutfits, topOutfits, t
       </div>
 
       {/* Outfits summary */}
-      <div className="cartoon-card bg-white p-6">
+      <div className="cartoon-card bg-white/60 backdrop-blur-xl p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#F5D0E0] bg-[#FFE0EC]">
-              <Shirt className="h-5 w-5 text-[#4A3B45]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-secondary">
+              <Shirt className="h-5 w-5 text-foreground" />
             </div>
             <div>
-              <span className="font-black font-nunito text-base text-[#4A3B45] block">Total Outfit Aktif</span>
-              <span className="text-xs font-bold text-[#4A3B45]/70">Outfit yang siap dikurasi dan dilihat pengunjung</span>
+              <span className="font-black font-nunito text-base text-foreground block">Total Outfit Aktif</span>
+              <span className="text-xs font-bold text-foreground/70">Outfit yang siap dikurasi dan dilihat pengunjung</span>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-3xl font-black font-nunito text-[#4A3B45]">{totalOutfits}</span>
+            <span className="text-3xl font-black font-nunito text-foreground">{totalOutfits}</span>
             <Link
               href="/admin/outfit/new"
-              className="cartoon-btn inline-flex items-center gap-1.5 bg-[#CC3D72] px-5 py-2 text-xs font-black text-white"
+              className="cartoon-btn inline-flex items-center gap-1.5 bg-primary px-5 py-2 text-xs font-black text-white"
             >
               + Tambah Outfit
             </Link>

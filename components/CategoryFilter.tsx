@@ -40,7 +40,7 @@ export default function CategoryFilter({
   return (
     <div className="w-full space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+        <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">
           Kategori Gaya
         </span>
       </div>
@@ -52,10 +52,10 @@ export default function CategoryFilter({
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.slug)}
-              className={`shrink-0 rounded-full border border-[#F5D0E0] px-4 py-2 text-xs font-black tracking-tight transition-all duration-150 ${
+              className={`shrink-0 rounded-full border px-4 py-2 text-xs font-black tracking-tight transition-all ${
                 isActive
-                  ? "bg-[#CC3D72] text-white shadow-sm translate-x-[-1px] translate-y-[-1px]"
-                  : "bg-[#FFF5F8] text-[#4A3B45] hover:bg-[#FFC2D9] hover:shadow-md"
+                  ? "border-primary bg-primary text-white shadow-cartoon"
+                  : "border-border bg-white/60 text-foreground backdrop-blur-md hover:bg-secondary hover:shadow-cartoon-sm"
               }`}
             >
               {cat.name}

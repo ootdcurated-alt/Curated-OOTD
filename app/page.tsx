@@ -7,6 +7,7 @@ import { isUserAdmin } from "@/lib/admin";
 import GuestGuardLink from "@/components/GuestGuardLink";
 import Testimonials from "@/components/Testimonials";
 import { Review, REVIEW_COLUMNS } from "@/lib/reviews";
+import { Brush } from "lucide-react";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -38,136 +39,128 @@ export default async function Home() {
   return (
     <main className="container max-w-7xl py-5 sm:py-10 px-3 sm:px-6 space-y-6 sm:space-y-12">
       {/* ====  Hero Section  ==== */}
-      <div className="relative overflow-hidden cartoon-card bg-[#FFF5F8] p-5 sm:p-14 text-center">
-        {/* Decorative shapes — hidden on mobile to reduce clutter */}
-        <div className="absolute -top-10 -left-10 h-32 w-32 rounded-full bg-[#FFC2D9] border border-[#F5D0E0] opacity-40 animate-float pointer-events-none hidden sm:block" />
-        <div className="absolute -bottom-10 -right-10 h-36 w-36 rounded-3xl bg-[#FFE0EC] border border-[#F5D0E0] opacity-40 rotate-12 animate-float-delay pointer-events-none hidden sm:block" />
-        <div className="absolute top-8 right-12 h-14 w-14 rounded-2xl bg-[#F6E0F2] border border-[#F5D0E0] opacity-50 -rotate-12 animate-wiggle pointer-events-none hidden sm:block" />
+      <div className="relative overflow-hidden cartoon-card bg-white/40 p-6 sm:p-20 text-center border-white/50 backdrop-blur-2xl">
+        {/* Decorative elements — Gen Z Neon Shapes */}
+        <div className="absolute -top-16 -left-16 h-48 w-48 rounded-full bg-primary/20 blur-3xl animate-float pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-accent/20 blur-3xl animate-float-delay pointer-events-none" />
+        <div className="absolute top-1/4 right-10 h-20 w-20 rounded-[2rem] bg-cartoon-yellow/20 blur-2xl -rotate-12 animate-wiggle pointer-events-none hidden sm:block" />
 
-        <div className="relative z-10 space-y-4 sm:space-y-6 max-w-3xl mx-auto flex flex-col items-center">
+        <div className="relative z-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto flex flex-col items-center">
           {/* Logo badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#F5D0E0] bg-[#FFC2D9] px-3 py-1 shadow-sm font-black text-[10px] sm:text-xs text-[#4A3B45] tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-4 py-1.5 shadow-cartoon-sm font-black text-[10px] sm:text-xs text-foreground tracking-widest uppercase backdrop-blur-md">
             <img
               src="/logo-icon.png"
-              alt="Curated OOTD Icon"
-              className="h-4 w-4 sm:h-5 sm:w-5 object-contain"
+              alt="Ikon Curated OOTD"
+              className="h-5 w-5 object-contain"
             />
-            <span>Pakaian Pilihan • Gaya Lebih Baik • Setiap Hari</span>
+            <span>Kurasi Premium • Vibe Gen Z • Inspirasi Harian</span>
           </div>
 
-          <div className="space-y-2 sm:space-y-3">
-            <h1 className="text-2xl font-black tracking-tight sm:text-5xl lg:text-6xl text-[#4A3B45] font-nunito leading-tight">
-              Eksplorasi Gaya Outfit{" "}
-              <span className="text-[#CC3D72] underline decoration-[#FFC2D9] decoration-wavy underline-offset-4 sm:underline-offset-8">
-                Terkurasi
+          <div className="space-y-4 sm:space-y-5">
+            <h1 className="text-4xl font-black tracking-tighter sm:text-7xl lg:text-8xl text-foreground font-nunito leading-[0.9] text-balance">
+              Tingkatkan{" "}
+              <span className="text-primary italic relative">
+                Gaya Kamu
+                <span className="absolute -bottom-2 left-0 w-full h-3 bg-accent/30 -z-10 rounded-full blur-sm" />
               </span>
             </h1>
-            <p className="text-xs sm:text-base font-bold text-[#4A3B45]/80 max-w-xl mx-auto leading-relaxed">
-              Temukan kurasi busana harian, padu padankan gaya di Studio Kreasi, dan belanja produk lewat link afiliasi pilihan.
+            <p className="text-sm sm:text-lg font-bold text-foreground/70 max-w-2xl mx-auto leading-relaxed text-balance">
+              Jelajahi inspirasi outfit harian, padu padan gaya di Studio, dan belanja gaya terbaik secara langsung.
             </p>
           </div>
 
-          {/* Buttons — 2 column grid on mobile, row on desktop */}
-          <div className="w-full pt-1 grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 sm:gap-4">
+          {/* Buttons — Modern Pill Shapes */}
+          <div className="w-full pt-4 grid grid-cols-1 sm:flex sm:flex-wrap sm:justify-center gap-3 sm:gap-5">
             <GuestGuardLink
               href="/creator"
               isLoggedIn={isLoggedIn}
-              className="cartoon-btn bg-[#CC3D72] text-white px-3 py-2.5 text-xs sm:px-6 sm:py-3 sm:text-sm text-center"
+              className="cartoon-btn bg-primary text-white px-8 py-4 text-sm sm:text-base text-center shadow-cartoon-lg hover:scale-105 active:scale-95 transition-all"
             >
-              Studio Kreasi
+              Mulai Berkarya
             </GuestGuardLink>
             <GuestGuardLink
               href="/creator#advisor"
               isLoggedIn={isLoggedIn}
-              className="cartoon-btn bg-[#F48FB1] text-[#4A3B45] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center"
+              className="cartoon-btn bg-white text-foreground border border-border px-8 py-4 text-sm sm:text-base text-center shadow-cartoon-sm hover:scale-105 active:scale-95 transition-all"
             >
-              Warna Kulit
-            </GuestGuardLink>
-            <GuestGuardLink
-              href="/wishlist"
-              isLoggedIn={isLoggedIn}
-              className="cartoon-btn bg-[#FFC2D9] text-[#4A3B45] px-3 py-2.5 text-xs sm:px-5 sm:py-3 sm:text-sm text-center col-span-2 sm:col-span-1"
-            >
-              Wishlist Saya
+              Panduan Warna Kulit
             </GuestGuardLink>
           </div>
         </div>
       </div>
 
       {/* ====  Feature Cards  ==== */}
-      <div className={`grid grid-cols-1 ${isAdmin ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-6`}>
+      <div className={`grid grid-cols-1 ${isAdmin ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-8`}>
         <GuestGuardLink
           href="/creator"
           isLoggedIn={isLoggedIn}
-          className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#FFE3EC]/30 text-left w-full"
+          className="group cartoon-card bg-white/60 p-8 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
         >
-          <div className="space-y-4">
-            <div className="h-12 w-12 rounded-2xl border border-[#F5D0E0] bg-[#CC3D72] shadow-sm flex items-center justify-center text-white group-hover:rotate-6 transition-transform">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+          <div className="space-y-6">
+            <div className="h-14 w-14 rounded-3xl border border-border bg-primary/10 shadow-cartoon-sm flex items-center justify-center text-primary group-hover:rotate-12 group-hover:scale-110 transition-all">
+              <Brush className="h-7 w-7" />
             </div>
             <div>
-              <h3 className="font-black text-lg text-[#4A3B45] group-hover:text-[#CC3D72] transition-colors font-nunito">
-                Studio Kreasi Outfit
+              <h3 className="font-black text-2xl text-foreground font-nunito tracking-tight">
+                Studio Kreasi
               </h3>
-              <p className="mt-1.5 text-xs font-semibold text-[#4A3B45]/80 leading-relaxed">
-                Kustomisasi dan padu-padankan atasan, bawahan, serta aksesoris secara bebas sesuai warna favorit Anda.
+              <p className="mt-2 text-sm font-bold text-foreground/60 leading-relaxed">
+                Padu padan atasan, bawahan, dan aksesori dengan warna favorit Anda di ruang 3D yang modern.
               </p>
             </div>
           </div>
-          <span className="text-xs font-black text-[#CC3D72] mt-5 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            Buka Studio &rarr;
+          <span className="text-sm font-black text-primary mt-8 inline-flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+            Coba Studio &rarr;
           </span>
         </GuestGuardLink>
 
         <GuestGuardLink
           href="/creator#advisor"
           isLoggedIn={isLoggedIn}
-          className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#FFE0EC]/30 text-left w-full"
+          className="group cartoon-card bg-white/60 p-8 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
         >
-          <div className="space-y-4">
-            <div className="h-12 w-12 rounded-2xl border border-[#F5D0E0] bg-[#F48FB1] shadow-sm flex items-center justify-center text-[#4A3B45] group-hover:rotate-6 transition-transform">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="space-y-6">
+            <div className="h-14 w-14 rounded-3xl border border-border bg-accent/10 shadow-cartoon-sm flex items-center justify-center text-accent group-hover:-rotate-12 group-hover:scale-110 transition-all">
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 21a4 4 0 01-4-4 4 4 0 014-4h4a4 4 0 014 4 4 4 0 01-4 4H7zm10-10a4 4 0 100-8 4 4 0 000 8zm-8-3a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
             <div>
-              <h3 className="font-black text-lg text-[#4A3B45] group-hover:text-[#F48FB1] transition-colors font-nunito">
-                Analisis Warna Personal
+              <h3 className="font-black text-2xl text-foreground font-nunito tracking-tight">
+                Analisis Warna Pribadi
               </h3>
-              <p className="mt-1.5 text-xs font-semibold text-[#4A3B45]/80 leading-relaxed">
-                Panduan rekomendasi palet warna busana optimal sesuai tone kulit Anda.
+              <p className="mt-2 text-sm font-bold text-foreground/60 leading-relaxed">
+                Dapatkan rekomendasi warna berbasis AI yang paling cocok dengan warna kulit unik Anda.
               </p>
             </div>
           </div>
-          <span className="text-xs font-black text-[#F48FB1] mt-5 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-            Konsultasi Sekarang &rarr;
+          <span className="text-sm font-black text-accent mt-8 inline-flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+            Analisis Sekarang &rarr;
           </span>
         </GuestGuardLink>
 
         {isAdmin && (
           <Link
             href="/admin/categories"
-            className="group cartoon-card bg-white p-6 flex flex-col justify-between hover:bg-[#F6E0F2]/30"
+            className="group cartoon-card bg-white/60 p-8 flex flex-col justify-between hover:bg-white/80 transition-all border-white/40 shadow-cartoon-sm"
           >
-            <div className="space-y-4">
-              <div className="h-12 w-12 rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm flex items-center justify-center text-[#4A3B45] group-hover:rotate-6 transition-transform">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="space-y-6">
+              <div className="h-14 w-14 rounded-3xl border border-border bg-cartoon-purple/10 shadow-cartoon-sm flex items-center justify-center text-cartoon-purple group-hover:rotate-6 group-hover:scale-110 transition-all">
+                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-black text-lg text-[#4A3B45] group-hover:text-[#C87DB8] transition-colors font-nunito">
-                  Manajemen Kategori
+                <h3 className="font-black text-2xl text-foreground font-nunito tracking-tight">
+                  Dasbor Admin
                 </h3>
-                <p className="mt-1.5 text-xs font-semibold text-[#4A3B45]/80 leading-relaxed">
-                  Pengaturan klasifikasi dan taksonomi gaya busana katalog outfit.
+                <p className="mt-2 text-sm font-bold text-foreground/60 leading-relaxed">
+                  Kelola kategori, tinjau outfit, dan pantau analitik platform.
                 </p>
               </div>
             </div>
-            <span className="text-xs font-black text-[#4A3B45] mt-5 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Kelola Kategori &rarr;
+            <span className="text-sm font-black text-cartoon-purple mt-8 inline-flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+              Kelola Platform &rarr;
             </span>
           </Link>
         )}

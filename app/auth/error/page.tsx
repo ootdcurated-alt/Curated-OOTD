@@ -34,12 +34,12 @@ export default function Page({
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <Card className="border-border/60 shadow-lg text-center">
+        <Card className="border-border bg-white/70 backdrop-blur-xl shadow-cartoon text-center">
           <CardHeader>
             <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">
               <AlertCircle className="h-6 w-6" />
             </div>
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="text-2xl font-black tracking-tighter font-nunito">
               Mohon Maaf, Terjadi Kesalahan
             </CardTitle>
           </CardHeader>

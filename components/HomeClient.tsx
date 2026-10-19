@@ -35,13 +35,13 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Search + Category Controls */}
-      <div className="space-y-4 cartoon-card bg-white p-5 sm:p-6">
+      <div className="space-y-6 cartoon-card bg-white/40 p-6 sm:p-8 backdrop-blur-2xl border-white/40 shadow-cartoon">
         {/* Search bar */}
         <div className="relative">
           <svg
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#4A3B45]/60 pointer-events-none"
+            className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-foreground/40 pointer-events-none"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -57,8 +57,8 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari gaya outfit, tag, atau inspirasi busana..."
-            className="w-full rounded-2xl border border-[#F5D0E0] bg-[#FFF5F8] pl-11 pr-4 py-3 text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/50 focus:outline-none shadow-sm transition-all"
+            placeholder="Cari gaya, tren, atau outfit..."
+            className="w-full rounded-[1.5rem] border border-border bg-white/60 pl-14 pr-6 py-4 text-sm font-black text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-cartoon-sm transition-all backdrop-blur-md"
           />
         </div>
 
@@ -69,28 +69,28 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
       </div>
 
       {/* Results count */}
-      <div className="flex items-center justify-between px-1">
-        <h2 className="text-xl font-bold tracking-tight">
-          {activeCategory === "all" ? "Koleksi Terbaru" : `Kategori: ${activeCategory}`}
+      <div className="flex items-center justify-between px-2">
+        <h2 className="text-2xl font-black tracking-tighter text-foreground font-nunito uppercase">
+          {activeCategory === "all" ? "Koleksi Terbaru" : `${activeCategory}`}
         </h2>
-        <span className="text-xs text-muted-foreground">
-          Menampilkan {filteredOutfits.length} lookbook
+        <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">
+          {filteredOutfits.length} Outfit Ditemukan
         </span>
       </div>
 
       {filteredOutfits.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center">
-          <p className="text-muted-foreground text-sm">
-            Tidak ada outfit yang cocok untuk kategori &ldquo;{activeCategory}&rdquo;.
+        <div className="rounded-[2.5rem] border-2 border-dashed border-border bg-white/20 p-20 text-center backdrop-blur-sm">
+          <p className="text-foreground/50 text-sm font-bold">
+            Tidak ada outfit untuk kategori &ldquo;{activeCategory}&rdquo;.
           </p>
           <button
             onClick={() => {
               setActiveCategory("all");
               setSearchQuery("");
             }}
-            className="mt-3 text-xs font-semibold text-primary underline"
+            className="mt-4 text-xs font-black text-primary uppercase tracking-widest hover:underline underline-offset-4"
           >
-            Lihat semua outfit →
+            Lihat Semua Gaya &rarr;
           </button>
         </div>
       ) : (

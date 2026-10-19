@@ -18,53 +18,53 @@ export default async function Navbar() {
   const isLoggedIn = !!user || hasAdminCookie;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#F5D0E0] bg-[#FFF5F8]/95 backdrop-blur">
-      <div className="container flex h-14 sm:h-18 max-w-7xl items-center justify-between px-3 sm:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/60 backdrop-blur-xl">
+      <div className="container flex h-16 sm:h-20 max-w-7xl items-center justify-between px-4 sm:px-8">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl border border-[#F5D0E0] bg-white p-1 sm:p-1.5 shadow-sm transition-transform duration-200 group-hover:rotate-6">
+          <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-[1.25rem] border border-border bg-white p-1.5 sm:p-2 shadow-cartoon-sm transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
             <img src="/logo-icon.png" alt="Curated OOTD Logo" className="h-full w-full object-contain" />
           </div>
           <div className="flex flex-col">
-            <div className="flex items-center text-lg sm:text-2xl font-black tracking-tight font-nunito leading-none text-[#4A3B45]">
+            <div className="flex items-center text-xl sm:text-2xl font-black tracking-tighter font-nunito leading-none text-foreground">
               <span>Curated</span>
-              <span className="text-[#CC3D72] ml-1">OOTD</span>
+              <span className="text-primary ml-1">OOTD</span>
             </div>
-            <span className="text-[9px] sm:text-[10px] tracking-wider text-[#4A3B45]/70 hidden sm:block font-extrabold mt-1">
+            <span className="text-[10px] tracking-widest text-foreground/60 hidden sm:block font-black uppercase mt-1">
               Pakaian Pilihan • Gaya Lebih Baik
             </span>
           </div>
         </Link>
 
-        <nav className="flex items-center gap-1.5 sm:gap-3">
+        <nav className="flex items-center gap-2 sm:gap-4">
           <GuestGuardLink
             href="/creator"
             isLoggedIn={isLoggedIn}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-[#F5D0E0] bg-white text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-white text-xs font-black text-foreground shadow-cartoon-sm hover:scale-105 hover:shadow-cartoon transition-all"
           >
-            <Brush className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#F48FB1]" />
-            <span className="hidden sm:inline">Kreasi Outfit</span>
+            <Brush className="h-4 w-4 text-accent" />
+            <span className="hidden md:inline">Kreasi Outfit</span>
           </GuestGuardLink>
 
           <GuestGuardLink
             href="/wishlist"
             isLoggedIn={isLoggedIn}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-[#F5D0E0] bg-white text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-white text-xs font-black text-foreground shadow-cartoon-sm hover:scale-105 hover:shadow-cartoon transition-all"
           >
-            <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#CC3D72]" />
-            <span className="hidden sm:inline">Wishlist</span>
+            <Heart className="h-4 w-4 text-primary" />
+            <span className="hidden md:inline">Favorit</span>
           </GuestGuardLink>
 
           {isAdmin && (
             <Link
               href="/admin"
-              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-[#F5D0E0] bg-white text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-white text-xs font-black text-foreground shadow-cartoon-sm hover:scale-105 hover:shadow-cartoon transition-all"
             >
-              <PlusCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#C87DB8]" />
-              <span className="hidden sm:inline">Admin</span>
+              <PlusCircle className="h-4 w-4 text-cartoon-purple" />
+              <span className="hidden md:inline">Admin</span>
             </Link>
           )}
 
-          <div className="h-5 w-[2px] bg-[#4A3B45]/30 mx-0.5 sm:mx-1 hidden sm:block" />
+          <div className="h-6 w-[1.5px] bg-foreground/10 mx-1 hidden sm:block" />
           <AuthButton />
         </nav>
       </div>

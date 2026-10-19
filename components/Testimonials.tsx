@@ -27,7 +27,7 @@ function StarRow({ value, className = "h-4 w-4" }: { value: number; className?: 
         <Star
           key={n}
           strokeWidth={2.5}
-          className={`${className} ${n <= value ? "fill-[#FFC2D9] text-[#4A3B45]" : "text-[#4A3B45]/25"}`}
+          className={`${className} ${n <= value ? "fill-secondary text-foreground" : "text-foreground/25"}`}
         />
       ))}
     </div>
@@ -35,15 +35,15 @@ function StarRow({ value, className = "h-4 w-4" }: { value: number; className?: 
 }
 
 const STATUS_BADGE_STYLE: Record<ReviewStatus, string> = {
-  pending: "bg-[#FFC2D9]",
-  approved: "bg-[#FFE0EC]",
-  rejected: "bg-[#CC3D72] text-white",
+  pending: "bg-secondary",
+  approved: "bg-secondary",
+  rejected: "bg-primary text-white",
 };
 
 function StatusBadge({ status }: { status: ReviewStatus }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border border-[#F5D0E0] px-2 py-0.5 text-[9px] font-black uppercase text-[#4A3B45] ${STATUS_BADGE_STYLE[status]}`}
+      className={`inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[9px] font-black uppercase text-foreground ${STATUS_BADGE_STYLE[status]}`}
     >
       <Clock className="h-2.5 w-2.5" /> {REVIEW_STATUS_LABEL[status]}
     </span>
@@ -178,27 +178,27 @@ export default function Testimonials({
     <section id="testimoni" className="space-y-5 sm:space-y-6">
       {/* ─── Ringkasan penilaian ─── */}
       <div className="cartoon-card bg-white p-5 sm:p-7 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-5 sm:gap-8 items-center">
-        <div className="text-center sm:border-r sm:border-[#F5D0E0] sm:pr-8">
-          <div className="text-4xl sm:text-5xl font-black font-nunito leading-none text-[#4A3B45]">
+        <div className="text-center sm:border-r sm:border-border sm:pr-8">
+          <div className="text-4xl sm:text-5xl font-black font-nunito leading-none text-foreground">
             {averageRating.toFixed(1)}
           </div>
           <div className="mt-2 flex justify-center">
             <StarRow value={Math.round(averageRating)} className="h-5 w-5" />
           </div>
-          <p className="mt-1.5 text-xs font-bold text-[#4A3B45]/70">
+          <p className="mt-1.5 text-xs font-bold text-foreground/70">
             {totalReviews} ulasan
           </p>
         </div>
 
         <div className="space-y-3">
           <div>
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider bg-[#FFC2D9] text-[#4A3B45] px-3 py-0.5 rounded-full border border-[#F5D0E0] shadow-sm">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider bg-secondary text-foreground px-3 py-0.5 rounded-full border border-border shadow-cartoon-sm">
               Testimoni Pengguna
             </span>
-            <h2 className="mt-2 text-xl sm:text-2xl font-black font-nunito tracking-tight text-[#4A3B45]">
+            <h2 className="mt-2 text-xl sm:text-2xl font-black font-nunito tracking-tight text-foreground">
               Kata Mereka Tentang Curated OOTD
             </h2>
-            <p className="mt-1 text-xs font-semibold text-[#4A3B45]/70 leading-relaxed">
+            <p className="mt-1 text-xs font-semibold text-foreground/70 leading-relaxed">
               Ulasan asli dari pengguna yang sudah terdaftar dan masuk ke akun mereka.
             </p>
           </div>
@@ -206,16 +206,16 @@ export default function Testimonials({
           <div className="space-y-1.5">
             {distribution.map(({ star, count }) => (
               <div key={star} className="flex items-center gap-2">
-                <span className="w-7 shrink-0 text-[11px] font-black text-[#4A3B45]">
+                <span className="w-7 shrink-0 text-[11px] font-black text-foreground">
                   {star} &starf;
                 </span>
-                <div className="h-2.5 flex-1 overflow-hidden rounded-full border border-[#F5D0E0] bg-[#FFF5F8]">
+                <div className="h-2.5 flex-1 overflow-hidden rounded-full border border-border bg-primary/5">
                   <div
-                    className="h-full bg-[#FFC2D9]"
+                    className="h-full bg-secondary"
                     style={{ width: `${totalReviews > 0 ? (count / totalReviews) * 100 : 0}%` }}
                   />
                 </div>
-                <span className="w-6 shrink-0 text-right text-[11px] font-bold text-[#4A3B45]/70">
+                <span className="w-6 shrink-0 text-right text-[11px] font-bold text-foreground/70">
                   {count}
                 </span>
               </div>
@@ -226,12 +226,12 @@ export default function Testimonials({
 
       {/* ─── Form ulasan / ajakan masuk ─── */}
       {isLoggedIn ? (
-        <div className="cartoon-card bg-[#FFF5F8] p-5 sm:p-6 space-y-4">
+        <div className="cartoon-card bg-primary/5 p-5 sm:p-6 space-y-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#F5D0E0] bg-[#CC3D72] shadow-sm text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-primary shadow-cartoon-sm text-white">
               <MessageSquareQuote className="h-4 w-4" />
             </div>
-            <h3 className="text-base font-black font-nunito text-[#4A3B45]">
+            <h3 className="text-base font-black font-nunito text-foreground">
               {myReview
                 ? isAdmin
                   ? "Perbarui Testimoni Admin"
@@ -243,28 +243,28 @@ export default function Testimonials({
           </div>
 
           {isAdmin ? (
-            <p className="text-xs font-semibold text-[#4A3B45]/70">
+            <p className="text-xs font-semibold text-foreground/70">
               Testimoni yang Anda tulis sebagai admin langsung tayang tanpa perlu persetujuan.
             </p>
           ) : myReview && myReview.status === "pending" ? (
-            <p className="flex items-start gap-2 rounded-xl border border-[#F5D0E0] bg-[#FFC2D9] px-3 py-2 text-[11px] font-bold text-[#4A3B45]">
+            <p className="flex items-start gap-2 rounded-xl border border-border bg-secondary px-3 py-2 text-[11px] font-bold text-foreground">
               <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               Ulasan Anda sedang menunggu persetujuan admin sebelum tampil untuk pengunjung lain.
             </p>
           ) : myReview && myReview.status === "rejected" ? (
-            <p className="flex items-start gap-2 rounded-xl border border-[#F5D0E0] bg-[#CC3D72]/20 px-3 py-2 text-[11px] font-bold text-[#4A3B45]">
+            <p className="flex items-start gap-2 rounded-xl border border-border bg-primary/20 px-3 py-2 text-[11px] font-bold text-foreground">
               <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               Ulasan Anda belum disetujui admin sehingga tidak tampil untuk pengunjung. Anda boleh memperbaiki dan mengirim ulang.
             </p>
           ) : (
-            <p className="text-xs font-semibold text-[#4A3B45]/70">
+            <p className="text-xs font-semibold text-foreground/70">
               Ulasan yang Anda kirim akan tampil setelah disetujui oleh admin.
             </p>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70">
+              <label className="text-[11px] font-black uppercase tracking-wider text-foreground/70">
                 Penilaian Anda
               </label>
               <div className="mt-1.5 flex items-center gap-1.5">
@@ -282,13 +282,13 @@ export default function Testimonials({
                       strokeWidth={2.5}
                       className={`h-7 w-7 sm:h-8 sm:w-8 transition-colors ${
                         n <= (hoverRating || rating)
-                          ? "fill-[#FFC2D9] text-[#4A3B45]"
-                          : "text-[#4A3B45]/25"
+                          ? "fill-secondary text-foreground"
+                          : "text-foreground/25"
                       }`}
                     />
                   </button>
                 ))}
-                <span className="ml-2 text-sm font-black text-[#4A3B45]">
+                <span className="ml-2 text-sm font-black text-foreground">
                   {hoverRating || rating || 0}/5
                 </span>
               </div>
@@ -297,7 +297,7 @@ export default function Testimonials({
             <div>
               <label
                 htmlFor="review-comment"
-                className="text-[11px] font-black uppercase tracking-wider text-[#4A3B45]/70"
+                className="text-[11px] font-black uppercase tracking-wider text-foreground/70"
               >
                 Ulasan
               </label>
@@ -308,20 +308,20 @@ export default function Testimonials({
                 maxLength={600}
                 rows={4}
                 placeholder="Contoh: Rekomendasi outfitnya sangat membantu, padu padannya rapi dan mudah dipraktikkan!"
-                className="mt-1.5 w-full rounded-2xl border border-[#F5D0E0] bg-white px-4 py-3 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none shadow-sm resize-none"
+                className="mt-1.5 w-full rounded-2xl border border-border bg-white px-4 py-3 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 focus:outline-none shadow-cartoon-sm resize-none"
               />
-              <p className="mt-1 text-right text-[10px] font-bold text-[#4A3B45]/50">
+              <p className="mt-1 text-right text-[10px] font-bold text-foreground/50">
                 {comment.length}/600
               </p>
             </div>
 
             {error && (
-              <p className="rounded-xl border border-[#F5D0E0] bg-[#CC3D72]/20 px-3 py-2 text-[11px] font-bold text-[#4A3B45]">
+              <p className="rounded-xl border border-border bg-primary/20 px-3 py-2 text-[11px] font-bold text-foreground">
                 {error}
               </p>
             )}
             {notice && (
-              <p className="rounded-xl border border-[#F5D0E0] bg-[#FFE0EC] px-3 py-2 text-[11px] font-bold text-[#4A3B45]">
+              <p className="rounded-xl border border-border bg-secondary px-3 py-2 text-[11px] font-bold text-foreground">
                 {notice}
               </p>
             )}
@@ -330,7 +330,7 @@ export default function Testimonials({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="cartoon-btn inline-flex items-center gap-2 bg-[#CC3D72] px-5 py-2.5 text-xs text-white disabled:opacity-60"
+                className="cartoon-btn inline-flex items-center gap-2 bg-primary px-5 py-2.5 text-xs text-white disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -345,7 +345,7 @@ export default function Testimonials({
                   type="button"
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-white px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-xs font-black text-foreground shadow-cartoon-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] disabled:opacity-60"
                 >
                   {isDeleting ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -359,25 +359,25 @@ export default function Testimonials({
           </form>
         </div>
       ) : (
-        <div className="cartoon-card bg-[#FFE0EC] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="cartoon-card bg-secondary p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h3 className="text-base font-black font-nunito text-[#4A3B45]">
+            <h3 className="text-base font-black font-nunito text-foreground">
               Sudah pernah mencoba Curated OOTD?
             </h3>
-            <p className="max-w-md text-xs font-semibold text-[#4A3B45]/75 leading-relaxed">
+            <p className="max-w-md text-xs font-semibold text-foreground/75 leading-relaxed">
               Masuk atau daftar akun terlebih dahulu untuk menulis ulasan dan memberi penilaian bintang 1-5.
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <Link
               href="/auth/login"
-              className="cartoon-btn bg-white px-5 py-2.5 text-xs text-[#4A3B45]"
+              className="cartoon-btn bg-white px-5 py-2.5 text-xs text-foreground"
             >
               Masuk
             </Link>
             <Link
               href="/auth/sign-up"
-              className="cartoon-btn bg-[#CC3D72] px-5 py-2.5 text-xs text-white"
+              className="cartoon-btn bg-primary px-5 py-2.5 text-xs text-white"
             >
               Daftar
             </Link>
@@ -388,9 +388,9 @@ export default function Testimonials({
       {/* ─── Daftar ulasan ─── */}
       {reviews.length === 0 ? (
         <div className="cartoon-card space-y-2 bg-white p-10 text-center">
-          <Star className="mx-auto h-8 w-8 fill-[#FFC2D9] text-[#4A3B45]" strokeWidth={2.5} />
-          <p className="text-sm font-black font-nunito text-[#4A3B45]">Belum Ada Ulasan</p>
-          <p className="text-xs font-semibold text-[#4A3B45]/70">
+          <Star className="mx-auto h-8 w-8 fill-secondary text-foreground" strokeWidth={2.5} />
+          <p className="text-sm font-black font-nunito text-foreground">Belum Ada Ulasan</p>
+          <p className="text-xs font-semibold text-foreground/70">
             Jadilah yang pertama membagikan pengalaman Anda memakai Curated OOTD.
           </p>
         </div>
@@ -403,29 +403,29 @@ export default function Testimonials({
                   <img
                     src={review.avatar_url}
                     alt={review.display_name}
-                    className="h-10 w-10 shrink-0 rounded-full border border-[#F5D0E0] object-cover"
+                    className="h-10 w-10 shrink-0 rounded-full border border-border object-cover"
                   />
                 ) : (
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#F5D0E0] bg-[#FFC2D9] text-sm font-black text-[#4A3B45]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-secondary text-sm font-black text-foreground">
                     {(review.display_name || "P").charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black font-nunito text-[#4A3B45]">
+                  <p className="truncate text-sm font-black font-nunito text-foreground">
                     {review.display_name}
                   </p>
-                  <p className="text-[10px] font-bold text-[#4A3B45]/60">
+                  <p className="text-[10px] font-bold text-foreground/60">
                     {formatReviewDate(review.created_at)}
                   </p>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   {!!currentUserId && currentUserId === review.user_id && (
-                    <span className="rounded-full border border-[#F5D0E0] bg-[#FFE0EC] px-2 py-0.5 text-[9px] font-black uppercase text-[#4A3B45]">
+                    <span className="rounded-full border border-border bg-secondary px-2 py-0.5 text-[9px] font-black uppercase text-foreground">
                       Anda
                     </span>
                   )}
                   {review.is_admin_review && (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[#F5D0E0] bg-[#F48FB1] px-2 py-0.5 text-[9px] font-black uppercase text-[#4A3B45]">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-border bg-primary/20 px-2 py-0.5 text-[9px] font-black uppercase text-foreground">
                       <ShieldCheck className="h-2.5 w-2.5" /> Admin
                     </span>
                   )}
@@ -438,7 +438,7 @@ export default function Testimonials({
               <StarRow value={review.rating} />
 
               {review.comment && (
-                <p className="whitespace-pre-line text-xs font-semibold leading-relaxed text-[#4A3B45]/80">
+                <p className="whitespace-pre-line text-xs font-semibold leading-relaxed text-foreground/80">
                   {review.comment}
                 </p>
               )}

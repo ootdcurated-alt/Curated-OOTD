@@ -606,7 +606,7 @@ export default function Mannequin3DViewer({
             <button
               onClick={() => setZoom((z) => Math.max(0.8, z - 0.1))}
               className="h-7 w-7 rounded-md bg-black/60 border border-white/15 hover:bg-white/10 text-white flex items-center justify-center font-bold"
-              title="Zoom out"
+              title="Perkecil"
             >
               -
             </button>
@@ -643,7 +643,7 @@ export default function Mannequin3DViewer({
             <button
               onClick={() => setZoom((z) => Math.min(1.3, z + 0.1))}
               className="h-7 w-7 rounded-md bg-black/60 border border-white/15 hover:bg-white/10 text-white flex items-center justify-center font-bold"
-              title="Zoom in"
+              title="Perbesar"
             >
               +
             </button>
@@ -656,7 +656,7 @@ export default function Mannequin3DViewer({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-white capitalize">
-              Fitting Studio ({gender}):
+              Studio Fitting ({gender}):
             </span>
             <span className="rounded bg-white/10 px-2 py-0.5 text-[11px] font-mono capitalize">
               {bodyType}
@@ -666,7 +666,7 @@ export default function Mannequin3DViewer({
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-white/70 text-[11px]">
-            <span>Tone:</span>
+            <span>Warna Kulit:</span>
             <span
               className="h-3 w-3 rounded-full border border-white/30"
               style={{ backgroundColor: palette.base }}

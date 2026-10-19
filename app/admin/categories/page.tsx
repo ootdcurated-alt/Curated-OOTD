@@ -22,20 +22,20 @@ export default async function AdminCategoriesPage() {
 
   return (
     <main className="container max-w-7xl py-8 px-4 sm:px-6 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#F0CBDC] gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-border gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black font-nunito tracking-tight text-[#4A3B45]">
+          <h1 className="text-2xl sm:text-3xl font-black font-nunito tracking-tighter text-foreground">
             Kategori Outfit
           </h1>
-          <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/70 mt-1">
+          <p className="text-xs sm:text-sm font-bold text-foreground/70 mt-1">
             Konfigurasi taksonomi dan kurasi gaya busana untuk katalog OOTD.
           </p>
         </div>
         <Link
           href="/admin"
-          className="cartoon-btn inline-flex items-center gap-1.5 self-start sm:self-auto bg-white px-4 py-2 text-xs font-black text-[#4A3B45] border border-[#F5D0E0]"
+          className="cartoon-btn inline-flex items-center gap-1.5 self-start sm:self-auto bg-white/60 backdrop-blur-md px-4 py-2 text-xs font-black text-foreground border border-border"
         >
-          &larr; Kembali ke Dashboard
+          &larr; Kembali ke Dasbor
         </Link>
       </div>
 

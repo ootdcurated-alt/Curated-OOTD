@@ -23,6 +23,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, redirect_url: target_url });
   } catch (error) {
     console.error("Error tracking click:", error);
-    return NextResponse.json({ error: "Failed to track click" }, { status: 500 });
+    return NextResponse.json({ error: "Gagal melacak klik" }, { status: 500 });
   }
 }

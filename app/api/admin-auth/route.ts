@@ -170,6 +170,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, message: "Aksi tidak dikenal" }, { status: 400 });
   } catch (error) {
     console.error("admin-auth error:", error);
-    return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "Kesalahan server" }, { status: 500 });
   }
 }

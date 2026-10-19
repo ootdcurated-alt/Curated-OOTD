@@ -57,20 +57,20 @@ export default async function AnalyticsPage() {
       <div>
         <Link
           href="/admin"
-          className="inline-flex items-center gap-2 rounded-full border border-[#F5D0E0] bg-white px-3.5 py-1.5 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all mb-5"
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 backdrop-blur-md px-3.5 py-1.5 text-xs font-black text-foreground shadow-cartoon-sm hover:-translate-y-0.5 hover:shadow-cartoon transition-all mb-5"
         >
           <ArrowLeft className="h-4 w-4" />
           Kembali ke Admin
         </Link>
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm">
-            <BarChart3 className="h-6 w-6 text-[#4A3B45]" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-secondary shadow-cartoon-sm">
+            <BarChart3 className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-black font-nunito tracking-tight sm:text-3xl text-[#4A3B45]">
-              Analytics &amp; Statistik
+            <h1 className="text-2xl font-black font-nunito tracking-tighter sm:text-3xl text-foreground">
+              Analitik &amp; Statistik
             </h1>
-            <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/70">
+            <p className="text-xs sm:text-sm font-bold text-foreground/70">
               Performa klik &amp; estimasi pendapatan afiliasi
             </p>
           </div>

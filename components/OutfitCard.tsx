@@ -38,41 +38,41 @@ export default function OutfitCard({ outfit }: OutfitCardProps) {
   };
 
   return (
-    <div className="group relative overflow-hidden cartoon-card bg-white transition-all duration-300">
+    <div className="group relative overflow-hidden cartoon-card bg-white/60 backdrop-blur-xl transition-all duration-500 border-white/40 hover:scale-[1.02] hover:shadow-cartoon-lg">
       <Link href={`/outfit/${outfit.id}`} className="block">
-        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#FFC2D9]/20 border-b border-[#F5D0E0]">
+        <div className="relative aspect-[4/5] w-full overflow-hidden bg-primary/5 border-b border-border">
           <img
             src={outfit.image_url}
             alt={outfit.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
           />
           <button
             onClick={toggleWishlist}
-            aria-label="Save to Wishlist"
-            className="absolute top-3 right-3 rounded-full border border-[#F5D0E0] bg-white p-2.5 text-[#4A3B45] shadow-sm transition-transform duration-200 hover:scale-110 active:scale-95"
+            aria-label="Simpan ke Favorit"
+            className="absolute top-4 right-4 rounded-full border border-white/40 bg-white/80 backdrop-blur-md p-3 text-foreground shadow-cartoon-sm transition-all duration-300 hover:scale-110 active:scale-90"
           >
             <Heart
-              className={`h-4 w-4 transition-colors ${liked ? "fill-[#CC3D72] text-[#CC3D72]" : "text-[#4A3B45]"}`}
+              className={`h-5 w-5 transition-colors duration-300 ${liked ? "fill-primary text-primary scale-110" : "text-foreground/40"}`}
             />
           </button>
         </div>
 
-        <div className="p-4 sm:p-5">
-          <h3 className="line-clamp-1 font-black text-base text-[#4A3B45] font-nunito group-hover:text-[#CC3D72] transition-colors">
+        <div className="p-5 sm:p-6 space-y-3">
+          <h3 className="line-clamp-1 font-black text-lg text-foreground font-nunito tracking-tight group-hover:text-primary transition-colors duration-300">
             {outfit.title}
           </h3>
           {outfit.description && (
-            <p className="line-clamp-2 mt-1.5 text-xs font-semibold text-[#4A3B45]/70 leading-relaxed">
+            <p className="line-clamp-2 text-xs font-bold text-foreground/50 leading-relaxed">
               {outfit.description}
             </p>
           )}
           {outfit.tags && outfit.tags.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2 pt-1">
               {outfit.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[#F5D0E0] bg-[#FFC2D9] px-2.5 py-0.5 text-[10px] font-black text-[#4A3B45] shadow-sm"
+                  className="rounded-full border border-border bg-white/80 px-3 py-1 text-[9px] font-black text-foreground/60 shadow-sm uppercase tracking-widest"
                 >
                   #{tag}
                 </span>

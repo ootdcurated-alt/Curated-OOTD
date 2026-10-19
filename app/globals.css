@@ -4,59 +4,54 @@
 
 @layer base {
   :root {
-    /* Palet Rose Pink — lembut, hangat, modern */
-    --background: 340 100% 98%; /* #FFF5F8 Soft Blush */
-    --foreground: 320 11% 26%; /* #4A3B45 Deep Plum */
+    /* Palet Gen Z Pink — Bright, Vibrant, Bold, Modern */
+    --background: 330 100% 99%; /* #FFFAFC Ultra Light Pink */
+    --foreground: 330 30% 15%; /* #321A28 Deep Plum */
     --card: 0 0% 100%;
-    --card-foreground: 320 11% 26%;
+    --card-foreground: 330 30% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 320 11% 26%;
-    --primary: 338 58% 52%; /* #CC3D72 Rose Pink */
+    --popover-foreground: 330 30% 15%;
+    --primary: 330 100% 65%; /* #FF4FA8 Bright Pink */
     --primary-foreground: 0 0% 100%;
-    --secondary: 337 100% 94%; /* #FFE0EC Baby Pink */
-    --secondary-foreground: 320 11% 26%;
-    --muted: 340 60% 96%;
-    --muted-foreground: 320 9% 45%;
-    --accent: 337 100% 88%; /* #FFC2D9 Soft Pink */
-    --accent-foreground: 320 11% 26%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 334 65% 89%; /* #F5D0E0 Rose Border */
-    --input: 334 65% 89%;
-    --ring: 338 58% 52%;
-    --chart-1: 338 58% 52%;
-    --chart-2: 340 82% 76%;
-    --chart-3: 337 100% 88%;
-    --chart-4: 285 45% 74%;
-    --chart-5: 337 100% 94%;
-    --radius: 1.25rem;
+    --secondary: 330 100% 94%; /* #FFE0EE Bright Pastel Pink */
+    --secondary-foreground: 330 100% 32%;
+    --muted: 330 60% 97%;
+    --muted-foreground: 330 20% 45%;
+    --accent: 190 100% 45%; /* #00CCFF Electric Blue / Cyan */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 330 100% 92%; /* #FFD6E6 Soft Pink Border */
+    --input: 330 100% 92%;
+    --ring: 330 100% 65%;
+    --chart-1: 330 100% 65%;
+    --chart-2: 190 100% 45%;
+    --chart-3: 280 100% 70%;
+    --chart-4: 45 100% 65%;
+    --chart-5: 160 100% 45%;
+    --radius: 2rem;
   }
   .dark {
-    /* Mode gelap tetap bernuansa rose agar konsisten dengan identitas pink */
-    --background: 335 22% 12%;
-    --foreground: 340 60% 96%;
-    --card: 335 20% 16%;
-    --card-foreground: 340 60% 96%;
-    --popover: 335 20% 16%;
-    --popover-foreground: 340 60% 96%;
-    --primary: 338 70% 62%;
-    --primary-foreground: 335 22% 12%;
-    --secondary: 335 24% 22%;
-    --secondary-foreground: 340 60% 96%;
-    --muted: 335 20% 20%;
-    --muted-foreground: 340 25% 72%;
-    --accent: 337 60% 32%;
-    --accent-foreground: 340 60% 96%;
-    --destructive: 0 70% 50%;
+    /* Mode gelap Gen Z — Cyberpunk/Neon vibes */
+    --background: 330 40% 6%;
+    --foreground: 330 100% 95%;
+    --card: 330 30% 10%;
+    --card-foreground: 330 100% 95%;
+    --popover: 330 30% 10%;
+    --popover-foreground: 330 100% 95%;
+    --primary: 330 100% 70%;
+    --primary-foreground: 330 40% 6%;
+    --secondary: 330 22% 16%;
+    --secondary-foreground: 330 100% 90%;
+    --muted: 330 22% 16%;
+    --muted-foreground: 330 20% 65%;
+    --accent: 190 100% 50%;
+    --accent-foreground: 330 40% 6%;
+    --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
-    --border: 335 24% 26%;
-    --input: 335 24% 26%;
-    --ring: 338 70% 62%;
-    --chart-1: 338 70% 62%;
-    --chart-2: 340 82% 76%;
-    --chart-3: 337 100% 88%;
-    --chart-4: 285 45% 74%;
-    --chart-5: 340 60% 96%;
+    --border: 330 22% 22%;
+    --input: 330 22% 22%;
+    --ring: 330 100% 70%;
   }
 }
 
@@ -65,39 +60,44 @@
     font-family: var(--font-nunito), "Nunito", sans-serif;
   }
 
-  /* Kartu bergaya modern: border tipis, sudut membulat, bayangan lembut */
+  /* Kartu bergaya Gen Z: Glassmorphism, radius besar, bayangan berwarna (glow) */
   .cartoon-card {
-    border: 1px solid #F5D0E0;
-    box-shadow: 0 6px 22px -10px rgba(204, 61, 114, 0.3);
-    border-radius: 1.5rem;
-    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px -4px rgba(255, 79, 168, 0.15);
+    border-radius: 2.5rem;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .cartoon-card:hover {
-    transform: translateY(-4px);
-    border-color: #F0BBD4;
-    box-shadow: 0 18px 34px -16px rgba(204, 61, 114, 0.38);
+    transform: translateY(-8px) scale(1.01);
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 79, 168, 0.3);
+    box-shadow: 0 20px 40px -12px rgba(255, 79, 168, 0.25);
   }
 
-  /* Tombol bergaya modern: lembut, membulat, dengan elevasi halus */
+  /* Tombol bergaya Gen Z: Vibrant, pill-shaped, soft glow elevation */
   .cartoon-btn {
     border: 1px solid transparent;
-    box-shadow: 0 4px 14px -5px rgba(204, 61, 114, 0.5);
+    box-shadow: 0 8px 20px -6px rgba(255, 79, 168, 0.4);
     border-radius: 9999px;
     font-weight: 800;
-    transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+    letter-spacing: -0.01em;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     cursor: pointer;
   }
 
   .cartoon-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 22px -8px rgba(204, 61, 114, 0.55);
-    filter: brightness(1.04);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 28px -8px rgba(255, 79, 168, 0.5);
+    filter: saturate(1.1) brightness(1.05);
   }
 
   .cartoon-btn:active {
     transform: translateY(0);
-    box-shadow: 0 3px 9px -3px rgba(204, 61, 114, 0.5);
+    box-shadow: 0 3px 9px -3px rgba(255, 79, 168, 0.5);
   }
 
   .cartoon-btn:disabled {
@@ -188,35 +188,47 @@
   body {
     font-family: var(--font-nunito), "Nunito", sans-serif;
     @apply bg-background text-foreground;
-    /* Aksen gradasi rose lembut agar halaman terasa hangat */
+    /* Mesh Gradient Gen Z — Vibrant, Fluid, Modern */
     background-image:
-      radial-gradient(circle at 8% -5%, rgba(255, 194, 217, 0.45) 0%, transparent 42%),
-      radial-gradient(circle at 95% 105%, rgba(255, 224, 236, 0.55) 0%, transparent 45%);
+      radial-gradient(at 0% 0%, rgba(255, 79, 168, 0.18) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(0, 204, 255, 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(255, 204, 0, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(200, 125, 184, 0.1) 0px, transparent 50%);
     background-attachment: fixed;
   }
 
   ::selection {
-    background-color: #FFC2D9;
-    color: #4A3B45;
+    background-color: #FF4FA8;
+    color: white;
   }
 
-  /* Scrollbar lembut agar konsisten dengan tema */
+  /* Scrollbar Gen Z: Neon & Slim */
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #FFF5F8;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #F0BBD4;
+    background: #FF4FA8;
     border-radius: 9999px;
-    border: 2px solid #FFF5F8;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #E79FC2;
+    background: #FF1F8F;
+  }
+
+  /* Sembunyikan Netlify Feedback/Developer Drawer agar lebih professional */
+  #netlify-feedback-drawer,
+  .netlify-drawer,
+  [data-netlify-feedback-drawer],
+  #netlify-drawer {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 }

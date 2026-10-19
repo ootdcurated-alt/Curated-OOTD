@@ -99,23 +99,23 @@ export default function CategoryManager() {
 
   return (
     <div className="space-y-6">
-      <div className="cartoon-card bg-white p-5 sm:p-6">
+      <div className="cartoon-card bg-white/60 backdrop-blur-xl p-5 sm:p-6">
         <div className="space-y-1">
-          <p className="font-black font-nunito text-base text-[#4A3B45]">
+          <p className="font-black font-nunito text-base text-foreground">
             Manajemen Master Kategori
           </p>
-          <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/70 leading-relaxed">
-            Hanya Administrator yang memiliki akses untuk mengelola taksonomi dan kategori kurasi fashion. Kategori yang ditambahkan akan langsung terintegrasi ke dalam filter lookbook dan opsi formulir unggah outfit.
+          <p className="text-xs sm:text-sm font-bold text-foreground/70 leading-relaxed">
+            Hanya Administrator yang memiliki akses untuk mengelola taksonomi dan kategori kurasi fashion. Kategori yang ditambahkan akan langsung terintegrasi ke dalam filter koleksi dan opsi formulir unggah outfit.
           </p>
         </div>
       </div>
 
       {message && (
         <div
-          className={`cartoon-card px-4 py-3 text-xs sm:text-sm font-black border border-[#F5D0E0] ${
+          className={`cartoon-card px-4 py-3 text-xs sm:text-sm font-black border border-border ${
             message.type === "success"
-              ? "bg-[#FFE0EC] text-[#4A3B45]"
-              : "bg-[#CC3D72] text-white"
+              ? "bg-secondary text-foreground"
+              : "bg-primary text-white"
           }`}
         >
           {message.text}
@@ -124,16 +124,16 @@ export default function CategoryManager() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Form Tambah Kategori Baru */}
-        <div className="lg:col-span-1 cartoon-card bg-white p-5 sm:p-6 space-y-4">
-          <div className="border-b border-[#F0CBDC] pb-3">
-            <h3 className="font-black font-nunito text-base text-[#4A3B45]">Tambah Kategori Baru</h3>
-            <p className="text-xs font-bold text-[#4A3B45]/70 mt-0.5">Definisikan klasifikasi gaya busana</p>
+        <div className="lg:col-span-1 cartoon-card bg-white/60 backdrop-blur-xl p-5 sm:p-6 space-y-4">
+          <div className="border-b border-border pb-3">
+            <h3 className="font-black font-nunito text-base text-foreground">Tambah Kategori Baru</h3>
+            <p className="text-xs font-bold text-foreground/70 mt-0.5">Definisikan klasifikasi gaya busana</p>
           </div>
 
           <form onSubmit={handleCreate} className="space-y-4">
             <div>
-              <label className="block text-xs font-black text-[#4A3B45] mb-1.5">
-                Nama Kategori <span className="text-[#CC3D72]">*</span>
+              <label className="block text-xs font-black text-foreground mb-1.5">
+                Nama Kategori <span className="text-primary">*</span>
               </label>
               <input
                 type="text"
@@ -141,12 +141,12 @@ export default function CategoryManager() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Contoh: Streetwear, Smart Casual, Old Money"
-                className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72]"
+                className="w-full rounded-2xl border border-border bg-primary/5 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black text-[#4A3B45] mb-1.5">
+              <label className="block text-xs font-black text-foreground mb-1.5">
                 Deskripsi Gaya (Opsional)
               </label>
               <textarea
@@ -154,14 +154,14 @@ export default function CategoryManager() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Penjelasan ringkas mengenai karakteristik potongan, bahan, atau estetika gaya..."
-                className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72] resize-none"
+                className="w-full rounded-2xl border border-border bg-primary/5 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="cartoon-btn w-full bg-[#CC3D72] py-2.5 text-xs sm:text-sm font-black text-white hover:bg-[#B22F62] disabled:opacity-50 transition-opacity"
+              className="cartoon-btn w-full bg-primary py-2.5 text-xs sm:text-sm font-black text-white hover:opacity-90 disabled:opacity-50 transition-all"
             >
               {loading ? "Menyimpan..." : "Simpan Kategori"}
             </button>
@@ -169,20 +169,20 @@ export default function CategoryManager() {
         </div>
 
         {/* Daftar Kategori Aktif */}
-        <div className="lg:col-span-2 cartoon-card bg-white p-5 sm:p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-[#F0CBDC] pb-3">
+        <div className="lg:col-span-2 cartoon-card bg-white/60 backdrop-blur-xl p-5 sm:p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-3">
             <div>
-              <h3 className="font-black font-nunito text-base text-[#4A3B45]">
+              <h3 className="font-black font-nunito text-base text-foreground">
                 Daftar Kategori Terdaftar
               </h3>
-              <p className="text-xs font-bold text-[#4A3B45]/70 mt-0.5">
+              <p className="text-xs font-bold text-foreground/70 mt-0.5">
                 {fetching ? "Memuat..." : `Total ${categories.length} kategori aktif`}
               </p>
             </div>
           </div>
 
           {fetching ? (
-            <div className="py-8 text-center text-xs font-bold text-[#4A3B45]/50">
+            <div className="py-8 text-center text-xs font-bold text-foreground/50">
               Memuat kategori dari database...
             </div>
           ) : (
@@ -190,20 +190,20 @@ export default function CategoryManager() {
               {categories.map((cat, index) => (
                 <div
                   key={cat.id}
-                  className="flex items-center justify-between p-3.5 bg-[#FFF5F8] rounded-xl border border-[#F5D0E0] shadow-sm transition-transform hover:-translate-y-0.5"
+                  className="flex items-center justify-between p-3.5 bg-primary/5 rounded-2xl border border-border shadow-cartoon-sm transition-all hover:-translate-y-1"
                 >
                   <div className="space-y-1 pr-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-[#4A3B45]/60 w-5">
+                      <span className="text-xs font-black text-foreground/60 w-5">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <h4 className="font-black text-sm text-[#4A3B45]">{cat.name}</h4>
-                      <span className="rounded-lg border border-[#F5D0E0] bg-white px-2 py-0.5 text-[10px] font-mono font-bold text-[#4A3B45]">
+                      <h4 className="font-black text-sm text-foreground">{cat.name}</h4>
+                      <span className="rounded-2xl border border-border bg-white px-2 py-0.5 text-[10px] font-mono font-bold text-foreground">
                         {cat.slug}
                       </span>
                     </div>
                     {cat.description && (
-                      <p className="text-xs font-bold text-[#4A3B45]/70 pl-7 line-clamp-1">
+                      <p className="text-xs font-bold text-foreground/70 pl-7 line-clamp-1">
                         {cat.description}
                       </p>
                     )}
@@ -212,7 +212,7 @@ export default function CategoryManager() {
                   {cat.slug !== "all" && (
                     <button
                       onClick={() => handleDelete(cat.id, cat.name)}
-                      className="cartoon-btn shrink-0 px-3 py-1 text-xs font-black bg-white text-[#CC3D72] border border-[#F5D0E0] hover:bg-[#CC3D72] hover:text-white transition-colors"
+                      className="cartoon-btn shrink-0 px-3 py-1 text-xs font-black bg-white text-primary border border-border hover:bg-primary hover:text-white transition-all"
                     >
                       Hapus
                     </button>

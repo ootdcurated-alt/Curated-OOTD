@@ -142,30 +142,30 @@ export default function AdminNotificationBell() {
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        aria-label={`Notifikasi testimony${unreadCount > 0 ? `, ${unreadCount} belum dibaca` : ""}`}
+        aria-label={`Notifikasi testimoni${unreadCount > 0 ? `, ${unreadCount} belum dibaca` : ""}`}
         aria-expanded={isOpen}
-        className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#F5D0E0] bg-[#FFF5F8] text-[#4A3B45] shadow-sm transition-all hover:bg-[#FFC2D9]"
+        className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white/60 text-foreground shadow-cartoon-sm backdrop-blur-md transition-all hover:bg-secondary hover:shadow-cartoon active:scale-95"
       >
         <Bell className="h-3.5 w-3.5" />
         {unreadCount > 0 && (
-          <span className="absolute -right-1.5 -top-1.5 inline-flex min-w-[18px] items-center justify-center rounded-full border border-[#F5D0E0] bg-[#CC3D72] px-1 text-[9px] font-black leading-[14px] text-white">
+          <span className="absolute -right-1.5 -top-1.5 inline-flex min-w-[18px] items-center justify-center rounded-full border border-white/40 bg-primary px-1 text-[9px] font-black leading-[14px] text-white">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 z-50 mt-2 w-[19rem] max-w-[calc(100vw-1.5rem)] rounded-2xl border border-[#F5D0E0] bg-white shadow-md">
-          <div className="flex items-center justify-between gap-2 border-b border-[#F0CBDC] px-3 py-2.5">
-            <p className="text-xs font-black font-nunito text-[#4A3B45]">
-              Notifikasi Testimony
+        <div className="absolute right-0 z-50 mt-2 w-[19rem] max-w-[calc(100vw-1.5rem)] rounded-[1.5rem] border border-white/40 bg-white/80 shadow-cartoon-lg backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2.5">
+            <p className="text-xs font-black font-nunito text-foreground">
+              Notifikasi Testimoni
             </p>
             {unreadCount > 0 && (
               <button
                 type="button"
                 onClick={() => markAsRead({ all: true })}
                 disabled={isMarking}
-                className="inline-flex items-center gap-1 rounded-full border border-[#F5D0E0] bg-[#FFE0EC] px-2 py-0.5 text-[10px] font-black text-[#4A3B45] disabled:opacity-60"
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-2 py-0.5 text-[10px] font-black text-foreground transition-all hover:shadow-cartoon-sm disabled:opacity-60"
               >
                 {isMarking ? (
                   <Loader2 className="h-2.5 w-2.5 animate-spin" />
@@ -179,49 +179,49 @@ export default function AdminNotificationBell() {
 
           <div className="max-h-80 overflow-y-auto">
             {error && (
-              <p className="border-b border-[#F0CBDC] bg-[#CC3D72]/20 px-3 py-2 text-[10px] font-bold text-[#4A3B45]">
+              <p className="border-b border-border bg-primary/10 px-3 py-2 text-[10px] font-bold text-foreground">
                 {error}
               </p>
             )}
 
             {isLoading ? (
-              <div className="flex items-center justify-center gap-2 px-3 py-8 text-[11px] font-bold text-[#4A3B45]/60">
+              <div className="flex items-center justify-center gap-2 px-3 py-8 text-[11px] font-bold text-foreground/60">
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 Memuat notifikasi...
               </div>
             ) : notifications.length === 0 ? (
               <div className="space-y-1 px-3 py-8 text-center">
-                <Inbox className="mx-auto h-6 w-6 text-[#4A3B45]/40" />
-                <p className="text-[11px] font-black font-nunito text-[#4A3B45]">
+                <Inbox className="mx-auto h-6 w-6 text-foreground/40" />
+                <p className="text-[11px] font-black font-nunito text-foreground">
                   Belum ada notifikasi
                 </p>
-                <p className="text-[10px] font-semibold text-[#4A3B45]/60">
-                  Testimony baru dari pengguna akan muncul di sini.
+                <p className="text-[10px] font-semibold text-foreground/60">
+                  Testimoni baru dari pengguna akan muncul di sini.
                 </p>
               </div>
             ) : (
-              <ul className="divide-y divide-[#F0CBDC]">
+              <ul className="divide-y divide-border">
                 {notifications.map((notification) => (
                   <li key={notification.id}>
                     <button
                       type="button"
                       onClick={() => handleSelect(notification)}
-                      className={`w-full px-3 py-2.5 text-left transition-colors hover:bg-[#FFF5F8] ${
-                        notification.is_read ? "bg-white" : "bg-[#FFC2D9]/30"
+                      className={`w-full px-3 py-2.5 text-left transition-colors hover:bg-primary/5 ${
+                        notification.is_read ? "bg-white" : "bg-secondary/60"
                       }`}
                     >
                       <div className="flex items-start gap-2">
                         {!notification.is_read && (
-                          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full border border-[#F5D0E0] bg-[#CC3D72]" />
+                          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full border border-white/40 bg-primary" />
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className="text-[11px] font-black font-nunito text-[#4A3B45]">
+                          <p className="text-[11px] font-black font-nunito text-foreground">
                             {notification.title}
                           </p>
-                          <p className="mt-0.5 line-clamp-2 text-[10px] font-semibold text-[#4A3B45]/70">
+                          <p className="mt-0.5 line-clamp-2 text-[10px] font-semibold text-foreground/70">
                             {notification.message}
                           </p>
-                          <p className="mt-1 inline-flex items-center gap-1 text-[9px] font-bold text-[#4A3B45]/50">
+                          <p className="mt-1 inline-flex items-center gap-1 text-[9px] font-bold text-foreground/50">
                             <Clock className="h-2.5 w-2.5" />
                             {formatReviewDateTime(notification.created_at)}
                           </p>
@@ -234,16 +234,16 @@ export default function AdminNotificationBell() {
             )}
           </div>
 
-          <div className="border-t border-[#F0CBDC] px-3 py-2">
+          <div className="border-t border-border px-3 py-2">
             <button
               type="button"
               onClick={() => {
                 setIsOpen(false);
                 router.push("/admin/reviews");
               }}
-              className="w-full rounded-full border border-[#F5D0E0] bg-[#F48FB1] px-3 py-1.5 text-[10px] font-black text-[#4A3B45] shadow-sm transition-all hover:translate-x-[-1px] hover:translate-y-[-1px]"
+              className="w-full rounded-full border border-border bg-secondary px-3 py-1.5 text-[10px] font-black text-foreground shadow-cartoon-sm transition-all hover:-translate-y-1 hover:shadow-cartoon active:scale-95"
             >
-              Buka Kelola Testimony
+              Buka Kelola Testimoni
             </button>
           </div>
         </div>

@@ -126,13 +126,13 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="w-full border-t border-[#F5D0E0] bg-[#FFF5F8]">
-        <div className="container max-w-7xl py-12 px-4 sm:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-8 border-b border-[#F0CBDC]">
+      <footer className="w-full border-t border-border bg-white/40 backdrop-blur-xl">
+        <div className="container max-w-7xl py-16 px-6 sm:px-8">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 pb-12 border-b border-border">
             {/* Logo & Deskripsi */}
-            <div className="text-center md:text-left space-y-3 max-w-sm">
+            <div className="text-center lg:text-left space-y-4 max-w-md">
               <Link href="/" className="inline-flex items-center gap-3 group">
-                <div className="h-12 w-12 rounded-2xl border border-[#F5D0E0] bg-white p-1.5 shadow-sm transition-transform duration-200 group-hover:rotate-6">
+                <div className="h-14 w-14 rounded-[1.25rem] border border-border bg-white p-2 shadow-cartoon-sm transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
                   <img
                     src="/logo-icon.png"
                     alt="Curated OOTD Logo"
@@ -140,22 +140,22 @@ export default function Footer() {
                   />
                 </div>
                 <div className="flex flex-col text-left">
-                  <div className="text-xl font-black tracking-tight font-nunito leading-none text-[#4A3B45]">
+                  <div className="text-2xl font-black tracking-tighter font-nunito leading-none text-foreground">
                     <span>Curated</span>
-                    <span className="text-[#CC3D72] ml-1">OOTD</span>
+                    <span className="text-primary ml-1">OOTD</span>
                   </div>
-                  <span className="text-[10px] text-[#4A3B45]/70 font-extrabold mt-1">
+                  <span className="text-[10px] text-foreground/60 font-black uppercase tracking-widest mt-1">
                     Pakaian Pilihan • Gaya Lebih Baik
                   </span>
                 </div>
               </Link>
-              <p className="text-xs font-semibold text-[#4A3B45]/80 leading-relaxed">
-                Inspirasi lookbook outfit kurasi harian dengan hotspot interaktif untuk belanja langsung dari marketplace pilihan.
+              <p className="text-sm font-bold text-foreground/60 leading-relaxed">
+                Inspirasi koleksi outfit kurasi harian dengan hotspot interaktif untuk belanja langsung dari marketplace pilihan.
               </p>
             </div>
 
             {/* Social Links Cards & Tombol Dukung */}
-            <div className="flex flex-wrap justify-center items-center gap-3">
+            <div className="flex flex-wrap justify-center lg:justify-end items-center gap-4">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -163,14 +163,14 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="flex items-center gap-2.5 rounded-2xl border border-[#F5D0E0] bg-white px-4 py-2.5 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
+                  className="flex items-center gap-3 rounded-2xl border border-border bg-white/80 px-5 py-3 text-xs font-black text-foreground shadow-cartoon-sm hover:scale-105 hover:shadow-cartoon transition-all backdrop-blur-md"
                 >
-                  {social.icon}
+                  <div className="text-primary">{social.icon}</div>
                   <div className="flex flex-col text-left">
-                    <span className="text-[9px] uppercase font-black tracking-wider opacity-60">
+                    <span className="text-[9px] uppercase font-black tracking-widest opacity-60">
                       {social.name}
                     </span>
-                    <span className="font-black text-[#4A3B45]">{social.label}</span>
+                    <span className="font-black text-foreground">{social.label}</span>
                   </div>
                 </a>
               ))}
@@ -179,31 +179,33 @@ export default function Footer() {
               <button
                 type="button"
                 onClick={() => setShowDonateModal(true)}
-                className="flex items-center gap-2.5 rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] px-4 py-2.5 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
+                className="flex items-center gap-3 rounded-2xl border border-border bg-primary px-5 py-3 text-xs font-black text-white shadow-cartoon-sm hover:scale-105 hover:shadow-cartoon transition-all"
               >
-                <Coffee className="h-5 w-5 text-[#4A3B45]" />
+                <Coffee className="h-6 w-6" />
                 <div className="flex flex-col text-left">
-                  <span className="text-[9px] uppercase font-black tracking-wider opacity-70">
+                  <span className="text-[9px] uppercase font-black tracking-widest opacity-90">
                     Donasi / Sawer
                   </span>
-                  <span className="font-black text-[#4A3B45]">Dukung Kami</span>
+                  <span className="font-black">Dukung Kami</span>
                 </div>
               </button>
             </div>
           </div>
 
           {/* Copyright & Info Pembuat */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs font-bold text-[#4A3B45]/70">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-12 text-sm font-bold text-foreground/50">
             <p>© <span suppressHydrationWarning>{currentYear || ""}</span> Curated OOTD. Hak Cipta Dilindungi.</p>
-            <div className="flex items-center gap-1.5">
-              <span>Dibuat oleh</span>
+            <div className="flex items-center gap-2">
+              <span>Dibuat dengan</span>
+              <Heart className="h-4 w-4 text-primary animate-pulse" />
+              <span>oleh</span>
               <a
                 href="https://www.instagram.com/curatedootd10?srtk=MThpNHAxcHUwbWd6MA=="
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-black text-[#4A3B45] hover:text-[#CC3D72] transition-colors underline decoration-[#CC3D72] decoration-2 underline-offset-4"
+                className="font-black text-foreground hover:text-primary transition-colors underline decoration-primary decoration-2 underline-offset-4"
               >
-                Team Curate OOTD
+                Tim Curate OOTD
               </a>
             </div>
           </div>
@@ -212,101 +214,101 @@ export default function Footer() {
 
       {/* Modal / Dialog Fitur Dukung (DANA & GoPay) */}
       {showDonateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="relative w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-2xl space-y-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-6 animate-in fade-in duration-300">
+          <div className="relative w-full max-w-md rounded-[2.5rem] border border-white/20 bg-white/80 backdrop-blur-2xl p-8 shadow-cartoon-lg space-y-8 animate-in zoom-in-95 duration-300">
             <button
               onClick={() => setShowDonateModal(false)}
-              className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              className="absolute right-6 top-6 rounded-full p-2.5 text-foreground/40 hover:bg-foreground/5 hover:text-foreground transition-all"
             >
-              <X className="h-5 w-5" />
+              <X className="h-6 w-6" />
             </button>
 
-            <div className="text-center space-y-2">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500">
-                <Coffee className="h-6 w-6" />
+            <div className="text-center space-y-3">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-cartoon-sm">
+                <Coffee className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold tracking-tight">Dukung Curated OOTD</h3>
-              <p className="text-xs text-muted-foreground">
+              <h3 className="text-2xl font-black tracking-tighter text-foreground font-nunito">Dukung Curated OOTD</h3>
+              <p className="text-sm font-bold text-foreground/50 text-balance">
                 Dukungan Anda sangat berarti untuk membantu kami terus menyajikan inspirasi fashion outfit terbaik.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {/* Opsi DANA */}
-              <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-4 space-y-3">
+              <div className="rounded-[2rem] border border-blue-500/20 bg-blue-500/5 p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-md bg-blue-500 text-white font-black text-xs">
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 rounded-full bg-blue-500 text-white font-black text-[10px] tracking-widest">
                       DANA
                     </span>
-                    <span className="text-sm font-semibold">{donateAccounts.dana.recipient}</span>
+                    <span className="text-sm font-black text-foreground">{donateAccounts.dana.recipient}</span>
                   </div>
                   <button
                     onClick={() => handleCopy("dana", donateAccounts.dana.number)}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-blue-500 hover:underline"
+                    className="inline-flex items-center gap-2 text-xs font-black text-blue-500 hover:text-blue-600 transition-colors"
                   >
                     {copiedAccount === "dana" ? (
                       <>
-                        <Check className="h-3.5 w-3.5" /> Disalin
+                        <Check className="h-4 w-4" /> Disalin
                       </>
                     ) : (
                       <>
-                        <Copy className="h-3.5 w-3.5" /> Salin Nomor
+                        <Copy className="h-4 w-4" /> Salin Nomor
                       </>
                     )}
                   </button>
                 </div>
-                <div className="text-base font-mono font-bold tracking-wider">
+                <div className="text-xl font-black tracking-widest text-foreground font-mono">
                   {donateAccounts.dana.number}
                 </div>
                 <button
                   type="button"
                   onClick={() => handleOpenApp("dana")}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-xs font-black bg-blue-500 hover:bg-blue-600 text-white transition-all shadow-cartoon-sm hover:scale-[1.02]"
                 >
-                  Buka Aplikasi DANA <ExternalLink className="h-3.5 w-3.5" />
+                  Buka Aplikasi DANA <ExternalLink className="h-4 w-4" />
                 </button>
               </div>
 
               {/* Opsi GoPay */}
-              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
+              <div className="rounded-[2rem] border border-emerald-500/20 bg-emerald-500/5 p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-black text-xs">
-                      GoPay
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 rounded-full bg-emerald-600 text-white font-black text-[10px] tracking-widest">
+                      GOPAY
                     </span>
-                    <span className="text-sm font-semibold">{donateAccounts.gopay.recipient}</span>
+                    <span className="text-sm font-black text-foreground">{donateAccounts.gopay.recipient}</span>
                   </div>
                   <button
                     onClick={() => handleCopy("gopay", donateAccounts.gopay.number)}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 hover:underline"
+                    className="inline-flex items-center gap-2 text-xs font-black text-emerald-600 hover:text-emerald-700 transition-colors"
                   >
                     {copiedAccount === "gopay" ? (
                       <>
-                        <Check className="h-3.5 w-3.5" /> Disalin
+                        <Check className="h-4 w-4" /> Disalin
                       </>
                     ) : (
                       <>
-                        <Copy className="h-3.5 w-3.5" /> Salin Nomor
+                        <Copy className="h-4 w-4" /> Salin Nomor
                       </>
                     )}
                   </button>
                 </div>
-                <div className="text-base font-mono font-bold tracking-wider">
+                <div className="text-xl font-black tracking-widest text-foreground font-mono">
                   {donateAccounts.gopay.number}
                 </div>
                 <button
                   type="button"
                   onClick={() => handleOpenApp("gopay")}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-cartoon-sm hover:scale-[1.02]"
                 >
-                  Buka Aplikasi GoPay <ExternalLink className="h-3.5 w-3.5" />
+                  Buka Aplikasi GoPay <ExternalLink className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
-            <p className="text-[11px] text-center text-muted-foreground">
-              Nomor akan otomatis tersalin ke clipboard saat Anda menekan tombol buka aplikasi.
+            <p className="text-[10px] text-center font-bold text-foreground/40 uppercase tracking-widest">
+              Nomor akan otomatis tersalin ke clipboard saat Anda menekan tombol buka aplikasi
             </p>
           </div>
         </div>

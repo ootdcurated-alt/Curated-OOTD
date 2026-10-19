@@ -51,3 +51,55 @@ export function getServiceClient() {
   if (!url || !key) return null;
   return createServiceClient(url, key);
 }
+
+export type AdminProfile = {
+  username: string;
+  email: string;
+  avatar_url: string;
+};
+
+const DEFAULT_ADMIN_PROFILE: AdminProfile = {
+  username: "adminootd",
+  email: "adminootd@gmail.com",
+  avatar_url: "",
+};
+
+/** Profil panel admin (DB admin_settings, fallback cookie). */
+export async function getAdminProfile(): Promise<AdminProfile> {
+  const db = getServiceClient();
+  if (db) {
+    try {
+      const { data } = await db
+        .from("admin_settings")
+        .select("username, email, avatar_url")
+        .eq("id", 1)
+        .single();
+      if (data) {
+        return {
+          username: data.username || DEFAULT_ADMIN_PROFILE.username,
+          email: data.email || DEFAULT_ADMIN_PROFILE.email,
+          avatar_url: data.avatar_url || "",
+        };
+      }
+    } catch {
+      // fallback ke cookie
+    }
+  }
+
+  const cookieStore = await cookies();
+  const profileCookie = cookieStore.get("admin_profile")?.value;
+  if (profileCookie) {
+    try {
+      const parsed = JSON.parse(profileCookie) as Partial<AdminProfile>;
+      return {
+        username: parsed.username || DEFAULT_ADMIN_PROFILE.username,
+        email: parsed.email || DEFAULT_ADMIN_PROFILE.email,
+        avatar_url: parsed.avatar_url || "",
+      };
+    } catch {
+      // ignore
+    }
+  }
+
+  return { ...DEFAULT_ADMIN_PROFILE };
+}

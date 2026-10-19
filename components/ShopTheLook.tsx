@@ -41,7 +41,7 @@ export default function ShopTheLook({
         <div className="absolute inset-0 overflow-hidden rounded-2xl">
           <img
             src={imageUrl}
-            alt="Outfit Look"
+            alt="Tampilan Outfit"
             className="h-full w-full object-cover"
           />
         </div>
@@ -59,7 +59,7 @@ export default function ShopTheLook({
               <div className="relative flex items-center justify-center">
                 <span className="absolute inline-flex h-8 w-8 sm:h-7 sm:w-7 animate-ping rounded-full bg-primary/40 opacity-75" />
                 <button
-                  className={`relative flex h-7 w-7 sm:h-6 sm:w-6 items-center justify-center rounded-full text-xs font-bold shadow-md transition-transform ${
+                  className={`relative flex h-7 w-7 sm:h-6 sm:w-6 items-center justify-center rounded-full text-xs font-bold shadow-cartoon-sm transition-transform ${
                     isSelected
                       ? "scale-125 bg-primary text-primary-foreground"
                       : "bg-background/90 text-foreground hover:scale-110"
@@ -71,7 +71,7 @@ export default function ShopTheLook({
 
               {/* Tooltip popup */}
               {isSelected && (
-                <div className="absolute bottom-8 left-1/2 z-20 w-48 -translate-x-1/2 rounded-lg border border-border bg-popover p-2.5 text-xs text-popover-foreground shadow-xl">
+                <div className="absolute bottom-8 left-1/2 z-20 w-48 -translate-x-1/2 rounded-2xl border border-border bg-popover p-3 text-xs text-popover-foreground shadow-cartoon-lg">
                   <p className="font-semibold">{item.name}</p>
                   {item.brand && (
                     <p className="text-muted-foreground">{item.brand}</p>
@@ -101,7 +101,7 @@ export default function ShopTheLook({
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2 border-b border-border pb-3">
           <ShoppingBag className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-bold tracking-tight">Shop The Look</h2>
+          <h2 className="text-xl font-bold tracking-tight">Belanja Tampilan Ini</h2>
         </div>
 
         <div className="space-y-3">
@@ -132,7 +132,7 @@ export default function ShopTheLook({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => handleTrackClick(item)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-black text-primary-foreground shadow-cartoon-sm hover:opacity-90"
               >
                 Cek Produk
                 <ExternalLink className="h-4 w-4" />

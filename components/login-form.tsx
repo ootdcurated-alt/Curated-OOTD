@@ -147,19 +147,23 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="cartoon-card bg-white">
+      <Card className="cartoon-card bg-white/60 backdrop-blur-xl">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm">
+          <Link 
+            href="/" 
+            className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-secondary shadow-cartoon-sm hover:scale-110 hover:rotate-6 transition-all duration-300 group"
+            title="Kembali ke Beranda"
+          >
             <img
               src="/logo-icon.png"
               alt="Logo"
-              className="h-8 w-8 object-contain"
+              className="h-8 w-8 object-contain group-hover:scale-110 transition-transform"
             />
-          </div>
-          <CardTitle className="text-2xl font-black font-nunito text-[#4A3B45]">
+          </Link>
+          <CardTitle className="text-2xl font-black font-nunito tracking-tighter text-foreground">
             Masuk ke Akun
           </CardTitle>
-          <CardDescription className="text-xs font-bold text-[#4A3B45]/70">
+          <CardDescription className="text-xs font-bold text-foreground/70">
             Masuk dengan Gmail atau Username / Email
           </CardDescription>
         </CardHeader>
@@ -171,7 +175,7 @@ export function LoginForm({
               type="button"
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading || isLoading}
-              className="w-full flex items-center justify-center gap-3 py-3 font-black text-xs sm:text-sm rounded-full border border-[#F5D0E0] bg-white text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 py-3 font-black text-xs sm:text-sm rounded-full border border-border bg-white text-foreground shadow-cartoon-sm hover:-translate-y-1 hover:shadow-cartoon active:scale-95 transition-all disabled:opacity-50"
             >
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -183,15 +187,15 @@ export function LoginForm({
             </button>
 
             <div className="relative flex items-center justify-center my-1">
-              <div className="w-full border-t border-[#F0CBDC]" />
-              <span className="absolute bg-white px-3 text-[10px] font-black uppercase tracking-wider text-[#4A3B45]/60">
+              <div className="w-full border-t border-border" />
+              <span className="absolute bg-white px-3 text-[10px] font-black uppercase tracking-widest text-foreground/60">
                 atau
               </span>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="grid gap-1.5">
-                <Label htmlFor="identifier" className="text-xs font-black text-[#4A3B45]">
+                <Label htmlFor="identifier" className="text-xs font-black text-foreground">
                   Username atau Email
                 </Label>
                 <Input
@@ -202,18 +206,18 @@ export function LoginForm({
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   autoComplete="username"
-                  className="rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus-visible:ring-0 focus:outline-none"
+                  className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none"
                 />
               </div>
 
               <div className="grid gap-1.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-xs font-black text-[#4A3B45]">
+                  <Label htmlFor="password" className="text-xs font-black text-foreground">
                     Kata Sandi
                   </Label>
                   <Link
                     href="/auth/forgot-password"
-                    className="text-xs font-black text-[#CC3D72] underline underline-offset-2 hover:opacity-80"
+                    className="text-xs font-black text-primary underline underline-offset-2 hover:opacity-80"
                   >
                     Lupa kata sandi?
                   </Link>
@@ -227,12 +231,12 @@ export function LoginForm({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
-                    className="rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus-visible:ring-0 focus:outline-none pr-10"
+                    className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B45]/60 hover:text-[#4A3B45] transition-colors p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground transition-colors p-1"
                     aria-label={showPassword ? "Sembunyikan kata sandi" : "Lihat kata sandi"}
                   >
                     {showPassword ? (
@@ -245,25 +249,25 @@ export function LoginForm({
               </div>
 
               {error && (
-                <div className="rounded-xl border border-[#F5D0E0] bg-[#FFE3EC] p-3 text-xs font-black text-[#4A3B45] shadow-sm">
+                <div className="rounded-2xl border border-border bg-primary/10 p-3 text-xs font-black text-foreground shadow-cartoon-sm">
                   {error}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="cartoon-btn w-full bg-[#CC3D72] text-white py-3 text-sm font-black"
+                className="cartoon-btn w-full bg-primary text-white py-3 text-sm font-black"
                 disabled={isLoading || isGoogleLoading}
               >
                 {isLoading ? "Sedang Masuk..." : "Masuk"}
               </button>
             </form>
 
-            <div className="text-center text-xs font-bold text-[#4A3B45]/70">
+            <div className="text-center text-xs font-bold text-foreground/70">
               Belum memiliki akun?{" "}
               <Link
                 href="/auth/sign-up"
-                className="font-black text-[#CC3D72] underline underline-offset-4 hover:opacity-80"
+                className="font-black text-primary underline underline-offset-4 hover:opacity-80"
               >
                 Daftar sekarang
               </Link>
