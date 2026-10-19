@@ -50,27 +50,27 @@ export function ForgotPasswordForm({
       {success ? (
         <Card className="cartoon-card bg-white">
           <CardHeader className="text-center pb-2">
-            <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-[#2D2D2D] bg-[#FFE66D] shadow-[3px_3px_0px_#2D2D2D]">
+            <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm">
               <img
                 src="/logo-icon.png"
                 alt="Logo"
                 className="h-8 w-8 object-contain"
               />
             </div>
-            <CardTitle className="text-2xl font-black font-nunito text-[#2D2D2D]">
+            <CardTitle className="text-2xl font-black font-nunito text-[#4A3B45]">
               Periksa Email Anda
             </CardTitle>
-            <CardDescription className="text-xs font-bold text-[#2D2D2D]/70">
+            <CardDescription className="text-xs font-bold text-[#4A3B45]/70">
               Petunjuk reset kata sandi telah dikirim
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-center">
-            <p className="text-xs font-bold text-[#2D2D2D]/80 leading-relaxed">
+            <p className="text-xs font-bold text-[#4A3B45]/80 leading-relaxed">
               Jika email Anda terdaftar, Anda akan menerima email berisi tautan untuk mengatur ulang kata sandi.
             </p>
             <Link
               href="/auth/login"
-              className="cartoon-btn inline-block w-full bg-[#FF6B6B] text-white py-3 text-xs sm:text-sm font-black text-center"
+              className="cartoon-btn inline-block w-full bg-[#CC3D72] text-white py-3 text-xs sm:text-sm font-black text-center"
             >
               Kembali ke Halaman Masuk
             </Link>
@@ -79,24 +79,24 @@ export function ForgotPasswordForm({
       ) : (
         <Card className="cartoon-card bg-white">
           <CardHeader className="text-center pb-2">
-            <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-[#2D2D2D] bg-[#FFE66D] shadow-[3px_3px_0px_#2D2D2D]">
+            <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm">
               <img
                 src="/logo-icon.png"
                 alt="Logo"
                 className="h-8 w-8 object-contain"
               />
             </div>
-            <CardTitle className="text-2xl font-black font-nunito text-[#2D2D2D]">
+            <CardTitle className="text-2xl font-black font-nunito text-[#4A3B45]">
               Atur Ulang Kata Sandi
             </CardTitle>
-            <CardDescription className="text-xs font-bold text-[#2D2D2D]/70">
+            <CardDescription className="text-xs font-bold text-[#4A3B45]/70">
               Masukkan alamat email Anda untuk menerima tautan reset kata sandi
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleForgotPassword} className="space-y-4">
               <div className="grid gap-1.5">
-                <Label htmlFor="email" className="text-xs font-black text-[#2D2D2D]">
+                <Label htmlFor="email" className="text-xs font-black text-[#4A3B45]">
                   Alamat Email
                 </Label>
                 <Input
@@ -106,29 +106,29 @@ export function ForgotPasswordForm({
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-xl border-[2.5px] border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] focus-visible:ring-0 focus:outline-none"
+                  className="rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus-visible:ring-0 focus:outline-none"
                 />
               </div>
 
               {error && (
-                <div className="rounded-xl border-[2px] border-[#2D2D2D] bg-[#FFD8C0] p-3 text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D]">
+                <div className="rounded-xl border border-[#F5D0E0] bg-[#FFE3EC] p-3 text-xs font-black text-[#4A3B45] shadow-sm">
                   {error}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="cartoon-btn w-full bg-[#FF6B6B] text-white py-3 text-sm font-black disabled:opacity-50"
+                className="cartoon-btn w-full bg-[#CC3D72] text-white py-3 text-sm font-black disabled:opacity-50"
                 disabled={isLoading}
               >
                 {isLoading ? "Mengirim Tautan..." : "Kirim Tautan Reset"}
               </button>
 
-              <div className="mt-4 text-center text-xs font-bold text-[#2D2D2D]/70">
+              <div className="mt-4 text-center text-xs font-bold text-[#4A3B45]/70">
                 Ingat kata sandi Anda?{" "}
                 <Link
                   href="/auth/login"
-                  className="font-black text-[#FF6B6B] underline underline-offset-4 hover:opacity-80"
+                  className="font-black text-[#CC3D72] underline underline-offset-4 hover:opacity-80"
                 >
                   Masuk kembali
                 </Link>

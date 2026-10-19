@@ -4,57 +4,59 @@
 
 @layer base {
   :root {
-    --background: 43 100% 95%; /* #FFF8E7 Cartoon Cream */
-    --foreground: 0 0% 18%; /* #2D2D2D Cartoon Dark */
+    /* Palet Rose Pink — lembut, hangat, modern */
+    --background: 340 100% 98%; /* #FFF5F8 Soft Blush */
+    --foreground: 320 11% 26%; /* #4A3B45 Deep Plum */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
+    --card-foreground: 320 11% 26%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
-    --primary: 0 100% 71%; /* #FF6B6B Cartoon Coral */
+    --popover-foreground: 320 11% 26%;
+    --primary: 338 58% 52%; /* #CC3D72 Rose Pink */
     --primary-foreground: 0 0% 100%;
-    --secondary: 176 56% 55%; /* #4ECDC4 Cartoon Teal */
-    --secondary-foreground: 0 0% 18%;
-    --muted: 43 40% 90%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 49 100% 71%; /* #FFE66D Cartoon Yellow */
-    --accent-foreground: 0 0% 18%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 18%; /* Thick distinct dark border */
-    --input: 0 0% 18%;
-    --ring: 0 100% 71%;
-    --chart-1: 0 100% 71%;
-    --chart-2: 176 56% 55%;
-    --chart-3: 49 100% 71%;
-    --chart-4: 258 90% 76%;
-    --chart-5: 144 73% 88%;
+    --secondary: 337 100% 94%; /* #FFE0EC Baby Pink */
+    --secondary-foreground: 320 11% 26%;
+    --muted: 340 60% 96%;
+    --muted-foreground: 320 9% 45%;
+    --accent: 337 100% 88%; /* #FFC2D9 Soft Pink */
+    --accent-foreground: 320 11% 26%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 334 65% 89%; /* #F5D0E0 Rose Border */
+    --input: 334 65% 89%;
+    --ring: 338 58% 52%;
+    --chart-1: 338 58% 52%;
+    --chart-2: 340 82% 76%;
+    --chart-3: 337 100% 88%;
+    --chart-4: 285 45% 74%;
+    --chart-5: 337 100% 94%;
     --radius: 1.25rem;
   }
   .dark {
-    --background: 43 100% 95%; /* #FFF8E7 Cartoon Cream */
-    --foreground: 0 0% 18%; /* #2D2D2D Cartoon Dark */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
-    --primary: 0 100% 71%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 176 56% 55%;
-    --secondary-foreground: 0 0% 18%;
-    --muted: 43 40% 90%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 49 100% 71%;
-    --accent-foreground: 0 0% 18%;
+    /* Mode gelap tetap bernuansa rose agar konsisten dengan identitas pink */
+    --background: 335 22% 12%;
+    --foreground: 340 60% 96%;
+    --card: 335 20% 16%;
+    --card-foreground: 340 60% 96%;
+    --popover: 335 20% 16%;
+    --popover-foreground: 340 60% 96%;
+    --primary: 338 70% 62%;
+    --primary-foreground: 335 22% 12%;
+    --secondary: 335 24% 22%;
+    --secondary-foreground: 340 60% 96%;
+    --muted: 335 20% 20%;
+    --muted-foreground: 340 25% 72%;
+    --accent: 337 60% 32%;
+    --accent-foreground: 340 60% 96%;
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 0 100% 71%;
-    --chart-1: 0 100% 71%;
-    --chart-2: 176 56% 55%;
-    --chart-3: 49 100% 71%;
-    --chart-4: 258 90% 76%;
-    --chart-5: 144 73% 88%;
+    --border: 335 24% 26%;
+    --input: 335 24% 26%;
+    --ring: 338 70% 62%;
+    --chart-1: 338 70% 62%;
+    --chart-2: 340 82% 76%;
+    --chart-3: 337 100% 88%;
+    --chart-4: 285 45% 74%;
+    --chart-5: 340 60% 96%;
   }
 }
 
@@ -63,37 +65,44 @@
     font-family: var(--font-nunito), "Nunito", sans-serif;
   }
 
-  /* Cartoon card style */
+  /* Kartu bergaya modern: border tipis, sudut membulat, bayangan lembut */
   .cartoon-card {
-    border: 3px solid #2D2D2D;
-    box-shadow: 5px 5px 0px #2D2D2D;
+    border: 1px solid #F5D0E0;
+    box-shadow: 0 6px 22px -10px rgba(204, 61, 114, 0.3);
     border-radius: 1.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
   }
 
   .cartoon-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 7px 7px 0px #2D2D2D;
+    transform: translateY(-4px);
+    border-color: #F0BBD4;
+    box-shadow: 0 18px 34px -16px rgba(204, 61, 114, 0.38);
   }
 
-  /* Cartoon button */
+  /* Tombol bergaya modern: lembut, membulat, dengan elevasi halus */
   .cartoon-btn {
-    border: 3px solid #2D2D2D;
-    box-shadow: 4px 4px 0px #2D2D2D;
+    border: 1px solid transparent;
+    box-shadow: 0 4px 14px -5px rgba(204, 61, 114, 0.5);
     border-radius: 9999px;
     font-weight: 800;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
     cursor: pointer;
   }
 
   .cartoon-btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px #2D2D2D;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px -8px rgba(204, 61, 114, 0.55);
+    filter: brightness(1.04);
   }
 
   .cartoon-btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px #2D2D2D;
+    transform: translateY(0);
+    box-shadow: 0 3px 9px -3px rgba(204, 61, 114, 0.5);
+  }
+
+  .cartoon-btn:disabled {
+    box-shadow: none;
+    filter: none;
   }
 
   .section-padding {
@@ -101,6 +110,13 @@
     padding-bottom: 4rem;
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .section-padding {
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
   }
 }
 
@@ -163,8 +179,44 @@
   * {
     box-sizing: border-box;
   }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     font-family: var(--font-nunito), "Nunito", sans-serif;
     @apply bg-background text-foreground;
+    /* Aksen gradasi rose lembut agar halaman terasa hangat */
+    background-image:
+      radial-gradient(circle at 8% -5%, rgba(255, 194, 217, 0.45) 0%, transparent 42%),
+      radial-gradient(circle at 95% 105%, rgba(255, 224, 236, 0.55) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background-color: #FFC2D9;
+    color: #4A3B45;
+  }
+
+  /* Scrollbar lembut agar konsisten dengan tema */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #FFF5F8;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #F0BBD4;
+    border-radius: 9999px;
+    border: 2px solid #FFF5F8;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #E79FC2;
   }
 }

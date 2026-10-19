@@ -43,3 +43,6 @@ next-env.d.ts
 
 # supabase - jangan di-push ke GitHub (berisi schema & kredensial DB)
 /supabase/
+
+# docs - jangan di-push ke GitHub (dokumen internal)
+/docs/

@@ -172,17 +172,17 @@ export function SignUpForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="cartoon-card bg-white">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-[#2D2D2D] bg-[#4ECDC4] shadow-[3px_3px_0px_#2D2D2D]">
+          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#F48FB1] shadow-sm">
             <img
               src="/logo-icon.png"
               alt="Logo"
               className="h-8 w-8 object-contain"
             />
           </div>
-          <CardTitle className="text-2xl font-black font-nunito text-[#2D2D2D]">
+          <CardTitle className="text-2xl font-black font-nunito text-[#4A3B45]">
             Daftar Akun Baru
           </CardTitle>
-          <CardDescription className="text-xs font-bold text-[#2D2D2D]/70">
+          <CardDescription className="text-xs font-bold text-[#4A3B45]/70">
             Bergabunglah bersama komunitas fashion Curated OOTD
           </CardDescription>
         </CardHeader>
@@ -193,7 +193,7 @@ export function SignUpForm({
               type="button"
               onClick={handleGoogleSignUp}
               disabled={isGoogleLoading || isLoading}
-              className="w-full flex items-center justify-center gap-3 py-3 font-black text-xs sm:text-sm rounded-full border-[3px] border-[#2D2D2D] bg-white text-[#2D2D2D] shadow-[3px_3px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#2D2D2D] transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 py-3 font-black text-xs sm:text-sm rounded-full border border-[#F5D0E0] bg-white text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all disabled:opacity-50"
             >
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -205,8 +205,8 @@ export function SignUpForm({
             </button>
 
             <div className="relative flex items-center justify-center my-1">
-              <div className="w-full border-t-2 border-[#2D2D2D]/20" />
-              <span className="absolute bg-white px-3 text-[10px] font-black uppercase tracking-wider text-[#2D2D2D]/60">
+              <div className="w-full border-t border-[#F0CBDC]" />
+              <span className="absolute bg-white px-3 text-[10px] font-black uppercase tracking-wider text-[#4A3B45]/60">
                 atau isi formulir
               </span>
             </div>
@@ -242,8 +242,8 @@ export function SignUpForm({
               </div>
 
               <div className="grid gap-1.5">
-                <Label htmlFor="username" className="text-xs font-black text-[#2D2D2D]">
-                  Username <span className="text-[#FF6B6B]">*</span>
+                <Label htmlFor="username" className="text-xs font-black text-[#4A3B45]">
+                  Username <span className="text-[#CC3D72]">*</span>
                 </Label>
                 <Input
                   id="username"
@@ -252,12 +252,12 @@ export function SignUpForm({
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="rounded-xl border-[2.5px] border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] focus-visible:ring-0 focus:outline-none"
+                  className="rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus-visible:ring-0 focus:outline-none"
                 />
               </div>
 
               <div className="grid gap-1.5">
-                <Label htmlFor="email" className="text-xs font-black text-[#2D2D2D]">
+                <Label htmlFor="email" className="text-xs font-black text-[#4A3B45]">
                   Email (Opsional untuk login/reset sandi)
                 </Label>
                 <Input
@@ -266,14 +266,14 @@ export function SignUpForm({
                   placeholder="@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-xl border-[2.5px] border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] focus-visible:ring-0 focus:outline-none"
+                  className="rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus-visible:ring-0 focus:outline-none"
                 />
               </div>
 
               {/* Input Kata Sandi dengan Ikon Mata */}
               <div className="grid gap-1.5">
-                <Label htmlFor="password" className="text-xs font-black text-[#2D2D2D]">
-                  Kata Sandi <span className="text-[#FF6B6B]">*</span>
+                <Label htmlFor="password" className="text-xs font-black text-[#4A3B45]">
+                  Kata Sandi <span className="text-[#CC3D72]">*</span>
                 </Label>
                 <div className="relative">
                   <Input
@@ -283,12 +283,12 @@ export function SignUpForm({
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="rounded-xl border-[2.5px] border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] focus-visible:ring-0 focus:outline-none pr-10"
+                    className="rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus-visible:ring-0 focus:outline-none pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2D2D2D]/60 hover:text-[#2D2D2D] transition-colors p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B45]/60 hover:text-[#4A3B45] transition-colors p-1"
                     aria-label={showPassword ? "Sembunyikan Kata Sandi" : "Lihat Kata Sandi"}
                   >
                     {showPassword ? (
@@ -300,24 +300,24 @@ export function SignUpForm({
                 </div>
 
                 {/* Indikator Checklist Kriteria Sandi */}
-                <div className="grid grid-cols-2 gap-1.5 rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] p-3 text-[11px] font-bold shadow-[2px_2px_0px_#2D2D2D] mt-1">
-                  <div className={cn("flex items-center gap-1.5", hasMinLength ? "text-emerald-600" : "text-[#2D2D2D]/60")}>
+                <div className="grid grid-cols-2 gap-1.5 rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] p-3 text-[11px] font-bold shadow-sm mt-1">
+                  <div className={cn("flex items-center gap-1.5", hasMinLength ? "text-emerald-600" : "text-[#4A3B45]/60")}>
                     {hasMinLength ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
                     <span>Min. 8 Karakter</span>
                   </div>
-                  <div className={cn("flex items-center gap-1.5", hasUppercase ? "text-emerald-600" : "text-[#2D2D2D]/60")}>
+                  <div className={cn("flex items-center gap-1.5", hasUppercase ? "text-emerald-600" : "text-[#4A3B45]/60")}>
                     {hasUppercase ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
                     <span>Huruf Besar (A-Z)</span>
                   </div>
-                  <div className={cn("flex items-center gap-1.5", hasLowercase ? "text-emerald-600" : "text-[#2D2D2D]/60")}>
+                  <div className={cn("flex items-center gap-1.5", hasLowercase ? "text-emerald-600" : "text-[#4A3B45]/60")}>
                     {hasLowercase ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
                     <span>Huruf Kecil (a-z)</span>
                   </div>
-                  <div className={cn("flex items-center gap-1.5", hasNumber ? "text-emerald-600" : "text-[#2D2D2D]/60")}>
+                  <div className={cn("flex items-center gap-1.5", hasNumber ? "text-emerald-600" : "text-[#4A3B45]/60")}>
                     {hasNumber ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
                     <span>Angka (0-9)</span>
                   </div>
-                  <div className={cn("flex items-center gap-1.5 col-span-2", hasSymbol ? "text-emerald-600" : "text-[#2D2D2D]/60")}>
+                  <div className={cn("flex items-center gap-1.5 col-span-2", hasSymbol ? "text-emerald-600" : "text-[#4A3B45]/60")}>
                     {hasSymbol ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
                     <span>Simbol (@$!%*?&)</span>
                   </div>
@@ -326,8 +326,8 @@ export function SignUpForm({
 
               {/* Input Ulangi Kata Sandi */}
               <div className="grid gap-1.5">
-                <Label htmlFor="repeat-password" className="text-xs font-black text-[#2D2D2D]">
-                  Ulangi Kata Sandi <span className="text-[#FF6B6B]">*</span>
+                <Label htmlFor="repeat-password" className="text-xs font-black text-[#4A3B45]">
+                  Ulangi Kata Sandi <span className="text-[#CC3D72]">*</span>
                 </Label>
                 <div className="relative">
                   <Input
@@ -337,12 +337,12 @@ export function SignUpForm({
                     required
                     value={repeatPassword}
                     onChange={(e) => setRepeatPassword(e.target.value)}
-                    className="rounded-xl border-[2.5px] border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] focus-visible:ring-0 focus:outline-none pr-10"
+                    className="rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] shadow-sm focus-visible:ring-0 focus:outline-none pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2D2D2D]/60 hover:text-[#2D2D2D] transition-colors p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B45]/60 hover:text-[#4A3B45] transition-colors p-1"
                     aria-label={showRepeatPassword ? "Sembunyikan ulangi kata sandi" : "Lihat ulangi kata sandi"}
                   >
                     {showRepeatPassword ? (
@@ -355,25 +355,25 @@ export function SignUpForm({
               </div>
 
               {error && (
-                <div className="rounded-xl border-[2px] border-[#2D2D2D] bg-[#FFD8C0] p-3 text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D]">
+                <div className="rounded-xl border border-[#F5D0E0] bg-[#FFE3EC] p-3 text-xs font-black text-[#4A3B45] shadow-sm">
                   {error}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="cartoon-btn w-full bg-[#4ECDC4] text-[#2D2D2D] py-3 text-sm font-black disabled:opacity-50"
+                className="cartoon-btn w-full bg-[#F48FB1] text-[#4A3B45] py-3 text-sm font-black disabled:opacity-50"
                 disabled={isLoading || isGoogleLoading || !isPasswordValid}
               >
                 {isLoading ? "Membuat Akun..." : "Daftar Akun"}
               </button>
             </form>
 
-            <div className="text-center text-xs font-bold text-[#2D2D2D]/70">
+            <div className="text-center text-xs font-bold text-[#4A3B45]/70">
               Sudah memiliki akun?{" "}
               <Link
                 href="/auth/login"
-                className="font-black text-[#FF6B6B] underline underline-offset-4 hover:opacity-80"
+                className="font-black text-[#CC3D72] underline underline-offset-4 hover:opacity-80"
               >
                 Masuk di sini
               </Link>

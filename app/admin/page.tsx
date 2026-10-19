@@ -32,14 +32,14 @@ export default async function AdminDashboardPage() {
       <div className="relative overflow-hidden cartoon-card bg-white p-6 sm:p-8">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2.5 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#2D2D2D] bg-[#FFE66D] px-3.5 py-1 text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D]">
-              <Sparkles className="h-3.5 w-3.5 text-[#FF6B6B]" />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-[#FFC2D9] px-3.5 py-1 text-xs font-black text-[#4A3B45] shadow-sm">
+              <Sparkles className="h-3.5 w-3.5 text-[#CC3D72]" />
               Pusat Kontrol Kurasi & Afiliasi
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black font-nunito tracking-tight text-[#2D2D2D]">
+            <h1 className="text-2xl sm:text-4xl font-black font-nunito tracking-tight text-[#4A3B45]">
               Dashboard Administrator
             </h1>
-            <p className="text-xs sm:text-sm font-bold text-[#2D2D2D]/75 leading-relaxed">
+            <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/75 leading-relaxed">
               Pantau performa lookbook inspirasi OOTD, kelola hotspot interaktif produk, dan monitor konversi tautan afiliasi belanja.
             </p>
           </div>
@@ -48,20 +48,20 @@ export default async function AdminDashboardPage() {
             <Link
               href="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 rounded-full border-2 border-[#2D2D2D] bg-[#FFF8E7] px-4 py-2 text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D0E0] bg-[#FFF5F8] px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
             >
               Lihat Web Live <ExternalLink className="h-3.5 w-3.5" />
             </Link>
             <Link
               href="/admin/analytics"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-[#2D2D2D] bg-[#C8F7DC] px-4 py-2 text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-[#F5D0E0] bg-[#FFE0EC] px-4 py-2 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all"
             >
-              <BarChart3 className="h-4 w-4 text-[#2D2D2D]" />
+              <BarChart3 className="h-4 w-4 text-[#4A3B45]" />
               Laporan Analitik
             </Link>
             <Link
               href="/admin/outfit/new"
-              className="cartoon-btn inline-flex items-center gap-2 bg-[#FF6B6B] text-white px-5 py-2.5 text-xs font-black"
+              className="cartoon-btn inline-flex items-center gap-2 bg-[#CC3D72] text-white px-5 py-2.5 text-xs font-black"
             >
               <PlusCircle className="h-4 w-4" />
               Tambah Look Baru

@@ -36,12 +36,15 @@ export default function ShopTheLook({
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
       {/* Image with interactive hotspot pins */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-border bg-muted">
-        <img
-          src={imageUrl}
-          alt="Outfit Look"
-          className="h-full w-full object-cover"
-        />
+      <div className="relative aspect-[3/4] w-full rounded-2xl border border-border bg-muted">
+        {/* Gambar diklip sendiri agar tooltip hotspot tidak ikut terpotong di layer atas */}
+        <div className="absolute inset-0 overflow-hidden rounded-2xl">
+          <img
+            src={imageUrl}
+            alt="Outfit Look"
+            className="h-full w-full object-cover"
+          />
+        </div>
 
         {items.map((item) => {
           if (item.x === undefined || item.y === undefined) return null;
@@ -54,9 +57,9 @@ export default function ShopTheLook({
               onClick={() => setActiveItemId(isSelected ? null : item.id)}
             >
               <div className="relative flex items-center justify-center">
-                <span className="absolute inline-flex h-7 w-7 animate-ping rounded-full bg-primary/40 opacity-75" />
+                <span className="absolute inline-flex h-8 w-8 sm:h-7 sm:w-7 animate-ping rounded-full bg-primary/40 opacity-75" />
                 <button
-                  className={`relative flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold shadow-md transition-transform ${
+                  className={`relative flex h-7 w-7 sm:h-6 sm:w-6 items-center justify-center rounded-full text-xs font-bold shadow-md transition-transform ${
                     isSelected
                       ? "scale-125 bg-primary text-primary-foreground"
                       : "bg-background/90 text-foreground hover:scale-110"

@@ -30,7 +30,7 @@ export default function Footer() {
   > = {
     dana: {
       name: "DANA",
-      number: "085864115336",
+      number: "089674935980",
       recipient: "Curated OOTD Team",
       deeplink: "https://link.dana.id",
       fallback: "https://dana.id",
@@ -38,7 +38,7 @@ export default function Footer() {
     },
     gopay: {
       name: "GoPay",
-      number: "085864115336",
+      number: "089674935980",
       recipient: "Curated OOTD Team",
       deeplink: "https://link.gopay.co.id",
       fallback: "https://gopay.co.id",
@@ -91,7 +91,7 @@ export default function Footer() {
     },
     {
       name: "WhatsApp",
-      href: "https://wa.me/6285864115336?text=Halo%20Curated%20OOTD,%20saya%20tertarik%20dengan%20koleksi%20outfit%20Anda",
+      href: "https://wa.me/62895326595608?text=Halo%20Curated%20OOTD,%20saya%20tertarik%20dengan%20koleksi%20outfit%20Anda",
       label: "Chat WhatsApp",
       icon: (
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -126,13 +126,13 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="w-full border-t-[3px] border-[#2D2D2D] bg-[#FFF8E7]">
+      <footer className="w-full border-t border-[#F5D0E0] bg-[#FFF5F8]">
         <div className="container max-w-7xl py-12 px-4 sm:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-8 border-b-2 border-[#2D2D2D]/20">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-8 border-b border-[#F0CBDC]">
             {/* Logo & Deskripsi */}
             <div className="text-center md:text-left space-y-3 max-w-sm">
               <Link href="/" className="inline-flex items-center gap-3 group">
-                <div className="h-12 w-12 rounded-2xl border-[3px] border-[#2D2D2D] bg-white p-1.5 shadow-[3px_3px_0px_#2D2D2D] transition-transform duration-200 group-hover:rotate-6">
+                <div className="h-12 w-12 rounded-2xl border border-[#F5D0E0] bg-white p-1.5 shadow-sm transition-transform duration-200 group-hover:rotate-6">
                   <img
                     src="/logo-icon.png"
                     alt="Curated OOTD Logo"
@@ -140,16 +140,16 @@ export default function Footer() {
                   />
                 </div>
                 <div className="flex flex-col text-left">
-                  <div className="text-xl font-black tracking-tight font-nunito leading-none text-[#2D2D2D]">
+                  <div className="text-xl font-black tracking-tight font-nunito leading-none text-[#4A3B45]">
                     <span>Curated</span>
-                    <span className="text-[#FF6B6B] ml-1">OOTD</span>
+                    <span className="text-[#CC3D72] ml-1">OOTD</span>
                   </div>
-                  <span className="text-[10px] text-[#2D2D2D]/70 font-extrabold mt-1">
+                  <span className="text-[10px] text-[#4A3B45]/70 font-extrabold mt-1">
                     Pakaian Pilihan • Gaya Lebih Baik
                   </span>
                 </div>
               </Link>
-              <p className="text-xs font-semibold text-[#2D2D2D]/80 leading-relaxed">
+              <p className="text-xs font-semibold text-[#4A3B45]/80 leading-relaxed">
                 Inspirasi lookbook outfit kurasi harian dengan hotspot interaktif untuk belanja langsung dari marketplace pilihan.
               </p>
             </div>
@@ -163,14 +163,14 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="flex items-center gap-2.5 rounded-2xl border-2 border-[#2D2D2D] bg-white px-4 py-2.5 text-xs font-black text-[#2D2D2D] shadow-[3px_3px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#2D2D2D] transition-all"
+                  className="flex items-center gap-2.5 rounded-2xl border border-[#F5D0E0] bg-white px-4 py-2.5 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
                 >
                   {social.icon}
                   <div className="flex flex-col text-left">
                     <span className="text-[9px] uppercase font-black tracking-wider opacity-60">
                       {social.name}
                     </span>
-                    <span className="font-black text-[#2D2D2D]">{social.label}</span>
+                    <span className="font-black text-[#4A3B45]">{social.label}</span>
                   </div>
                 </a>
               ))}
@@ -179,21 +179,21 @@ export default function Footer() {
               <button
                 type="button"
                 onClick={() => setShowDonateModal(true)}
-                className="flex items-center gap-2.5 rounded-2xl border-2 border-[#2D2D2D] bg-[#FFE66D] px-4 py-2.5 text-xs font-black text-[#2D2D2D] shadow-[3px_3px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#2D2D2D] transition-all"
+                className="flex items-center gap-2.5 rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] px-4 py-2.5 text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
               >
-                <Coffee className="h-5 w-5 text-[#2D2D2D]" />
+                <Coffee className="h-5 w-5 text-[#4A3B45]" />
                 <div className="flex flex-col text-left">
                   <span className="text-[9px] uppercase font-black tracking-wider opacity-70">
                     Donasi / Sawer
                   </span>
-                  <span className="font-black text-[#2D2D2D]">Dukung Kami</span>
+                  <span className="font-black text-[#4A3B45]">Dukung Kami</span>
                 </div>
               </button>
             </div>
           </div>
 
           {/* Copyright & Info Pembuat */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs font-bold text-[#2D2D2D]/70">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs font-bold text-[#4A3B45]/70">
             <p>© <span suppressHydrationWarning>{currentYear || ""}</span> Curated OOTD. Hak Cipta Dilindungi.</p>
             <div className="flex items-center gap-1.5">
               <span>Dibuat oleh</span>
@@ -201,7 +201,7 @@ export default function Footer() {
                 href="https://www.instagram.com/curatedootd10?srtk=MThpNHAxcHUwbWd6MA=="
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-black text-[#2D2D2D] hover:text-[#FF6B6B] transition-colors underline decoration-[#FF6B6B] decoration-2 underline-offset-4"
+                className="font-black text-[#4A3B45] hover:text-[#CC3D72] transition-colors underline decoration-[#CC3D72] decoration-2 underline-offset-4"
               >
                 Team Curate OOTD
               </a>

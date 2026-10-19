@@ -39,23 +39,23 @@ export default async function AdminSettingsPage() {
 
   return (
     <main className="container max-w-4xl py-8 px-4 sm:px-6 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b-2 border-[#2D2D2D]/20 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#F0CBDC] gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-[3px] border-[#2D2D2D] bg-[#FFE66D] shadow-[3px_3px_0px_#2D2D2D]">
-            <Settings className="h-6 w-6 text-[#2D2D2D]" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm">
+            <Settings className="h-6 w-6 text-[#4A3B45]" />
           </div>
           <div>
-            <h1 className="text-2xl font-black font-nunito tracking-tight sm:text-3xl text-[#2D2D2D]">
+            <h1 className="text-2xl font-black font-nunito tracking-tight sm:text-3xl text-[#4A3B45]">
               Pengaturan Profil Admin
             </h1>
-            <p className="text-xs sm:text-sm font-bold text-[#2D2D2D]/70 mt-0.5">
+            <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/70 mt-0.5">
               Ubah username, email, foto profil, dan kata sandi akun administrator.
             </p>
           </div>
         </div>
         <Link
           href="/admin"
-          className="cartoon-btn inline-flex items-center gap-1.5 self-start sm:self-auto bg-white px-4 py-2 text-xs font-black text-[#2D2D2D] border-2 border-[#2D2D2D]"
+          className="cartoon-btn inline-flex items-center gap-1.5 self-start sm:self-auto bg-white px-4 py-2 text-xs font-black text-[#4A3B45] border border-[#F5D0E0]"
         >
           <ArrowLeft className="h-4 w-4" /> Kembali ke Dashboard
         </Link>

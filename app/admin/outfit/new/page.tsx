@@ -84,81 +84,81 @@ export default function NewOutfitPage() {
     <main className="container max-w-5xl py-8 px-4 sm:px-6 space-y-6">
       <Link
         href="/admin"
-        className="cartoon-btn inline-flex items-center gap-2 bg-white px-4 py-2 text-xs font-black text-[#2D2D2D] border-2 border-[#2D2D2D]"
+        className="cartoon-btn inline-flex items-center gap-2 bg-white px-4 py-2 text-xs font-black text-[#4A3B45] border border-[#F5D0E0]"
       >
         <ArrowLeft className="h-4 w-4" /> Kembali ke Admin
       </Link>
 
       <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-[3px] border-[#2D2D2D] bg-[#FFE66D] shadow-[3px_3px_0px_#2D2D2D]">
-          <Sparkles className="h-6 w-6 text-[#FF6B6B]" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#F5D0E0] bg-[#FFC2D9] shadow-sm">
+          <Sparkles className="h-6 w-6 text-[#CC3D72]" />
         </div>
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black font-nunito tracking-tight text-[#2D2D2D]">
+          <h1 className="text-2xl sm:text-3xl font-black font-nunito tracking-tight text-[#4A3B45]">
             Upload Outfit Baru
           </h1>
-          <p className="text-xs sm:text-sm font-bold text-[#2D2D2D]/70">
+          <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/70">
             Tambahkan inspirasi gaya OOTD lengkap dengan tautan affiliasi produk
           </p>
         </div>
       </div>
 
       {message && (
-        <div className="cartoon-card border-2 border-[#2D2D2D] bg-[#C8F7DC] p-4 text-xs sm:text-sm font-black text-[#2D2D2D]">
+        <div className="cartoon-card border border-[#F5D0E0] bg-[#FFE0EC] p-4 text-xs sm:text-sm font-black text-[#4A3B45]">
           {message}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="cartoon-card bg-white p-6 sm:p-8 space-y-5">
-          <div className="border-b-2 border-[#2D2D2D]/20 pb-3">
-            <h2 className="font-black font-nunito text-lg text-[#2D2D2D]">Informasi Outfit</h2>
-            <p className="text-xs font-bold text-[#2D2D2D]/70">Detail deskripsi dan gambar utama kurasi</p>
+          <div className="border-b border-[#F0CBDC] pb-3">
+            <h2 className="font-black font-nunito text-lg text-[#4A3B45]">Informasi Outfit</h2>
+            <p className="text-xs font-bold text-[#4A3B45]/70">Detail deskripsi dan gambar utama kurasi</p>
           </div>
           <div>
-            <label className="block text-xs font-black text-[#2D2D2D] mb-1.5">Judul Outfit</label>
+            <label className="block text-xs font-black text-[#4A3B45] mb-1.5">Judul Outfit</label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Minimalist Casual Summer Look"
-              className="w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/40 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+              className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-black text-[#2D2D2D] mb-1.5">Deskripsi</label>
+            <label className="block text-xs font-black text-[#4A3B45] mb-1.5">Deskripsi</label>
             <textarea
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Deskripsi singkat gaya pakaian atau inspirasi..."
-              className="w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/40 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] resize-none"
+              className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72] resize-none"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-black text-[#2D2D2D] mb-1.5">Image URL</label>
+              <label className="block text-xs font-black text-[#4A3B45] mb-1.5">Image URL</label>
               <input
                 type="url"
                 required
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="https://images.unsplash.com/..."
-                className="w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/40 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black text-[#2D2D2D] mb-1.5">Tags (pisahkan koma)</label>
+              <label className="block text-xs font-black text-[#4A3B45] mb-1.5">Tags (pisahkan koma)</label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="summer, casual, earth-tone"
-                className="w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/40 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72]"
               />
             </div>
           </div>
@@ -166,9 +166,9 @@ export default function NewOutfitPage() {
 
         {/* Hotspot tagging */}
         <div className="cartoon-card bg-white p-6 sm:p-8 space-y-4">
-          <div className="border-b-2 border-[#2D2D2D]/20 pb-3">
-            <h2 className="font-black font-nunito text-lg text-[#2D2D2D]">Tag Hotspot Pakaian &amp; Produk Affiliate</h2>
-            <p className="text-xs font-bold text-[#2D2D2D]/70">Klik pada gambar untuk menandai produk pakaian</p>
+          <div className="border-b border-[#F0CBDC] pb-3">
+            <h2 className="font-black font-nunito text-lg text-[#4A3B45]">Tag Hotspot Pakaian &amp; Produk Affiliate</h2>
+            <p className="text-xs font-bold text-[#4A3B45]/70">Klik pada gambar untuk menandai produk pakaian</p>
           </div>
           <HotspotEditor
             imageUrl={imageUrl}
@@ -180,14 +180,14 @@ export default function NewOutfitPage() {
         <div className="flex justify-end gap-3 pt-2">
           <Link
             href="/admin"
-            className="cartoon-btn bg-white px-5 py-2.5 text-xs sm:text-sm font-black text-[#2D2D2D] border-2 border-[#2D2D2D]"
+            className="cartoon-btn bg-white px-5 py-2.5 text-xs sm:text-sm font-black text-[#4A3B45] border border-[#F5D0E0]"
           >
             Batal
           </Link>
           <button
             type="submit"
             disabled={saving}
-            className="cartoon-btn inline-flex items-center gap-2 bg-[#FF6B6B] px-6 py-2.5 text-xs sm:text-sm font-black text-white disabled:opacity-50"
+            className="cartoon-btn inline-flex items-center gap-2 bg-[#CC3D72] px-6 py-2.5 text-xs sm:text-sm font-black text-white disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             {saving ? "Menyimpan..." : "Simpan Outfit"}

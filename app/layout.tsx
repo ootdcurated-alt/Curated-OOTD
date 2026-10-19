@@ -50,7 +50,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <Suspense fallback={<div className="h-[72px] w-full border-b-[3px] border-[#2D2D2D] bg-[#FFF8E7]" />}>
+          <Suspense fallback={<div className="h-[72px] w-full border-b border-[#F5D0E0] bg-[#FFF5F8]" />}>
             <Navbar />
           </Suspense>
           <div className="flex-1">{children}</div>

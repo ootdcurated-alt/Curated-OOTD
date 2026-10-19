@@ -204,6 +204,7 @@ export default function Mannequin3DViewer({
             transform: `scale(${zoom})`,
             height: "100%",
             width: "320px",
+            maxWidth: "100%",
           }}
         >
           <svg

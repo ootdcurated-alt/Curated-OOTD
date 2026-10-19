@@ -40,7 +40,7 @@ export default function OutfitCard({ outfit }: OutfitCardProps) {
   return (
     <div className="group relative overflow-hidden cartoon-card bg-white transition-all duration-300">
       <Link href={`/outfit/${outfit.id}`} className="block">
-        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#FFE66D]/20 border-b-[3px] border-[#2D2D2D]">
+        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#FFC2D9]/20 border-b border-[#F5D0E0]">
           <img
             src={outfit.image_url}
             alt={outfit.title}
@@ -50,20 +50,20 @@ export default function OutfitCard({ outfit }: OutfitCardProps) {
           <button
             onClick={toggleWishlist}
             aria-label="Save to Wishlist"
-            className="absolute top-3 right-3 rounded-full border-2 border-[#2D2D2D] bg-white p-2.5 text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] transition-transform duration-200 hover:scale-110 active:scale-95"
+            className="absolute top-3 right-3 rounded-full border border-[#F5D0E0] bg-white p-2.5 text-[#4A3B45] shadow-sm transition-transform duration-200 hover:scale-110 active:scale-95"
           >
             <Heart
-              className={`h-4 w-4 transition-colors ${liked ? "fill-[#FF6B6B] text-[#FF6B6B]" : "text-[#2D2D2D]"}`}
+              className={`h-4 w-4 transition-colors ${liked ? "fill-[#CC3D72] text-[#CC3D72]" : "text-[#4A3B45]"}`}
             />
           </button>
         </div>
 
         <div className="p-4 sm:p-5">
-          <h3 className="line-clamp-1 font-black text-base text-[#2D2D2D] font-nunito group-hover:text-[#FF6B6B] transition-colors">
+          <h3 className="line-clamp-1 font-black text-base text-[#4A3B45] font-nunito group-hover:text-[#CC3D72] transition-colors">
             {outfit.title}
           </h3>
           {outfit.description && (
-            <p className="line-clamp-2 mt-1.5 text-xs font-semibold text-[#2D2D2D]/70 leading-relaxed">
+            <p className="line-clamp-2 mt-1.5 text-xs font-semibold text-[#4A3B45]/70 leading-relaxed">
               {outfit.description}
             </p>
           )}
@@ -72,7 +72,7 @@ export default function OutfitCard({ outfit }: OutfitCardProps) {
               {outfit.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border-2 border-[#2D2D2D] bg-[#FFE66D] px-2.5 py-0.5 text-[10px] font-black text-[#2D2D2D] shadow-[1.5px_1.5px_0px_#2D2D2D]"
+                  className="rounded-full border border-[#F5D0E0] bg-[#FFC2D9] px-2.5 py-0.5 text-[10px] font-black text-[#4A3B45] shadow-sm"
                 >
                   #{tag}
                 </span>

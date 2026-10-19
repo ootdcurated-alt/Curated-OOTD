@@ -18,18 +18,18 @@ export default async function Navbar() {
   const isLoggedIn = !!user || hasAdminCookie;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b-[3px] border-[#2D2D2D] bg-[#FFF8E7]/95 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b border-[#F5D0E0] bg-[#FFF5F8]/95 backdrop-blur">
       <div className="container flex h-14 sm:h-18 max-w-7xl items-center justify-between px-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl border-[3px] border-[#2D2D2D] bg-white p-1 sm:p-1.5 shadow-[3px_3px_0px_#2D2D2D] transition-transform duration-200 group-hover:rotate-6">
+          <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl border border-[#F5D0E0] bg-white p-1 sm:p-1.5 shadow-sm transition-transform duration-200 group-hover:rotate-6">
             <img src="/logo-icon.png" alt="Curated OOTD Logo" className="h-full w-full object-contain" />
           </div>
           <div className="flex flex-col">
-            <div className="flex items-center text-lg sm:text-2xl font-black tracking-tight font-nunito leading-none text-[#2D2D2D]">
+            <div className="flex items-center text-lg sm:text-2xl font-black tracking-tight font-nunito leading-none text-[#4A3B45]">
               <span>Curated</span>
-              <span className="text-[#FF6B6B] ml-1">OOTD</span>
+              <span className="text-[#CC3D72] ml-1">OOTD</span>
             </div>
-            <span className="text-[9px] sm:text-[10px] tracking-wider text-[#2D2D2D]/70 hidden sm:block font-extrabold mt-1">
+            <span className="text-[9px] sm:text-[10px] tracking-wider text-[#4A3B45]/70 hidden sm:block font-extrabold mt-1">
               Pakaian Pilihan • Gaya Lebih Baik
             </span>
           </div>
@@ -39,32 +39,32 @@ export default async function Navbar() {
           <GuestGuardLink
             href="/creator"
             isLoggedIn={isLoggedIn}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border-2 border-[#2D2D2D] bg-white text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#2D2D2D] transition-all"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-[#F5D0E0] bg-white text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
           >
-            <Brush className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#4ECDC4]" />
+            <Brush className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#F48FB1]" />
             <span className="hidden sm:inline">Kreasi Outfit</span>
           </GuestGuardLink>
 
           <GuestGuardLink
             href="/wishlist"
             isLoggedIn={isLoggedIn}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border-2 border-[#2D2D2D] bg-white text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#2D2D2D] transition-all"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-[#F5D0E0] bg-white text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
           >
-            <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#FF6B6B]" />
+            <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#CC3D72]" />
             <span className="hidden sm:inline">Wishlist</span>
           </GuestGuardLink>
 
           {isAdmin && (
             <Link
               href="/admin"
-              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border-2 border-[#2D2D2D] bg-white text-xs font-black text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_#2D2D2D] transition-all"
+              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full border border-[#F5D0E0] bg-white text-xs font-black text-[#4A3B45] shadow-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-md transition-all"
             >
-              <PlusCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#A78BFA]" />
+              <PlusCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#C87DB8]" />
               <span className="hidden sm:inline">Admin</span>
             </Link>
           )}
 
-          <div className="h-5 w-[2px] bg-[#2D2D2D]/30 mx-0.5 sm:mx-1 hidden sm:block" />
+          <div className="h-5 w-[2px] bg-[#4A3B45]/30 mx-0.5 sm:mx-1 hidden sm:block" />
           <AuthButton />
         </nav>
       </div>

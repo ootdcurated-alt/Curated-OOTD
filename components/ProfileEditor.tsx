@@ -140,25 +140,25 @@ export default function ProfileEditor({
 
   return (
     <div className="cartoon-card bg-white p-6 sm:p-8 space-y-6">
-      <div className="border-b-2 border-[#2D2D2D]/20 pb-4">
-        <h2 className="text-xl sm:text-2xl font-black font-nunito flex items-center gap-2.5 text-[#2D2D2D]">
-          {isAdmin ? <ShieldCheck className="h-6 w-6 text-[#FF6B6B]" /> : <User className="h-6 w-6 text-[#FF6B6B]" />}
+      <div className="border-b border-[#F0CBDC] pb-4">
+        <h2 className="text-xl sm:text-2xl font-black font-nunito flex items-center gap-2.5 text-[#4A3B45]">
+          {isAdmin ? <ShieldCheck className="h-6 w-6 text-[#CC3D72]" /> : <User className="h-6 w-6 text-[#CC3D72]" />}
           Pengaturan Akun &amp; Keamanan
         </h2>
-        <p className="text-xs sm:text-sm font-bold text-[#2D2D2D]/70 mt-1">
+        <p className="text-xs sm:text-sm font-bold text-[#4A3B45]/70 mt-1">
           Perbarui foto profil, nama tampilan, dan kata sandi akun Anda.
         </p>
       </div>
 
       <form onSubmit={handleSaveProfile} className="space-y-6">
         {/* ── Foto Profil ── */}
-        <div className="flex flex-col sm:flex-row items-center gap-6 p-5 rounded-2xl bg-[#FFF8E7] border-2 border-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D]">
+        <div className="flex flex-col sm:flex-row items-center gap-6 p-5 rounded-2xl bg-[#FFF5F8] border border-[#F5D0E0] shadow-sm">
           <div className="relative group">
-            <div className="h-24 w-24 rounded-2xl border-[3px] border-[#2D2D2D] shadow-[3px_3px_0px_#2D2D2D] flex items-center justify-center overflow-hidden bg-white">
+            <div className="h-24 w-24 rounded-2xl border border-[#F5D0E0] shadow-sm flex items-center justify-center overflow-hidden bg-white">
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
-                <User className="h-10 w-10 text-[#2D2D2D]/50" />
+                <User className="h-10 w-10 text-[#4A3B45]/50" />
               )}
             </div>
             <label
@@ -176,14 +176,14 @@ export default function ProfileEditor({
             />
           </div>
           <div className="space-y-2 text-center sm:text-left">
-            <h3 className="font-black font-nunito text-sm sm:text-base text-[#2D2D2D]">Foto Profil</h3>
-            <p className="text-xs font-bold text-[#2D2D2D]/70">
+            <h3 className="font-black font-nunito text-sm sm:text-base text-[#4A3B45]">Foto Profil</h3>
+            <p className="text-xs font-bold text-[#4A3B45]/70">
               Format JPG, PNG, atau WEBP. Ukuran file maksimal 5MB.
             </p>
             <div className="flex items-center gap-3 justify-center sm:justify-start">
               <label
                 htmlFor="profile-avatar-upload"
-                className="inline-block text-xs font-black text-[#FF6B6B] hover:underline cursor-pointer"
+                className="inline-block text-xs font-black text-[#CC3D72] hover:underline cursor-pointer"
               >
                 Pilih Foto Baru
               </label>
@@ -191,7 +191,7 @@ export default function ProfileEditor({
                 <button
                   type="button"
                   onClick={handleRemoveAvatar}
-                  className="inline-flex items-center gap-1 text-xs font-black text-[#2D2D2D]/60 hover:text-[#FF6B6B] transition-colors"
+                  className="inline-flex items-center gap-1 text-xs font-black text-[#4A3B45]/60 hover:text-[#CC3D72] transition-colors"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Hapus Foto
@@ -204,7 +204,7 @@ export default function ProfileEditor({
         {/* ── Username & Email ── */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <label htmlFor="display-name" className="text-xs font-black text-[#2D2D2D]">
+            <label htmlFor="display-name" className="text-xs font-black text-[#4A3B45]">
               Nama / Username
             </label>
             <input
@@ -212,12 +212,12 @@ export default function ProfileEditor({
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Username baru"
-              className="w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+              className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] focus:outline-none focus:ring-2 focus:ring-[#CC3D72]"
             />
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="user-email" className="text-xs font-black text-[#2D2D2D]">
-              Email {!isAdmin && <span className="text-[#2D2D2D]/50 font-bold">(tidak bisa diubah)</span>}
+            <label htmlFor="user-email" className="text-xs font-black text-[#4A3B45]">
+              Email {!isAdmin && <span className="text-[#4A3B45]/50 font-bold">(tidak bisa diubah)</span>}
             </label>
             <input
               id="user-email"
@@ -227,7 +227,7 @@ export default function ProfileEditor({
               readOnly={!isAdmin}
               placeholder="email@gmail.com"
               className={cn(
-                "w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#2D2D2D] focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]",
+                "w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 text-xs sm:text-sm font-bold text-[#4A3B45] focus:outline-none focus:ring-2 focus:ring-[#CC3D72]",
                 !isAdmin && "opacity-70 cursor-not-allowed"
               )}
             />
@@ -235,17 +235,17 @@ export default function ProfileEditor({
         </div>
 
         {/* ── Ganti Password ── */}
-        <div className="border-t-2 border-[#2D2D2D]/20 pt-5 space-y-4">
+        <div className="border-t border-[#F0CBDC] pt-5 space-y-4">
           <div>
-            <h3 className="font-black font-nunito text-base text-[#2D2D2D]">Ganti Kata Sandi (Opsional)</h3>
-            <p className="text-xs font-bold text-[#2D2D2D]/70 mt-0.5">
+            <h3 className="font-black font-nunito text-base text-[#4A3B45]">Ganti Kata Sandi (Opsional)</h3>
+            <p className="text-xs font-bold text-[#4A3B45]/70 mt-0.5">
               Kosongkan jika tidak ingin mengubah kata sandi.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label htmlFor="new-password" className="text-xs font-black text-[#2D2D2D]">Kata Sandi Baru</label>
+              <label htmlFor="new-password" className="text-xs font-black text-[#4A3B45]">Kata Sandi Baru</label>
               <div className="relative">
                 <input
                   id="new-password"
@@ -253,17 +253,17 @@ export default function ProfileEditor({
                   placeholder="Masukkan sandi baru"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 pr-10 text-xs sm:text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/40 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                  className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 pr-10 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72]"
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2D2D2D]/70 hover:text-[#2D2D2D] p-1">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B45]/70 hover:text-[#4A3B45] p-1">
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="repeat-new-password" className="text-xs font-black text-[#2D2D2D]">Ulangi Kata Sandi Baru</label>
+              <label htmlFor="repeat-new-password" className="text-xs font-black text-[#4A3B45]">Ulangi Kata Sandi Baru</label>
               <div className="relative">
                 <input
                   id="repeat-new-password"
@@ -271,10 +271,10 @@ export default function ProfileEditor({
                   placeholder="Konfirmasi sandi baru"
                   value={repeatPassword}
                   onChange={(e) => setRepeatPassword(e.target.value)}
-                  className="w-full rounded-xl border-2 border-[#2D2D2D] bg-[#FFF8E7] px-3.5 py-2.5 pr-10 text-xs sm:text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/40 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                  className="w-full rounded-xl border border-[#F5D0E0] bg-[#FFF5F8] px-3.5 py-2.5 pr-10 text-xs sm:text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/40 focus:outline-none focus:ring-2 focus:ring-[#CC3D72]"
                 />
                 <button type="button" onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2D2D2D]/70 hover:text-[#2D2D2D] p-1">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B45]/70 hover:text-[#4A3B45] p-1">
                   {showRepeatPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
@@ -282,8 +282,8 @@ export default function ProfileEditor({
           </div>
 
           {newPassword.length > 0 && (
-            <div className="rounded-xl bg-[#FFF8E7] p-3.5 border-2 border-[#2D2D2D] text-xs space-y-1.5 shadow-[2px_2px_0px_#2D2D2D]">
-              <span className="font-black text-[#2D2D2D] block mb-1">Kriteria Kata Sandi Baru:</span>
+            <div className="rounded-xl bg-[#FFF5F8] p-3.5 border border-[#F5D0E0] text-xs space-y-1.5 shadow-sm">
+              <span className="font-black text-[#4A3B45] block mb-1">Kriteria Kata Sandi Baru:</span>
               {[
                 [hasMinLength, "Minimal 8 karakter"],
                 [hasUppercase, "Huruf besar (A-Z)"],
@@ -291,8 +291,8 @@ export default function ProfileEditor({
                 [hasNumber, "Angka (0-9)"],
                 [hasSymbol, "Simbol (@$!%*?&)"],
               ].map(([ok, label], i) => (
-                <div key={i} className={cn("flex items-center gap-1.5 font-bold", ok ? "text-emerald-700" : "text-[#2D2D2D]/60")}>
-                  {ok ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <X className="h-3.5 w-3.5 text-[#FF6B6B]" />}
+                <div key={i} className={cn("flex items-center gap-1.5 font-bold", ok ? "text-emerald-700" : "text-[#4A3B45]/60")}>
+                  {ok ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <X className="h-3.5 w-3.5 text-[#CC3D72]" />}
                   <span>{label as string}</span>
                 </div>
               ))}
@@ -302,8 +302,8 @@ export default function ProfileEditor({
 
         {message && (
           <div className={cn(
-            "rounded-xl p-3.5 text-xs sm:text-sm font-black border-2 border-[#2D2D2D]",
-            message.type === "success" ? "bg-[#C8F7DC] text-[#2D2D2D]" : "bg-[#FF6B6B] text-white"
+            "rounded-xl p-3.5 text-xs sm:text-sm font-black border border-[#F5D0E0]",
+            message.type === "success" ? "bg-[#FFE0EC] text-[#4A3B45]" : "bg-[#CC3D72] text-white"
           )}>
             {message.text}
           </div>
@@ -312,7 +312,7 @@ export default function ProfileEditor({
         <button
           type="submit"
           disabled={isLoading}
-          className="cartoon-btn w-full bg-[#FF6B6B] text-white py-3 text-sm font-black hover:bg-[#ff5252] disabled:opacity-50"
+          className="cartoon-btn w-full bg-[#CC3D72] text-white py-3 text-sm font-black hover:bg-[#B22F62] disabled:opacity-50"
         >
           {isLoading ? "Menyimpan Perubahan..." : "Simpan Perubahan Profil"}
         </button>

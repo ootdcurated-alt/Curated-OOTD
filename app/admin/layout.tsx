@@ -10,9 +10,11 @@ import {
   ShieldAlert,
   ArrowLeft,
   Sparkles,
+  Star,
 } from "lucide-react";
 import { LogoutButton } from "@/components/logout-button";
 import AdminAuthGuard from "@/components/AdminAuthGuard";
+import AdminNotificationBell from "@/components/AdminNotificationBell";
 
 
 export default async function AdminLayout({
@@ -65,18 +67,18 @@ export default async function AdminLayout({
   const adminEmail = user?.email || (hasAdminCookie ? "adminootd@gmail.com" : "Admin");
 
   return (
-    <div className="min-h-screen bg-[#FFF8E7]">
+    <div className="min-h-screen bg-[#FFF5F8]">
       {/* Client-side fallback auth guard */}
       <AdminAuthGuard />
 
       {/* Admin Sub Header */}
-      <div className="border-b-[3px] border-[#2D2D2D] bg-white sticky top-14 sm:top-18 z-40">
+      <div className="border-b border-[#F5D0E0] bg-white sticky top-14 sm:top-18 z-40">
         <div className="container max-w-7xl flex flex-wrap items-center justify-between gap-3 px-3 sm:px-6 py-2.5">
           <div className="flex items-center gap-2.5">
-            <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider bg-[#FFE66D] text-[#2D2D2D] px-3 py-1 rounded-full border-2 border-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D]">
-              <Sparkles className="h-3.5 w-3.5 text-[#FF6B6B]" /> Panel Admin
+            <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider bg-[#FFC2D9] text-[#4A3B45] px-3 py-1 rounded-full border border-[#F5D0E0] shadow-sm">
+              <Sparkles className="h-3.5 w-3.5 text-[#CC3D72]" /> Panel Admin
             </span>
-            <span className="text-xs font-bold text-[#2D2D2D]/70 hidden sm:inline">
+            <span className="text-xs font-bold text-[#4A3B45]/70 hidden sm:inline">
               {adminEmail}
             </span>
           </div>
@@ -84,37 +86,45 @@ export default async function AdminLayout({
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <Link
               href="/admin"
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF8E7] border-2 border-[#2D2D2D] hover:bg-[#FFE66D] text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] transition-all"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF5F8] border border-[#F5D0E0] hover:bg-[#FFC2D9] text-[#4A3B45] shadow-sm transition-all"
             >
-              <LayoutGrid className="h-3.5 w-3.5 text-[#4ECDC4]" />
+              <LayoutGrid className="h-3.5 w-3.5 text-[#F48FB1]" />
               <span className="hidden sm:inline">Kelola Outfit</span>
             </Link>
             <Link
               href="/admin/analytics"
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF8E7] border-2 border-[#2D2D2D] hover:bg-[#FFE66D] text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] transition-all"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF5F8] border border-[#F5D0E0] hover:bg-[#FFC2D9] text-[#4A3B45] shadow-sm transition-all"
             >
-              <BarChart3 className="h-3.5 w-3.5 text-[#A78BFA]" />
+              <BarChart3 className="h-3.5 w-3.5 text-[#C87DB8]" />
               <span className="hidden sm:inline">Statistik</span>
             </Link>
             <Link
               href="/admin/categories"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF8E7] border-2 border-[#2D2D2D] hover:bg-[#FFE66D] text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] transition-all"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF5F8] border border-[#F5D0E0] hover:bg-[#FFC2D9] text-[#4A3B45] shadow-sm transition-all"
             >
               Kategori
             </Link>
             <Link
+              href="/admin/reviews"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF5F8] border border-[#F5D0E0] hover:bg-[#FFC2D9] text-[#4A3B45] shadow-sm transition-all"
+            >
+              <Star className="h-3.5 w-3.5 text-[#CC3D72]" />
+              <span className="hidden sm:inline">Ulasan</span>
+            </Link>
+            <Link
               href="/admin/settings"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF8E7] border-2 border-[#2D2D2D] hover:bg-[#FFE66D] text-[#2D2D2D] shadow-[2px_2px_0px_#2D2D2D] transition-all"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black bg-[#FFF5F8] border border-[#F5D0E0] hover:bg-[#FFC2D9] text-[#4A3B45] shadow-sm transition-all"
             >
               Pengaturan
             </Link>
             <Link
               href="/admin/outfit/new"
-              className="cartoon-btn inline-flex items-center gap-1 px-3 py-1.5 text-xs font-black bg-[#FF6B6B] text-white"
+              className="cartoon-btn inline-flex items-center gap-1 px-3 py-1.5 text-xs font-black bg-[#CC3D72] text-white"
             >
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Tambah Look</span>
             </Link>
+            <AdminNotificationBell />
             <LogoutButton />
           </div>
         </div>

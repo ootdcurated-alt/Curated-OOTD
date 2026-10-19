@@ -52,10 +52,10 @@ export default function CategoryFilter({
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.slug)}
-              className={`shrink-0 rounded-full border-2 border-[#2D2D2D] px-4 py-2 text-xs font-black tracking-tight transition-all duration-150 ${
+              className={`shrink-0 rounded-full border border-[#F5D0E0] px-4 py-2 text-xs font-black tracking-tight transition-all duration-150 ${
                 isActive
-                  ? "bg-[#FF6B6B] text-white shadow-[3px_3px_0px_#2D2D2D] translate-x-[-1px] translate-y-[-1px]"
-                  : "bg-[#FFF8E7] text-[#2D2D2D] hover:bg-[#FFE66D] hover:shadow-[2px_2px_0px_#2D2D2D]"
+                  ? "bg-[#CC3D72] text-white shadow-sm translate-x-[-1px] translate-y-[-1px]"
+                  : "bg-[#FFF5F8] text-[#4A3B45] hover:bg-[#FFC2D9] hover:shadow-md"
               }`}
             >
               {cat.name}

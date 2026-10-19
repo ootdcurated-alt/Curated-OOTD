@@ -41,7 +41,7 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
         {/* Search bar */}
         <div className="relative">
           <svg
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#2D2D2D]/60 pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#4A3B45]/60 pointer-events-none"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -58,7 +58,7 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari gaya outfit, tag, atau inspirasi busana..."
-            className="w-full rounded-2xl border-[3px] border-[#2D2D2D] bg-[#FFF8E7] pl-11 pr-4 py-3 text-sm font-bold text-[#2D2D2D] placeholder:text-[#2D2D2D]/50 focus:outline-none shadow-[3px_3px_0px_#2D2D2D] transition-all"
+            className="w-full rounded-2xl border border-[#F5D0E0] bg-[#FFF5F8] pl-11 pr-4 py-3 text-sm font-bold text-[#4A3B45] placeholder:text-[#4A3B45]/50 focus:outline-none shadow-sm transition-all"
           />
         </div>
 
