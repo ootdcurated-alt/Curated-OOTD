@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Sparkles, Trash2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, Trash2, AlertTriangle, Tag } from "lucide-react";
 import HotspotEditor from "@/components/HotspotEditor";
 import { OutfitItem } from "@/components/OutfitCard";
 import { createClient } from "@/lib/supabase/client";
+import { Category, getStoredCategories, syncCategoriesToLocal } from "@/lib/categories";
 
 interface EditOutfitFormProps {
   outfit: {
@@ -30,6 +31,25 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/categories");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.categories) && json.categories.length > 0) {
+          setAvailableCategories(json.categories);
+          syncCategoriesToLocal(json.categories);
+          return;
+        }
+      } catch {
+        // ignore
+      }
+      setAvailableCategories(getStoredCategories());
+    }
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,10 +84,21 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
           outfit_id: outfit.id,
           name: it.name,
           brand: it.brand || null,
-          price: it.price || null,
+          price: (() => {
+            if (it.price === undefined || it.price === null) return null;
+            if (typeof it.price === "number") return isNaN(it.price) ? null : Math.round(it.price);
+            const digits = String(it.price).replace(/[^\d]/g, "");
+            return digits ? parseInt(digits, 10) : null;
+          })(),
           affiliate_url: it.affiliate_url,
-          x: it.x,
-          y: it.y,
+          x:
+            it.x !== undefined && it.x !== null && !isNaN(Number(it.x))
+              ? Math.round(Number(it.x))
+              : null,
+          y:
+            it.y !== undefined && it.y !== null && !isNaN(Number(it.y))
+              ? Math.round(Number(it.y))
+              : null,
         }));
 
         const { error: itemsError } = await supabase
@@ -200,7 +231,16 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Tags (pisahkan koma)</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium">Tags (pisahkan koma)</label>
+                <Link
+                  href="/admin/categories"
+                  target="_blank"
+                  className="text-xs text-primary hover:underline font-semibold"
+                >
+                  Kelola Kategori &rarr;
+                </Link>
+              </div>
               <input
                 type="text"
                 value={tags}
@@ -208,6 +248,57 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
                 placeholder="musim panas, kasual, warna bumi"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
+              {/* Category Quick Tags */}
+              {availableCategories.length > 0 && (
+                <div className="mt-2 space-y-1.5">
+                  <span className="text-[11px] font-semibold text-muted-foreground">
+                    Pilih Kategori Cepat:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
+                    {availableCategories
+                      .filter((c) => c.slug !== "all")
+                      .map((cat) => {
+                        const currentTagsArray = tags
+                          .split(",")
+                          .map((t) => t.trim().toLowerCase())
+                          .filter(Boolean);
+                        const isSelected =
+                          currentTagsArray.includes(cat.name.toLowerCase()) ||
+                          currentTagsArray.includes(cat.slug.toLowerCase());
+
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              const list = tags
+                                .split(",")
+                                .map((t) => t.trim())
+                                .filter(Boolean);
+                              if (isSelected) {
+                                const next = list.filter(
+                                  (t) =>
+                                    t.toLowerCase() !== cat.name.toLowerCase() &&
+                                    t.toLowerCase() !== cat.slug.toLowerCase()
+                                );
+                                setTags(next.join(", "));
+                              } else {
+                                setTags([...list, cat.name].join(", "));
+                              }
+                            }}
+                            className={`rounded-full px-2.5 py-0.5 text-xs font-semibold transition-all border ${
+                              isSelected
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-muted/50 text-foreground border-border hover:bg-muted"
+                            }`}
+                          >
+                            {isSelected ? `✓ ${cat.name}` : `+ ${cat.name}`}
+                          </button>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

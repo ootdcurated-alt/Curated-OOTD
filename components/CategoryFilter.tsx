@@ -6,27 +6,33 @@ import { Category, getStoredCategories, syncCategoriesToLocal } from "@/lib/cate
 interface CategoryFilterProps {
   activeCategory: string;
   onSelectCategory: (slug: string) => void;
+  onCategoriesLoaded?: (categories: Category[]) => void;
 }
 
 export default function CategoryFilter({
   activeCategory,
   onSelectCategory,
+  onCategoriesLoaded,
 }: CategoryFilterProps) {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const loadCategories = async () => {
+    let cats: Category[] = [];
     try {
       const res = await fetch("/api/categories");
       const json = await res.json();
       if (json.success && Array.isArray(json.categories) && json.categories.length > 0) {
-        setCategories(json.categories);
-        syncCategoriesToLocal(json.categories);
-        return;
+        cats = json.categories;
+        syncCategoriesToLocal(cats);
       }
     } catch {
       // fallback ke localStorage
     }
-    setCategories(getStoredCategories());
+    if (cats.length === 0) {
+      cats = getStoredCategories();
+    }
+    setCategories(cats);
+    onCategoriesLoaded?.(cats);
   };
 
   useEffect(() => {

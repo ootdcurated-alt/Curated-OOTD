@@ -8,6 +8,7 @@ import GuestGuardLink from "@/components/GuestGuardLink";
 import Testimonials from "@/components/Testimonials";
 import { Review, REVIEW_COLUMNS } from "@/lib/reviews";
 import { Brush } from "lucide-react";
+import { normalizeOutfitItems } from "@/lib/outfitItems";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -24,7 +25,10 @@ export default async function Home() {
     .select("*, outfit_items(*)")
     .order("created_at", { ascending: false });
 
-  const displayOutfits: Outfit[] = outfits ?? [];
+  const displayOutfits: Outfit[] = (outfits ?? []).map((o: any) => ({
+    ...o,
+    items: normalizeOutfitItems(o.outfit_items || o.items),
+  }));
 
   // Ulasan/testimoni — RLS menyaring: pengunjung hanya melihat ulasan yang
   // sudah disetujui admin, sedangkan pemilik ulasan melihat miliknya sendiri.

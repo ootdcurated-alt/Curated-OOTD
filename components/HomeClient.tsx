@@ -4,6 +4,8 @@ import { useState } from "react";
 import OutfitGrid from "@/components/OutfitGrid";
 import CategoryFilter from "@/components/CategoryFilter";
 import { Outfit } from "@/components/OutfitCard";
+import { Category, DEFAULT_CATEGORIES } from "@/lib/categories";
+import { Sparkles, Tag, X } from "lucide-react";
 
 interface HomeClientProps {
   outfits: Outfit[];
@@ -13,15 +15,32 @@ interface HomeClientProps {
 export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoriesList, setCategoriesList] = useState<Category[]>(DEFAULT_CATEGORIES);
+
+  // Cari objek kategori aktif jika ada
+  const currentCategory = categoriesList.find((c) => c.slug === activeCategory);
 
   const filteredOutfits = outfits.filter((outfit) => {
-    const matchCategory =
-      activeCategory === "all" ||
-      (outfit.tags || []).some(
-        (tag: string) =>
-          tag.toLowerCase().includes(activeCategory.toLowerCase()) ||
-          activeCategory.toLowerCase().includes(tag.toLowerCase())
-      );
+    const matchCategory = (() => {
+      if (activeCategory === "all") return true;
+
+      const actSlug = activeCategory.toLowerCase().trim();
+      const actName = (currentCategory?.name || "").toLowerCase().trim();
+
+      return (outfit.tags || []).some((tag: string) => {
+        const t = tag.toLowerCase().trim();
+        const tSlug = t.replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-");
+
+        return (
+          t === actSlug ||
+          tSlug === actSlug ||
+          (actName && t.includes(actName)) ||
+          (actName && actName.includes(t)) ||
+          t.includes(actSlug) ||
+          actSlug.includes(t)
+        );
+      });
+    })();
 
     const matchSearch =
       searchQuery.trim() === "" ||
@@ -33,6 +52,30 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
 
     return matchCategory && matchSearch;
   });
+
+  const handleSelectTag = (tag: string) => {
+    const cleanTag = tag.trim();
+    // Cek apakah tag ini cocok dengan salah satu kategori yang sudah ada
+    const matchedCategory = categoriesList.find(
+      (c) =>
+        c.slug.toLowerCase() === cleanTag.toLowerCase() ||
+        c.name.toLowerCase() === cleanTag.toLowerCase()
+    );
+
+    if (matchedCategory) {
+      setActiveCategory(matchedCategory.slug);
+    } else {
+      // Jika tag kustom, aktifkan filter kategori berdasarkan tag tersebut
+      setActiveCategory(cleanTag.toLowerCase());
+    }
+    // Scroll mulus ke daftar hasil
+    window.scrollTo({ top: 350, behavior: "smooth" });
+  };
+
+  const activeCategoryTitle =
+    activeCategory === "all"
+      ? "Koleksi Terbaru"
+      : currentCategory?.name || activeCategory;
 
   return (
     <div className="space-y-5 sm:space-y-8 min-w-0">
@@ -65,23 +108,46 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
         <CategoryFilter
           activeCategory={activeCategory}
           onSelectCategory={setActiveCategory}
+          onCategoriesLoaded={setCategoriesList}
         />
       </div>
 
-      {/* Results count */}
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between px-1 sm:px-2">
-        <h2 className="text-lg sm:text-2xl font-black tracking-tighter text-foreground font-nunito uppercase break-words">
-          {activeCategory === "all" ? "Koleksi Terbaru" : `${activeCategory}`}
-        </h2>
-        <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40 shrink-0">
-          {filteredOutfits.length} Outfit Ditemukan
-        </span>
+      {/* Header Kategori Aktif + Deskripsi */}
+      <div className="flex flex-col gap-2 px-1 sm:px-2">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg sm:text-2xl font-black tracking-tighter text-foreground font-nunito uppercase break-words">
+              {activeCategoryTitle}
+            </h2>
+            {activeCategory !== "all" && (
+              <button
+                type="button"
+                onClick={() => setActiveCategory("all")}
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline bg-primary/10 rounded-full px-2.5 py-0.5 transition-all"
+                title="Reset filter kategori"
+              >
+                <X className="h-3 w-3" />
+                Reset
+              </button>
+            )}
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40 shrink-0">
+            {filteredOutfits.length} Outfit Ditemukan
+          </span>
+        </div>
+
+        {/* Deskripsi kategori jika ada */}
+        {currentCategory?.description && activeCategory !== "all" && (
+          <p className="text-xs sm:text-sm font-medium text-foreground/60 max-w-2xl leading-relaxed">
+            {currentCategory.description}
+          </p>
+        )}
       </div>
 
       {filteredOutfits.length === 0 ? (
         <div className="rounded-2xl sm:rounded-[2.5rem] border-2 border-dashed border-border bg-white/20 p-10 sm:p-20 text-center backdrop-blur-sm">
           <p className="text-foreground/50 text-sm font-bold">
-            Tidak ada outfit untuk kategori &ldquo;{activeCategory}&rdquo;.
+            Tidak ada outfit untuk kategori &ldquo;{activeCategoryTitle}&rdquo;.
           </p>
           <button
             onClick={() => {
@@ -94,7 +160,11 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
           </button>
         </div>
       ) : (
-        <OutfitGrid outfits={filteredOutfits} isLoggedIn={isLoggedIn} />
+        <OutfitGrid
+          outfits={filteredOutfits}
+          isLoggedIn={isLoggedIn}
+          onSelectTag={handleSelectTag}
+        />
       )}
     </div>
   );

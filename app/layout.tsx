@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LayoutWrapper from "@/components/LayoutWrapper";
@@ -48,26 +47,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id">
       <body className={`${nunito.variable} ${nunito.className} antialiased min-h-screen flex flex-col bg-background text-foreground`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          forcedTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
+        <LayoutWrapper
+          navbar={
+            <Suspense fallback={<div className="h-[72px] w-full border-b border-border bg-white/60 backdrop-blur-xl" />}>
+              <Navbar />
+            </Suspense>
+          }
+          footer={<Footer />}
         >
-          <LayoutWrapper
-            navbar={
-              <Suspense fallback={<div className="h-[72px] w-full border-b border-border bg-white/60 backdrop-blur-xl" />}>
-                <Navbar />
-              </Suspense>
-            }
-            footer={<Footer />}
-          >
-            {children}
-          </LayoutWrapper>
-        </ThemeProvider>
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );

@@ -10,6 +10,63 @@ interface ShopTheLookProps {
   outfitId?: string;
 }
 
+export function getMarketplaceInfo(url: string | undefined) {
+  if (!url) {
+    return {
+      name: "Toko Online",
+      badgeColor: "bg-gray-100 text-gray-700 border-gray-200",
+      bg: "bg-primary hover:bg-primary/90",
+    };
+  }
+
+  const lower = url.toLowerCase();
+  if (lower.includes("shopee") || lower.includes("shp.ee") || lower.includes("shope.ee")) {
+    return {
+      name: "Shopee",
+      badgeColor: "bg-orange-50 text-orange-600 border-orange-200",
+      bg: "bg-[#EE4D2D] hover:bg-[#d73f20]",
+    };
+  }
+
+  if (lower.includes("tokopedia") || lower.includes("tokope.da") || lower.includes("tkp.me")) {
+    return {
+      name: "Tokopedia",
+      badgeColor: "bg-emerald-50 text-emerald-600 border-emerald-200",
+      bg: "bg-[#03AC0E] hover:bg-[#028f0c]",
+    };
+  }
+
+  if (lower.includes("tiktok") || lower.includes("shop.tiktok")) {
+    return {
+      name: "TikTok Shop",
+      badgeColor: "bg-slate-100 text-slate-900 border-slate-300",
+      bg: "bg-[#111111] hover:bg-black",
+    };
+  }
+
+  if (lower.includes("lazada")) {
+    return {
+      name: "Lazada",
+      badgeColor: "bg-blue-50 text-blue-600 border-blue-200",
+      bg: "bg-[#0F146D] hover:bg-[#0a0e50]",
+    };
+  }
+
+  if (lower.includes("zalora")) {
+    return {
+      name: "Zalora",
+      badgeColor: "bg-zinc-100 text-zinc-900 border-zinc-300",
+      bg: "bg-[#222222] hover:bg-black",
+    };
+  }
+
+  return {
+    name: "Toko Resmi",
+    badgeColor: "bg-primary/10 text-primary border-primary/20",
+    bg: "bg-primary hover:bg-primary/90",
+  };
+}
+
 export default function ShopTheLook({
   imageUrl,
   items,
@@ -81,15 +138,20 @@ export default function ShopTheLook({
                       Rp {item.price.toLocaleString("id-ID")}
                     </p>
                   )}
-                  <a
-                    href={item.affiliate_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => handleTrackClick(item)}
-                    className="mt-2 flex items-center justify-center gap-1 rounded bg-primary py-1 text-center font-medium text-primary-foreground"
-                  >
-                    Beli <ExternalLink className="h-3 w-3" />
-                  </a>
+                  {(() => {
+                    const pinMp = getMarketplaceInfo(item.affiliate_url);
+                    return (
+                      <a
+                        href={item.affiliate_url || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => handleTrackClick(item)}
+                        className={`mt-2.5 flex items-center justify-center gap-1.5 rounded-full py-1.5 px-3 text-center text-xs font-black text-white shadow-sm transition-all hover:opacity-90 ${pinMp.bg}`}
+                      >
+                        Beli di {pinMp.name} <ExternalLink className="h-3 w-3" />
+                      </a>
+                    );
+                  })()}
                 </div>
               )}
             </div>
@@ -99,46 +161,78 @@ export default function ShopTheLook({
 
       {/* Product List Breakdown */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 border-b border-border pb-3">
-          <ShoppingBag className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-bold tracking-tight">Belanja Tampilan Ini</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-border pb-3 gap-3">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-bold tracking-tight">Belanja Tampilan Ini</h2>
+          </div>
+
+          {/* Tombol Utama Langsung Belanja Tampilan Ini ke Toko (Shopee/Tokopedia/TikTok Shop) */}
+          {items.length > 0 && items[0]?.affiliate_url && (
+            <a
+              href={items[0].affiliate_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleTrackClick(items[0])}
+              className={`cartoon-btn inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-black text-white shadow-cartoon-sm transition-all hover:scale-105 ${
+                getMarketplaceInfo(items[0].affiliate_url).bg
+              }`}
+            >
+              <span>Belanja di {getMarketplaceInfo(items[0].affiliate_url).name}</span>
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
         </div>
 
         <div className="space-y-3">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              onMouseEnter={() => setActiveItemId(item.id)}
-              className={`flex items-center justify-between rounded-xl border p-4 transition-all ${
-                activeItemId === item.id
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-card hover:border-border/80"
-              }`}
-            >
-              <div>
-                <p className="font-semibold text-foreground">{item.name}</p>
-                {item.brand && (
-                  <p className="text-sm text-muted-foreground">{item.brand}</p>
-                )}
-                {item.price && (
-                  <p className="mt-1 font-medium text-foreground">
-                    Rp {item.price.toLocaleString("id-ID")}
-                  </p>
-                )}
-              </div>
-
-              <a
-                href={item.affiliate_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleTrackClick(item)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-black text-primary-foreground shadow-cartoon-sm hover:opacity-90"
+          {items.map((item) => {
+            const mp = getMarketplaceInfo(item.affiliate_url);
+            return (
+              <div
+                key={item.id}
+                onMouseEnter={() => setActiveItemId(item.id)}
+                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border p-4 sm:p-5 transition-all duration-300 ${
+                  activeItemId === item.id
+                    ? "border-primary bg-primary/5 shadow-cartoon-sm"
+                    : "border-border bg-white/70 hover:border-primary/40 backdrop-blur-md"
+                }`}
               >
-                Cek Produk
-                <ExternalLink className="h-4 w-4" />
-              </a>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-base text-foreground font-nunito">{item.name}</p>
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${mp.badgeColor}`}>
+                      {mp.name}
+                    </span>
+                  </div>
+                  {item.brand && (
+                    <p className="text-xs font-medium text-foreground/60 mt-0.5">Brand: {item.brand}</p>
+                  )}
+                  {item.price && (
+                    <p className="mt-1.5 font-black text-sm text-primary">
+                      Rp {item.price.toLocaleString("id-ID")}
+                    </p>
+                  )}
+                </div>
+
+                <a
+                  href={item.affiliate_url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => handleTrackClick(item)}
+                  className={`inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-black text-white shadow-cartoon-sm hover:opacity-90 transition-all shrink-0 active:scale-95 ${mp.bg}`}
+                >
+                  Beli di {mp.name}
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            );
+          })}
+
+          {items.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-border bg-white/30 p-8 text-center text-xs font-bold text-foreground/50">
+              Belum ada link produk toko yang ditautkan untuk outfit ini.
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

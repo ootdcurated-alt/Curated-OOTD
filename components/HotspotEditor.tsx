@@ -28,8 +28,8 @@ export default function HotspotEditor({
       id: crypto.randomUUID(),
       name: `Item #${items.length + 1}`,
       affiliate_url: "",
-      x,
-      y,
+      x: Math.round(x),
+      y: Math.round(y),
     };
 
     const nextItems = [...items, newItem];
@@ -152,12 +152,23 @@ export default function HotspotEditor({
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <label className="text-muted-foreground">Harga (Rp)</label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-muted-foreground">Harga (Rp)</label>
+                      {item.price ? (
+                        <span className="text-[10px] text-primary font-bold">
+                          Rp {item.price.toLocaleString("id-ID")}
+                        </span>
+                      ) : null}
+                    </div>
                     <input
-                      type="number"
-                      value={item.price || ""}
-                      onChange={(e) => updateItem(idx, "price", Number(e.target.value))}
-                      placeholder="mis. 299000"
+                      type="text"
+                      inputMode="numeric"
+                      value={item.price ? item.price.toLocaleString("id-ID") : ""}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/[^\d]/g, "");
+                        updateItem(idx, "price", raw ? parseInt(raw, 10) : undefined);
+                      }}
+                      placeholder="mis. 56.420"
                       className="mt-1 w-full rounded border border-border bg-background px-2 py-1 text-xs"
                     />
                   </div>

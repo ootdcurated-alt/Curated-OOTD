@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Sparkles } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, Tag, Plus } from "lucide-react";
 import HotspotEditor from "@/components/HotspotEditor";
 import { OutfitItem } from "@/components/OutfitCard";
 import { createClient } from "@/lib/supabase/client";
+import { Category, getStoredCategories, syncCategoriesToLocal } from "@/lib/categories";
 
 export default function NewOutfitPage() {
   const router = useRouter();
@@ -17,6 +18,25 @@ export default function NewOutfitPage() {
   const [items, setItems] = useState<OutfitItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/categories");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.categories) && json.categories.length > 0) {
+          setAvailableCategories(json.categories);
+          syncCategoriesToLocal(json.categories);
+          return;
+        }
+      } catch {
+        // ignore
+      }
+      setAvailableCategories(getStoredCategories());
+    }
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,10 +75,21 @@ export default function NewOutfitPage() {
           outfit_id: outfitData.id,
           name: it.name,
           brand: it.brand || null,
-          price: it.price || null,
+          price: (() => {
+            if (it.price === undefined || it.price === null) return null;
+            if (typeof it.price === "number") return isNaN(it.price) ? null : Math.round(it.price);
+            const digits = String(it.price).replace(/[^\d]/g, "");
+            return digits ? parseInt(digits, 10) : null;
+          })(),
           affiliate_url: it.affiliate_url,
-          x: it.x,
-          y: it.y,
+          x:
+            it.x !== undefined && it.x !== null && !isNaN(Number(it.x))
+              ? Math.round(Number(it.x))
+              : null,
+          y:
+            it.y !== undefined && it.y !== null && !isNaN(Number(it.y))
+              ? Math.round(Number(it.y))
+              : null,
         }));
 
         const { error: itemsError } = await supabase
@@ -152,7 +183,16 @@ export default function NewOutfitPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-black text-foreground mb-1.5">Tags (pisahkan koma)</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-black text-foreground">Tags (pisahkan koma)</label>
+                <Link
+                  href="/admin/categories"
+                  target="_blank"
+                  className="text-[10px] font-bold text-primary hover:underline"
+                >
+                  Kelola Kategori &rarr;
+                </Link>
+              </div>
               <input
                 type="text"
                 value={tags}
@@ -160,6 +200,59 @@ export default function NewOutfitPage() {
                 placeholder="musim panas, kasual, warna bumi"
                 className="w-full rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary"
               />
+              {/* Category Quick Tags */}
+              {availableCategories.length > 0 && (
+                <div className="mt-2 space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/50">
+                    Pilih Kategori Cepat:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
+                    {availableCategories
+                      .filter((c) => c.slug !== "all")
+                      .map((cat) => {
+                        const currentTagsArray = tags
+                          .split(",")
+                          .map((t) => t.trim().toLowerCase())
+                          .filter(Boolean);
+                        const isSelected =
+                          currentTagsArray.includes(cat.name.toLowerCase()) ||
+                          currentTagsArray.includes(cat.slug.toLowerCase());
+
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              const list = tags
+                                .split(",")
+                                .map((t) => t.trim())
+                                .filter(Boolean);
+                              if (isSelected) {
+                                // Hapus tag
+                                const next = list.filter(
+                                  (t) =>
+                                    t.toLowerCase() !== cat.name.toLowerCase() &&
+                                    t.toLowerCase() !== cat.slug.toLowerCase()
+                                );
+                                setTags(next.join(", "));
+                              } else {
+                                // Tambah nama kategori sebagai tag
+                                setTags([...list, cat.name].join(", "));
+                              }
+                            }}
+                            className={`rounded-full px-2.5 py-1 text-[10px] font-bold transition-all border ${
+                              isSelected
+                                ? "bg-primary text-white border-primary shadow-sm"
+                                : "bg-white/70 text-foreground/70 border-border hover:border-primary/40 hover:bg-secondary"
+                            }`}
+                          >
+                            {isSelected ? `✓ ${cat.name}` : `+ ${cat.name}`}
+                          </button>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
