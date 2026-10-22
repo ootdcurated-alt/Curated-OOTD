@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Category, getStoredCategories, syncCategoriesToLocal } from "@/lib/categories";
+import { Tag } from "lucide-react";
 
 interface CategoryFilterProps {
   activeCategory: string;
@@ -31,9 +32,12 @@ export default function CategoryFilter({
     if (cats.length === 0) {
       cats = getStoredCategories();
     }
-    if (!cats.some((c) => c.slug === "all")) {
-      cats = [{ id: "cat-all", name: "Semua Koleksi", slug: "all", description: "Semua kurasi outfit pilihan" }, ...cats];
-    }
+
+    // Filter keluar slug gender agar Kategori Gaya murni untuk gaya busana
+    const genderSlugs = new Set(["pria", "wanita", "anak-anak", "anak-pria", "anak-wanita"]);
+    cats = cats.filter((c) => !genderSlugs.has(c.slug.toLowerCase()));
+
+    // Jangan tambahkan "Semua" otomatis — biarkan admin yang kelola
     setCategories(cats);
     onCategoriesLoaded?.(cats);
   };
@@ -44,17 +48,38 @@ export default function CategoryFilter({
     const handleUpdate = () => loadCategories();
     window.addEventListener("categories_updated", handleUpdate);
     return () => window.removeEventListener("categories_updated", handleUpdate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Jika belum ada kategori yang dibuat admin, sembunyikan section ini
+  if (categories.length === 0) {
+    return null;
+  }
 
   return (
     <div className="w-full space-y-2">
-      <div className="flex items-center justify-between">
+      {/* Label */}
+      <div className="flex items-center gap-1.5">
+        <Tag className="h-3 w-3 text-foreground/40" />
         <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">
           Kategori Gaya
         </span>
       </div>
 
+      {/* Pills horizontal scroll */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-none no-scrollbar">
+        {/* Tombol "Semua" selalu pertama */}
+        <button
+          onClick={() => onSelectCategory("all")}
+          className={`pill-3d shrink-0 rounded-full border px-4 py-2 text-xs font-black tracking-tight transition-all ${
+            activeCategory === "all"
+              ? "pill-3d-active border-primary bg-primary text-white"
+              : "border-border bg-white/60 text-foreground backdrop-blur-md hover:bg-secondary"
+          }`}
+        >
+          Semua Gaya
+        </button>
+
         {categories.map((cat) => {
           const isActive = activeCategory === cat.slug;
           return (

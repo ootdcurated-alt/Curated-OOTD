@@ -7,12 +7,15 @@ import { Outfit } from "@/components/OutfitCard";
 import { Category, DEFAULT_CATEGORIES } from "@/lib/categories";
 import { Sparkles, Tag, X } from "lucide-react";
 
+import GenderFilter from "@/components/GenderFilter";
+
 interface HomeClientProps {
   outfits: Outfit[];
   isLoggedIn?: boolean;
 }
 
 export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientProps) {
+  const [activeGender, setActiveGender] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoriesList, setCategoriesList] = useState<Category[]>(DEFAULT_CATEGORIES);
@@ -21,6 +24,58 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
   const currentCategory = categoriesList.find((c) => c.slug === activeCategory);
 
   const filteredOutfits = outfits.filter((outfit) => {
+    // 1. Filter Gender
+    const matchGender = (() => {
+      if (activeGender === "all") return true;
+
+      const outfitTags = (outfit.tags || []).map((t) => t.toLowerCase().trim());
+      const outfitText = `${outfit.title} ${outfit.description || ""}`.toLowerCase();
+
+      if (activeGender === "pria") {
+        return (
+          outfitTags.some((t) => (t.includes("pria") || t.includes("cowok") || t.includes("men")) && !t.includes("anak")) ||
+          (outfitText.includes("pria") && !outfitText.includes("anak"))
+        );
+      }
+
+      if (activeGender === "wanita") {
+        return (
+          outfitTags.some((t) => (t.includes("wanita") || t.includes("cewek") || t.includes("women")) && !t.includes("anak")) ||
+          (outfitText.includes("wanita") && !outfitText.includes("anak"))
+        );
+      }
+
+      if (activeGender === "anak-anak") {
+        return (
+          outfitTags.some((t) => t.includes("anak") || t.includes("kids") || t.includes("child")) ||
+          outfitText.includes("anak") ||
+          outfitText.includes("kids")
+        );
+      }
+
+      if (activeGender === "anak-pria") {
+        return (
+          (outfitTags.some((t) => t.includes("anak") || t.includes("kids")) &&
+            outfitTags.some((t) => t.includes("pria") || t.includes("laki") || t.includes("boy"))) ||
+          (outfitText.includes("anak") && (outfitText.includes("pria") || outfitText.includes("laki") || outfitText.includes("boy")))
+        );
+      }
+
+      if (activeGender === "anak-wanita") {
+        return (
+          (outfitTags.some((t) => t.includes("anak") || t.includes("kids")) &&
+            outfitTags.some((t) => t.includes("wanita") || t.includes("perempuan") || t.includes("girl"))) ||
+          (outfitText.includes("anak") && (outfitText.includes("wanita") || outfitText.includes("perempuan") || outfitText.includes("girl")))
+        );
+      }
+
+      return (
+        outfitTags.some((t) => t.includes(activeGender.toLowerCase())) ||
+        outfitText.includes(activeGender.toLowerCase())
+      );
+    })();
+
+    // 2. Filter Kategori Gaya
     const matchCategory = (() => {
       if (activeCategory === "all") return true;
 
@@ -42,6 +97,7 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
       });
     })();
 
+    // 3. Filter Pencarian Teks
     const matchSearch =
       searchQuery.trim() === "" ||
       outfit.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -50,37 +106,69 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
         t.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
-    return matchCategory && matchSearch;
+    return matchGender && matchCategory && matchSearch;
   });
 
   const handleSelectTag = (tag: string) => {
-    const cleanTag = tag.trim();
-    // Cek apakah tag ini cocok dengan salah satu kategori yang sudah ada
+    const cleanTag = tag.trim().toLowerCase();
+    
+    // Cek apakah tag merupakan gender
+    if (cleanTag === "pria" || cleanTag === "wanita" || cleanTag.includes("anak")) {
+      setActiveGender(cleanTag);
+      window.scrollTo({ top: 350, behavior: "smooth" });
+      return;
+    }
+
+    // Cek apakah tag ini cocok dengan salah satu kategori gaya
     const matchedCategory = categoriesList.find(
       (c) =>
-        c.slug.toLowerCase() === cleanTag.toLowerCase() ||
-        c.name.toLowerCase() === cleanTag.toLowerCase()
+        c.slug.toLowerCase() === cleanTag ||
+        c.name.toLowerCase() === cleanTag
     );
 
     if (matchedCategory) {
       setActiveCategory(matchedCategory.slug);
     } else {
-      // Jika tag kustom, aktifkan filter kategori berdasarkan tag tersebut
-      setActiveCategory(cleanTag.toLowerCase());
+      setActiveCategory(cleanTag);
     }
-    // Scroll mulus ke daftar hasil
     window.scrollTo({ top: 350, behavior: "smooth" });
   };
 
-  const activeCategoryTitle =
-    activeCategory === "all"
-      ? "Koleksi Terbaru"
-      : currentCategory?.name || activeCategory;
+  const getActiveGenderLabel = () => {
+    if (activeGender === "pria") return "Pria";
+    if (activeGender === "wanita") return "Wanita";
+    if (activeGender === "anak-anak") return "Anak-Anak";
+    if (activeGender === "anak-pria") return "Anak Pria";
+    if (activeGender === "anak-wanita") return "Anak Wanita";
+    return "";
+  };
+
+  const activeCategoryTitle = (() => {
+    const genderLabel = getActiveGenderLabel();
+    const catLabel =
+      activeCategory === "all" ? "" : currentCategory?.name || activeCategory;
+
+    if (genderLabel && catLabel) {
+      return `${catLabel} • ${genderLabel}`;
+    }
+    if (genderLabel) {
+      return `Koleksi ${genderLabel}`;
+    }
+    return catLabel || "Koleksi Terbaru";
+  })();
 
   return (
     <div className="space-y-5 sm:space-y-8 min-w-0">
-      {/* Search + Category Controls */}
-      <div className="space-y-4 sm:space-y-5 cartoon-card bg-white/40 p-4 sm:p-6 backdrop-blur-2xl border-white/40 shadow-cartoon">
+      {/* Search + Gender & Category Controls */}
+      <div className="relative overflow-visible space-y-4 sm:space-y-5 cartoon-card bg-white/40 p-4 sm:p-6 backdrop-blur-2xl border-white/40 shadow-cartoon">
+        {/* Gender Filter di Atas */}
+        <GenderFilter
+          activeGender={activeGender}
+          onSelectGender={setActiveGender}
+        />
+
+        <div className="border-t border-border/40 pt-4" />
+
         {/* Search bar */}
         <div className="relative">
           <svg
@@ -105,6 +193,7 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
           />
         </div>
 
+        {/* Kategori Gaya */}
         <CategoryFilter
           activeCategory={activeCategory}
           onSelectCategory={setActiveCategory}
@@ -119,15 +208,18 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
             <h2 className="text-lg sm:text-2xl font-black tracking-tighter text-foreground font-nunito uppercase break-words">
               {activeCategoryTitle}
             </h2>
-            {activeCategory !== "all" && (
+            {(activeCategory !== "all" || activeGender !== "all") && (
               <button
                 type="button"
-                onClick={() => setActiveCategory("all")}
+                onClick={() => {
+                  setActiveCategory("all");
+                  setActiveGender("all");
+                }}
                 className="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline bg-primary/10 rounded-full px-2.5 py-0.5 transition-all"
-                title="Reset filter kategori"
+                title="Reset semua filter"
               >
                 <X className="h-3 w-3" />
-                Reset
+                Reset Filter
               </button>
             )}
           </div>

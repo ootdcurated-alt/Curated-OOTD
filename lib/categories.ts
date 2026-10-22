@@ -6,26 +6,54 @@ export interface Category {
   created_at?: string;
 }
 
-export const DEFAULT_CATEGORIES: Category[] = [
-  { id: "cat-all", name: "Semua Koleksi", slug: "all", description: "Semua kurasi outfit pilihan" },
+export interface GenderCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  subGenders?: { id: string; name: string; slug: string }[];
+}
+
+export const DEFAULT_GENDERS: GenderCategory[] = [
+  { id: "gen-all", name: "Semua", slug: "all", description: "Semua outfit untuk semua kalangan" },
+  { id: "gen-pria", name: "Pria", slug: "pria", description: "Inspirasi outfit pria dewasa" },
+  { id: "gen-wanita", name: "Wanita", slug: "wanita", description: "Inspirasi outfit wanita modern" },
+  {
+    id: "gen-anak",
+    name: "Anak-Anak",
+    slug: "anak-anak",
+    description: "Inspirasi busana anak laki-laki & perempuan",
+    subGenders: [
+      { id: "gen-anak-pria", name: "Anak Pria (Laki-laki)", slug: "anak-pria" },
+      { id: "gen-anak-wanita", name: "Anak Wanita (Perempuan)", slug: "anak-wanita" },
+    ],
+  },
 ];
+
+// Kategori gaya kosong — hanya diisi oleh admin melalui panel manajemen
+export const DEFAULT_CATEGORIES: Category[] = [];
 
 const STORAGE_KEY = "curated_ootd_custom_categories";
 
 // ── LocalStorage helpers (fallback saat Supabase belum tersedia) ──────────────
 
 export function getStoredCategories(): Category[] {
-  if (typeof window === "undefined") return DEFAULT_CATEGORIES;
+  if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_CATEGORIES;
+    if (!raw) return [];
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      // Filter keluar kategori gender lama yang mungkin tersimpan di cache
+      const genderSlugs = new Set(["pria", "wanita", "anak-anak", "anak-pria", "anak-wanita"]);
+      return parsed.filter((c: Category) => !genderSlugs.has(c.slug?.toLowerCase()));
+    }
   } catch {
     // ignore
   }
-  return DEFAULT_CATEGORIES;
+  return [];
 }
+
 
 export function saveCategories(categories: Category[]): void {
   if (typeof window === "undefined") return;
@@ -73,6 +101,65 @@ export function addCategoryLocal(name: string, description?: string): Category {
 export function deleteCategoryLocal(id: string): void {
   const categories = getStoredCategories();
   saveCategories(categories.filter((c) => c.id !== id));
+}
+
+// ── Gender Categories Helpers ────────────────────────────────────────────────
+const GENDER_STORAGE_KEY = "curated_ootd_genders";
+
+export function getStoredGenders(): GenderCategory[] {
+  if (typeof window === "undefined") return DEFAULT_GENDERS;
+  try {
+    const raw = localStorage.getItem(GENDER_STORAGE_KEY);
+    if (!raw) return DEFAULT_GENDERS;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      const combined = [...parsed];
+      for (const def of DEFAULT_GENDERS) {
+        if (!combined.some((g) => g.slug === def.slug)) {
+          combined.push(def);
+        }
+      }
+      return combined;
+    }
+  } catch {
+    // ignore
+  }
+  return DEFAULT_GENDERS;
+}
+
+export function saveGenders(genders: GenderCategory[]): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(GENDER_STORAGE_KEY, JSON.stringify(genders));
+    window.dispatchEvent(new Event("genders_updated"));
+  } catch {
+    // ignore
+  }
+}
+
+export function addGenderLocal(name: string, description?: string): GenderCategory {
+  const genders = getStoredGenders();
+  const slug = name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  const newGender: GenderCategory = {
+    id: `gen-${Date.now()}`,
+    name: name.trim(),
+    slug: slug || `gender-${Date.now()}`,
+    description: description?.trim() || "",
+  };
+
+  saveGenders([...genders, newGender]);
+  return newGender;
+}
+
+export function deleteGenderLocal(id: string): void {
+  const genders = getStoredGenders();
+  saveGenders(genders.filter((g) => g.id !== id));
 }
 
 // Legacy aliases supaya komponen lama tidak break

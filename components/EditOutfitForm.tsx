@@ -248,11 +248,59 @@ export default function EditOutfitForm({ outfit, outfitItems }: EditOutfitFormPr
                 placeholder="musim panas, kasual, warna bumi"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
+
+              {/* Gender Quick Tags */}
+              <div className="mt-2.5 space-y-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Target Gender (Cepat):
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { label: "👨 Pria", tag: "pria" },
+                    { label: "👩 Wanita", tag: "wanita" },
+                    { label: "👦 Anak Pria", tag: "anak pria" },
+                    { label: "👧 Anak Wanita", tag: "anak wanita" },
+                    { label: "👶 Anak-Anak", tag: "anak-anak" },
+                  ].map((g) => {
+                    const currentTagsArray = tags
+                      .split(",")
+                      .map((t) => t.trim().toLowerCase())
+                      .filter(Boolean);
+                    const isSelected = currentTagsArray.includes(g.tag.toLowerCase());
+
+                    return (
+                      <button
+                        key={g.tag}
+                        type="button"
+                        onClick={() => {
+                          const list = tags
+                            .split(",")
+                            .map((t) => t.trim())
+                            .filter(Boolean);
+                          if (isSelected) {
+                            setTags(list.filter((t) => t.toLowerCase() !== g.tag.toLowerCase()).join(", "));
+                          } else {
+                            setTags([...list, g.tag].join(", "));
+                          }
+                        }}
+                        className={`text-[11px] font-black px-2.5 py-1 rounded-xl border transition-all ${
+                          isSelected
+                            ? "bg-primary text-white border-primary shadow-sm"
+                            : "bg-white text-foreground border-border hover:bg-secondary"
+                        }`}
+                      >
+                        {g.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Category Quick Tags */}
               {availableCategories.length > 0 && (
-                <div className="mt-2 space-y-1.5">
+                <div className="mt-2.5 space-y-1.5">
                   <span className="text-[11px] font-semibold text-muted-foreground">
-                    Pilih Kategori Cepat:
+                    Pilih Kategori Gaya:
                   </span>
                   <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
                     {availableCategories

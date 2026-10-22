@@ -23,12 +23,20 @@ export async function GET() {
       .select("*")
       .order("created_at", { ascending: true });
 
-    if (error || !data) {
-      // Supabase belum dikonfigurasi — kembalikan default
+    if (error || !data || data.length === 0) {
+      // Supabase kosong atau belum dikonfigurasi — kembalikan default bawaan
       return NextResponse.json({ success: true, categories: DEFAULT_CATEGORIES });
     }
 
-    return NextResponse.json({ success: true, categories: data });
+    // Jika di database sudah ada kategori kustom, pastikan kategori dasar tetap ada
+    const combined = [...data];
+    for (const def of DEFAULT_CATEGORIES) {
+      if (!combined.some((c) => c.slug === def.slug)) {
+        combined.push(def);
+      }
+    }
+
+    return NextResponse.json({ success: true, categories: combined });
   } catch {
     return NextResponse.json({ success: true, categories: DEFAULT_CATEGORIES });
   }
