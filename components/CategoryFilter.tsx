@@ -31,6 +31,9 @@ export default function CategoryFilter({
     if (cats.length === 0) {
       cats = getStoredCategories();
     }
+    if (!cats.some((c) => c.slug === "all")) {
+      cats = [{ id: "cat-all", name: "Semua Koleksi", slug: "all", description: "Semua kurasi outfit pilihan" }, ...cats];
+    }
     setCategories(cats);
     onCategoriesLoaded?.(cats);
   };

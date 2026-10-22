@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Curated OOTD - Temukan Inspirasi Outfit & Belanja Produk",
   description: "Kurasi koleksi outfit harian dengan hotspot interaktif untuk belanja produk fashion",
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -41,6 +42,8 @@ const nunito = Nunito({
   weight: ["400", "600", "700", "800", "900"],
 });
 
+import InstallPwaPrompt from "@/components/InstallPwaPrompt";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -59,6 +62,7 @@ export default function RootLayout({
         >
           {children}
         </LayoutWrapper>
+        <InstallPwaPrompt />
       </body>
     </html>
   );

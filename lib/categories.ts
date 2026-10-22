@@ -7,14 +7,7 @@ export interface Category {
 }
 
 export const DEFAULT_CATEGORIES: Category[] = [
-  { id: "cat-all",         name: "Semua Koleksi",           slug: "all",          description: "Semua kurasi outfit pilihan" },
-  { id: "cat-streetwear",  name: "Streetwear",              slug: "streetwear",   description: "Oversized silhouettes, cargo pants, boxy hoodies, dan urban aesthetics" },
-  { id: "cat-kasual",      name: "Casual Essentials",       slug: "kasual",       description: "Koleksi harian santai, nyaman, dan versatile untuk berbagai aktivitas" },
-  { id: "cat-smart-casual",name: "Smart Casual",            slug: "smart-casual", description: "Kombinasi tailored blazer, knitwear, chino, dan loafers semi-formal" },
-  { id: "cat-minimalis",   name: "Minimalist & Earth Tone", slug: "minimalis",    description: "Potongan clean, palet netral (beige, sand, olive), tanpa grafis berlebih" },
-  { id: "cat-vintage",     name: "Vintage & Retro",         slug: "vintage",      description: "Nuansa klasik 90-an, leather jacket, washed denim, dan aksen nostalgia" },
-  { id: "cat-formal",      name: "Formal & Tailored",       slug: "formal",       description: "Setelan jas berstruktur, gaun pesta elegan, dan pakaian acara resmi" },
-  { id: "cat-sporty",      name: "Athleisure & Sporty",     slug: "sporty",       description: "Kenyamanan busana olahraga yang dipadukan dengan gaya street modern" },
+  { id: "cat-all", name: "Semua Koleksi", slug: "all", description: "Semua kurasi outfit pilihan" },
 ];
 
 const STORAGE_KEY = "curated_ootd_custom_categories";
