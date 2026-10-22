@@ -30,28 +30,42 @@ export const DEFAULT_GENDERS: GenderCategory[] = [
   },
 ];
 
-// Kategori gaya kosong — hanya diisi oleh admin melalui panel manajemen
-export const DEFAULT_CATEGORIES: Category[] = [];
+// Kategori gaya awal: pakaian, makeup, skincare, aksesoris
+export const DEFAULT_CATEGORIES: Category[] = [
+  { id: "cat-pakaian", name: "Pakaian", slug: "pakaian", description: "Inspirasi koleksi pakaian, baju, celana, dan fashion outfit" },
+  { id: "cat-makeup", name: "Makeup", slug: "makeup", description: "Inspirasi riasan, kosmetik, lipstik, dan beauty look" },
+  { id: "cat-skincare", name: "Skincare", slug: "skincare", description: "Perawatan kulit harian dan produk skincare pilihan" },
+  { id: "cat-aksesoris", name: "Aksesoris", slug: "aksesoris", description: "Aksesoris penunjang gaya seperti tas, kacamata, topi, perhiasan, dan sepatu" },
+];
 
 const STORAGE_KEY = "curated_ootd_custom_categories";
 
 // ── LocalStorage helpers (fallback saat Supabase belum tersedia) ──────────────
 
 export function getStoredCategories(): Category[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return DEFAULT_CATEGORIES;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
+    if (!raw) return DEFAULT_CATEGORIES;
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed) && parsed.length > 0) {
       // Filter keluar kategori gender lama yang mungkin tersimpan di cache
       const genderSlugs = new Set(["pria", "wanita", "anak-anak", "anak-pria", "anak-wanita"]);
-      return parsed.filter((c: Category) => !genderSlugs.has(c.slug?.toLowerCase()));
+      const filtered = parsed.filter((c: Category) => !genderSlugs.has(c.slug?.toLowerCase()));
+      
+      // Pastikan kategori default selalu ada jika belum ada
+      const combined = [...filtered];
+      for (const def of DEFAULT_CATEGORIES) {
+        if (!combined.some((c) => c.slug === def.slug)) {
+          combined.push(def);
+        }
+      }
+      return combined;
     }
   } catch {
     // ignore
   }
-  return [];
+  return DEFAULT_CATEGORIES;
 }
 
 

@@ -68,7 +68,20 @@ export default function CategoryFilter({
 
       {/* Pills horizontal scroll */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-none no-scrollbar">
+        {/* Tombol Semua Koleksi */}
+        <button
+          onClick={() => onSelectCategory("all")}
+          className={`pill-3d shrink-0 rounded-full border px-4 py-2 text-xs font-black tracking-tight transition-all ${
+            activeCategory === "all"
+              ? "pill-3d-active border-primary bg-primary text-white"
+              : "border-border bg-white/60 text-foreground backdrop-blur-md hover:bg-secondary"
+          }`}
+        >
+          Semua Koleksi
+        </button>
+
         {categories.map((cat) => {
+          if (cat.slug === "all") return null;
           const isActive = activeCategory === cat.slug;
           return (
             <button
