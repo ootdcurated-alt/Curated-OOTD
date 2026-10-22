@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAccountDeletionState } from "@/lib/accountDeletion";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -11,6 +12,17 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      const { data: userData } = await supabase.auth.getUser();
+      const deletion = getAccountDeletionState(userData.user?.user_metadata);
+      if (deletion.isPending) {
+        await supabase.auth.signOut();
+        const loginUrl = new URL("/auth/login", origin);
+        loginUrl.searchParams.set(
+          "account",
+          deletion.isExpired ? "deleted" : "pending_deletion"
+        );
+        return NextResponse.redirect(loginUrl.toString());
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

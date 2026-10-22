@@ -1,24 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import OutfitGrid from "@/components/OutfitGrid";
 import CategoryFilter from "@/components/CategoryFilter";
 import { Outfit } from "@/components/OutfitCard";
 import { Category, DEFAULT_CATEGORIES } from "@/lib/categories";
 import { Sparkles, Tag, X } from "lucide-react";
-
 import GenderFilter from "@/components/GenderFilter";
+import Pagination from "@/components/Pagination";
 
 interface HomeClientProps {
   outfits: Outfit[];
   isLoggedIn?: boolean;
 }
 
+const ITEMS_PER_PAGE = 12;
+
 export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientProps) {
   const [activeGender, setActiveGender] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoriesList, setCategoriesList] = useState<Category[]>(DEFAULT_CATEGORIES);
+  const [currentPage, setCurrentPage] = useState(1);
+  const collectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll langsung ke koleksi outfit (bukan ke studio kreasi atau paling atas)
+  const scrollToCollection = () => {
+    if (collectionRef.current) {
+      const yOffset = -90; // offset untuk navbar
+      const y = collectionRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    }
+  };
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeGender, activeCategory, searchQuery]);
 
   // Cari objek kategori aktif jika ada
   const currentCategory = categoriesList.find((c) => c.slug === activeCategory);
@@ -109,13 +127,25 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
     return matchGender && matchCategory && matchSearch;
   });
 
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredOutfits.length / ITEMS_PER_PAGE);
+  const paginatedOutfits = filteredOutfits.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    scrollToCollection();
+  };
+
   const handleSelectTag = (tag: string) => {
     const cleanTag = tag.trim().toLowerCase();
     
     // Cek apakah tag merupakan gender
     if (cleanTag === "pria" || cleanTag === "wanita" || cleanTag.includes("anak")) {
       setActiveGender(cleanTag);
-      window.scrollTo({ top: 350, behavior: "smooth" });
+      scrollToCollection();
       return;
     }
 
@@ -131,7 +161,7 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
     } else {
       setActiveCategory(cleanTag);
     }
-    window.scrollTo({ top: 350, behavior: "smooth" });
+    scrollToCollection();
   };
 
   const getActiveGenderLabel = () => {
@@ -202,7 +232,7 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
       </div>
 
       {/* Header Kategori Aktif + Deskripsi */}
-      <div className="flex flex-col gap-2 px-1 sm:px-2">
+      <div ref={collectionRef} className="flex flex-col gap-2 px-1 sm:px-2 scroll-mt-24">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-lg sm:text-2xl font-black tracking-tighter text-foreground font-nunito uppercase break-words">
@@ -252,11 +282,19 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
           </button>
         </div>
       ) : (
-        <OutfitGrid
-          outfits={filteredOutfits}
-          isLoggedIn={isLoggedIn}
-          onSelectTag={handleSelectTag}
-        />
+        <>
+          <OutfitGrid
+            outfits={paginatedOutfits}
+            isLoggedIn={isLoggedIn}
+            onSelectTag={handleSelectTag}
+          />
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
       )}
     </div>
   );

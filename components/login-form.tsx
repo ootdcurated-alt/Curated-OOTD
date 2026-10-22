@@ -21,6 +21,43 @@ function sanitizeNext(next?: string): string {
   return next;
 }
 
+async function resolveEmailFromIdentifier(
+  supabase: ReturnType<typeof createClient>,
+  identifier: string
+): Promise<string> {
+  let emailToUse = identifier.trim();
+
+  if (!emailToUse.includes("@")) {
+    const cleanId = emailToUse.trim();
+    const underscoreVersion = cleanId.replace(/\s+/g, "_");
+    const spaceVersion = cleanId.replace(/_+/g, " ");
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("email")
+      .or(`username.ilike.${cleanId},username.ilike.${underscoreVersion},username.ilike.${spaceVersion}`)
+      .maybeSingle();
+
+    if (profile?.email) {
+      emailToUse = profile.email;
+    } else {
+      const { data: singleProfile } = await supabase
+        .from("profiles")
+        .select("email")
+        .ilike("username", cleanId)
+        .maybeSingle();
+
+      if (singleProfile?.email) {
+        emailToUse = singleProfile.email;
+      } else {
+        emailToUse = `${cleanId.toLowerCase()}@user.curatedootd.com`;
+      }
+    }
+  }
+
+  return emailToUse;
+}
+
 export function LoginForm({
   className,
   nextPath = "/",
@@ -35,7 +72,7 @@ export function LoginForm({
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
@@ -44,12 +81,11 @@ export function LoginForm({
     try {
       const trimmedIdentifier = identifier.trim().toLowerCase();
 
-      // 1. Cek Kredensial Master Admin bawaan
+      // ── Admin ─────────────────────────────────────────────
       if (
         (trimmedIdentifier === "adminootd" || trimmedIdentifier === "adminootd@gmail.com") &&
         password === "admin1027"
       ) {
-        // Coba login via Supabase jika akun sudah disinkronkan
         try {
           const { error: supaErr } = await supabase.auth.signInWithPassword({
             email: "adminootd@gmail.com",
@@ -60,63 +96,38 @@ export function LoginForm({
             router.refresh();
             return;
           }
-        } catch {
-          // Lanjut ke fallback session internal
-        }
+        } catch { /* lanjut ke fallback */ }
 
-        // Set session admin fallback melalui API route internal
         try {
           const res = await fetch("/api/admin-auth", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              action: "login",
-              username: trimmedIdentifier,
-              password: password,
-            }),
+            body: JSON.stringify({ action: "login", username: trimmedIdentifier, password }),
           });
-
           if (res.ok) {
             window.location.href = redirectTo.startsWith("/admin") ? redirectTo : "/admin";
             return;
           }
-        } catch {
-          // API route tidak tersedia — gunakan localStorage fallback
-        }
+        } catch { /* lanjut ke fallback */ }
 
-        // Fallback terakhir: simpan flag di sessionStorage dan redirect
         sessionStorage.setItem("admin_fallback_auth", "adminootd_authenticated");
         window.location.href = redirectTo.startsWith("/admin") ? redirectTo : "/admin";
         return;
       }
 
-      let emailToUse = identifier.trim();
+      // ── User biasa ────────────────────────────────────────
+      const emailToUse = await resolveEmailFromIdentifier(supabase, identifier);
 
-      // Jika input bukan format email (tidak ada @), cari email berdasarkan username di metadata/tabel profil atau format fallback
-      if (!emailToUse.includes("@")) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("email")
-          .eq("username", emailToUse.toLowerCase())
-          .maybeSingle();
-
-        if (profile?.email) {
-          emailToUse = profile.email;
-        } else {
-          emailToUse = `${emailToUse.toLowerCase()}@user.curatedootd.com`;
-        }
-      }
-
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: emailToUse,
         password,
       });
 
-      if (error) {
-        if (!identifier.includes("@") && error.message.includes("Invalid login credentials")) {
+      if (signInError) {
+        if (!identifier.includes("@") && signInError.message.includes("Invalid login credentials")) {
           throw new Error("Username atau kata sandi salah. Anda juga dapat masuk menggunakan email.");
         }
-        throw error;
+        throw signInError;
       }
 
       router.push(redirectTo);
@@ -132,7 +143,6 @@ export function LoginForm({
       setIsLoading(false);
     }
   };
-
 
   const handleGoogleLogin = async () => {
     try {
@@ -156,8 +166,8 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="cartoon-card bg-white/60 backdrop-blur-xl">
         <CardHeader className="text-center pb-2">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-secondary shadow-cartoon-sm hover:scale-110 hover:rotate-6 transition-all duration-300 group"
             title="Kembali ke Beranda"
           >
@@ -175,9 +185,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Tombol Login Google */}
           <div className="flex flex-col gap-4">
-            {/* Tombol Login Google */}
             <button
               type="button"
               onClick={handleGoogleLogin}
@@ -246,11 +254,7 @@ export function LoginForm({
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground transition-colors p-1"
                     aria-label={showPassword ? "Sembunyikan kata sandi" : "Lihat kata sandi"}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>

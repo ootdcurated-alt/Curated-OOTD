@@ -3,26 +3,27 @@ import { Button } from "./ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 import { cookies } from "next/headers";
-import { User, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { getUserProfile } from "@/lib/userServer";
 
 export async function AuthButton() {
   const cookieStore = await cookies();
   const hasAdminCookie = cookieStore.get("admin_session")?.value === "adminootd_authenticated";
 
   const supabase = await createClient();
-
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
-  // Ambil avatar admin dari database atau cookie
+  // ── Profil Admin ─────────────────────────────────────────────────────────
   let adminAvatar = "";
   let adminUsername = "adminootd";
 
   if (hasAdminCookie) {
-    // Selalu coba ambil dari database untuk admin agar foto profil muncul
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+    const key =
+      process.env.SUPABASE_SERVICE_ROLE_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
     if (url && key) {
       try {
@@ -80,39 +81,52 @@ export async function AuthButton() {
     );
   }
 
-  const avatarUrl = (user as any)?.user_metadata?.avatar_url || "";
+  // ── Profil User Biasa — tanpa foto profil ────────────────────────────────
+  if (user) {
+    const profile = await getUserProfile();
+    const displayName =
+      profile?.username ||
+      (user as any)?.email?.split("@")[0] ||
+      "Pengguna";
 
-  // Nama tampilan: bisa dari user_metadata (username/display_name/name) atau email
-  const displayName =
-    (user as any)?.user_metadata?.username ||
-    (user as any)?.user_metadata?.name ||
-    user?.email?.split("@")[0] ||
-    "Pengguna";
+    const initial = displayName.charAt(0).toUpperCase();
 
-  return user ? (
-    <div className="flex items-center gap-1.5 sm:gap-3 text-sm">
-      <Link
-        href="/protected"
-        className="touch-target flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        aria-label={`Akun ${displayName}`}
-      >
-        {avatarUrl ? (
-          <img src={avatarUrl} alt="Avatar" className="h-8 w-8 sm:h-7 sm:w-7 rounded-full object-cover border border-border" />
-        ) : (
-          <div className="h-8 w-8 sm:h-7 sm:w-7 rounded-full bg-muted flex items-center justify-center border border-border">
-            <User className="h-3.5 w-3.5" />
+    return (
+      <div className="flex items-center gap-1.5 sm:gap-3 text-sm">
+        <Link
+          href="/protected"
+          className="touch-target flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          aria-label={`Akun ${displayName}`}
+        >
+          <div className="h-8 w-8 sm:h-7 sm:w-7 rounded-full bg-primary/10 flex items-center justify-center border border-primary/30 shrink-0">
+            <span className="text-xs font-black text-primary leading-none">{initial}</span>
           </div>
-        )}
-        <span className="hidden md:inline font-medium text-foreground max-w-[88px] truncate">{displayName}</span>
-      </Link>
-      <LogoutButton compact />
-    </div>
-  ) : (
+          <span className="hidden md:inline font-medium text-foreground max-w-[88px] truncate">
+            {displayName}
+          </span>
+        </Link>
+        <LogoutButton compact />
+      </div>
+    );
+  }
+
+  // ── Belum login ───────────────────────────────────────────────────────────
+  return (
     <div className="flex items-center gap-1 sm:gap-2">
-      <Button asChild size="sm" variant="ghost" className="touch-target h-9 px-2.5 sm:px-3 text-xs sm:text-sm font-medium">
+      <Button
+        asChild
+        size="sm"
+        variant="ghost"
+        className="touch-target h-9 px-2.5 sm:px-3 text-xs sm:text-sm font-medium"
+      >
         <Link href="/auth/login">Masuk</Link>
       </Button>
-      <Button asChild size="sm" variant="default" className="touch-target h-9 px-2.5 sm:px-3 text-xs sm:text-sm font-medium">
+      <Button
+        asChild
+        size="sm"
+        variant="default"
+        className="touch-target h-9 px-2.5 sm:px-3 text-xs sm:text-sm font-medium"
+      >
         <Link href="/auth/sign-up">Daftar</Link>
       </Button>
     </div>

@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Eye, EyeOff, Check, X, Camera, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff, Check, X } from "lucide-react";
 
 export function SignUpForm({
   className,
@@ -24,12 +24,19 @@ export function SignUpForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  // State untuk alur OTP
+  const [step, setStep] = useState<"register" | "otp">("register");
+  const [otpCode, setOtpCode] = useState("");
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [isResendingOtp, setIsResendingOtp] = useState(false);
+  const [resendCountdown, setResendCountdown] = useState(0);
+
   const router = useRouter();
 
   // Aturan kriteria kata sandi
@@ -41,53 +48,29 @@ export function SignUpForm({
   const isPasswordValid =
     hasMinLength && hasUppercase && hasLowercase && hasNumber && hasSymbol;
 
-  // Handler upload foto profil
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Ukuran foto maksimal 5MB");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        const res = await fetch("/api/upload-avatar", {
-          method: "POST",
-          body: formData,
-        });
-        const json = await res.json();
-        if (json.success && json.url) {
-          setAvatarUrl(json.url);
-        }
-      } catch {
-        // Fallback
-      }
-    }
-  };
-
   const handleSignUp = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
-    // Validasi username
-    const cleanUsername = username.trim().toLowerCase();
-    if (!cleanUsername) {
-      setError("Silakan isi nama pengguna (username)");
+    // Validasi nama pengguna / username
+    const trimmedUsername = username.trim();
+    if (!trimmedUsername) {
+      setError("Silakan isi nama pengguna / username");
       setIsLoading(false);
       return;
     }
 
-    if (!/^[a-z0-9_]{3,20}$/.test(cleanUsername)) {
-      setError("Username hanya boleh 3-20 karakter huruf kecil, angka, atau garis bawah (_)");
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 30) {
+      setError("Nama pengguna harus memiliki panjang 3 hingga 30 karakter");
+      setIsLoading(false);
+      return;
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      setError("Silakan masukkan alamat email Gmail / aktif Anda untuk menerima kode OTP.");
       setIsLoading(false);
       return;
     }
@@ -105,47 +88,133 @@ export function SignUpForm({
     }
 
     try {
-      const effectiveEmail = email.trim() || `${cleanUsername}@user.curatedootd.com`;
-
-      const { data, error } = await supabase.auth.signUp({
-        email: effectiveEmail,
-        password,
-        options: {
-          data: {
-            username: cleanUsername,
-            display_name: username.trim(),
-            avatar_url: avatarUrl || "",
-          },
-          emailRedirectTo: `${window.location.origin}/`,
-        },
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: cleanEmail,
+          password,
+          username: trimmedUsername,
+          displayName: trimmedUsername,
+        }),
       });
 
-      if (error) throw error;
-
-      try {
-        if (data.user) {
-          await supabase.from("profiles").upsert({
-            id: data.user.id,
-            username: cleanUsername,
-            email: effectiveEmail,
-            avatar_url: avatarUrl || "",
-            created_at: new Date().toISOString(),
-          });
-        }
-      } catch {
-        // Trigger on_auth_user_created akan handle ini otomatis di Supabase
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Gagal memproses pendaftaran");
       }
 
-      router.push("/auth/sign-up-success");
+      // Alihkan ke step input kode OTP yang dikirimkan ke email
+      setStep("otp");
+      setResendCountdown(60);
+
+      // Jika devOtp tersedia (misal App Password Gmail belum di-set di .env.local),
+      // otomatis isi atau tampilkan agar pengguna bisa lanjut dengan nyaman
+      if (json.devOtp) {
+        setOtpCode(json.devOtp);
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Terjadi kesalahan saat pendaftaran";
-      if (msg.includes("already registered")) {
+      if (msg.includes("already registered") || msg.includes("already exists")) {
         setError("Email atau username ini sudah terdaftar. Silakan masuk.");
       } else {
         setError(msg);
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Handler Verifikasi Kode OTP dari Email
+  const handleVerifyOtp = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!otpCode.trim()) {
+      setError("Masukkan 6 digit kode OTP yang diterima di email Anda.");
+      return;
+    }
+
+    setIsVerifyingOtp(true);
+    setError(null);
+
+    try {
+      const supabase = createClient();
+      const cleanEmail = email.trim().toLowerCase();
+
+      // Verifikasi token OTP yang dibuat via Supabase Auth
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: cleanEmail,
+        token: otpCode.trim(),
+        type: "signup",
+      });
+
+      if (error) {
+        // Fallback coba type 'email'
+        const fallbackRes = await supabase.auth.verifyOtp({
+          email: cleanEmail,
+          token: otpCode.trim(),
+          type: "email",
+        });
+        if (fallbackRes.error) throw error;
+      }
+
+      const profileUsername = username.trim();
+
+      await supabase.auth.updateUser({
+        data: { username: profileUsername },
+      });
+
+      const syncRes = await fetch("/api/profile/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: profileUsername }),
+      });
+      const syncJson = await syncRes.json();
+      if (!syncRes.ok || !syncJson.success) {
+        console.warn("Profile sync setelah OTP:", syncJson.message);
+      }
+
+      router.push("/");
+      router.refresh();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Kode OTP salah atau telah kadaluarsa.";
+      setError(msg);
+    } finally {
+      setIsVerifyingOtp(false);
+    }
+  };
+
+  // Kirim Ulang OTP
+  const handleResendOtp = async () => {
+    if (resendCountdown > 0) return;
+    setIsResendingOtp(true);
+    setError(null);
+    try {
+      const trimmedUsername = username.trim();
+
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+          username: trimmedUsername,
+          displayName: trimmedUsername,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Gagal mengirim ulang OTP");
+      }
+
+      if (json.devOtp) {
+        setOtpCode(json.devOtp);
+      }
+      setResendCountdown(60);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Gagal mengirim ulang OTP.");
+    } finally {
+      setIsResendingOtp(false);
     }
   };
 
@@ -168,6 +237,14 @@ export function SignUpForm({
     }
   };
 
+  // Countdown effect untuk tombol kirim ulang OTP
+  useEffect(() => {
+    if (resendCountdown > 0) {
+      const timer = setTimeout(() => setResendCountdown((c) => c - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCountdown]);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="cartoon-card bg-white/60 backdrop-blur-xl">
@@ -184,205 +261,251 @@ export function SignUpForm({
             />
           </Link>
           <CardTitle className="text-2xl font-black font-nunito tracking-tighter text-foreground">
-            Daftar Akun Baru
+            {step === "otp" ? "Verifikasi Kode OTP" : "Daftar Akun Baru"}
           </CardTitle>
           <CardDescription className="text-xs font-bold text-foreground/70">
-            Bergabunglah bersama komunitas fashion Curated OOTD
+            {step === "otp"
+              ? `Masukkan 6 digit kode OTP yang dikirimkan ke ${email}`
+              : "Bergabunglah bersama komunitas fashion Curated OOTD"}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col gap-4">
-            {/* Tombol Daftar dengan Google */}
-            <button
-              type="button"
-              onClick={handleGoogleSignUp}
-              disabled={isGoogleLoading || isLoading}
-              className="w-full flex items-center justify-center gap-3 py-3 font-black text-xs sm:text-sm rounded-full border border-border bg-white text-foreground shadow-cartoon-sm hover:-translate-y-1 hover:shadow-cartoon active:scale-95 transition-all disabled:opacity-50"
-            >
-              <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
-              </svg>
-              {isGoogleLoading ? "Menghubungkan..." : "Daftar dengan Google"}
-            </button>
+          {step === "otp" ? (
+            /* FORM VERIFIKASI OTP */
+            <div className="flex flex-col gap-4">
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div className="grid gap-2 text-center">
+                  <Label htmlFor="otp" className="text-xs font-black text-foreground">
+                    Kode Verifikasi (OTP)
+                  </Label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={8}
+                    placeholder="Contoh: 123456"
+                    required
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\s+/g, ""))}
+                    className="text-center tracking-[0.3em] font-mono text-lg font-black rounded-2xl border border-border bg-white/60 py-3 shadow-cartoon-sm focus-visible:ring-0 focus:outline-none"
+                    autoFocus
+                  />
+                  <p className="text-[11px] font-semibold text-muted-foreground">
+                    Cek kotak masuk atau folder spam di email <strong>{email}</strong>
+                  </p>
+                </div>
 
-            <div className="relative flex items-center justify-center my-1">
-              <div className="w-full border-t border-border" />
-              <span className="absolute bg-white px-3 text-[10px] font-black uppercase tracking-widest text-foreground/60">
-                atau isi formulir
-              </span>
+                {error && (
+                  <div className="rounded-2xl border border-border bg-primary/10 p-3 text-xs font-black text-foreground shadow-cartoon-sm">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isVerifyingOtp || !otpCode.trim()}
+                  className="cartoon-btn w-full bg-primary text-white py-3 text-sm font-black disabled:opacity-50"
+                >
+                  {isVerifyingOtp ? "Memverifikasi..." : "Konfirmasi & Masuk"}
+                </button>
+              </form>
+
+              <div className="flex flex-col items-center gap-2 pt-2">
+                <button
+                  type="button"
+                  disabled={resendCountdown > 0 || isResendingOtp}
+                  onClick={handleResendOtp}
+                  className="text-xs font-bold text-primary hover:underline disabled:opacity-50 disabled:no-underline"
+                >
+                  {resendCountdown > 0
+                    ? `Kirim ulang OTP dalam (${resendCountdown}s)`
+                    : isResendingOtp
+                    ? "Mengirimkan ulang..."
+                    : "Kirim Ulang Kode OTP"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep("register");
+                    setError(null);
+                  }}
+                  className="text-xs font-medium text-muted-foreground hover:text-foreground"
+                >
+                  &larr; Ubah email atau data pendaftaran
+                </button>
+              </div>
             </div>
-
-            <form onSubmit={handleSignUp} className="space-y-4">
-              {/* Unggah Foto Profil */}
-              <div className="flex flex-col items-center justify-center gap-2 py-2">
-                <div className="relative group">
-                  <div className="h-20 w-20 rounded-full border-2 border-dashed border-border flex items-center justify-center overflow-hidden bg-muted/60">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt="Pratinjau Avatar" className="h-full w-full object-cover" />
-                    ) : (
-                      <User className="h-8 w-8 text-muted-foreground" />
-                    )}
-                  </div>
-                  <label
-                    htmlFor="avatar-upload"
-                    className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
-                  >
-                    <Camera className="h-5 w-5" />
-                  </label>
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className="hidden"
-                  />
-                </div>
-                <label htmlFor="avatar-upload" className="text-xs text-primary font-medium hover:underline cursor-pointer">
-                  {avatarUrl ? "Ganti Foto Profil" : "+ Tambah Foto Profil (Opsional)"}
-                </label>
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="username" className="text-xs font-black text-foreground">
-                  Username <span className="text-primary">*</span>
-                </Label>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="Contoh: Nama Kamu"
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none"
-                />
-              </div>
-
-              <div className="grid gap-1.5">
-                <Label htmlFor="email" className="text-xs font-black text-foreground">
-                  Email (Opsional untuk login/reset sandi)
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none"
-                />
-              </div>
-
-              {/* Input Kata Sandi dengan Ikon Mata */}
-              <div className="grid gap-1.5">
-                <Label htmlFor="password" className="text-xs font-black text-foreground">
-                  Kata Sandi <span className="text-primary">*</span>
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Masukkan Kata Sandi"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground transition-colors p-1"
-                    aria-label={showPassword ? "Sembunyikan Kata Sandi" : "Lihat Kata Sandi"}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-
-                {/* Indikator Checklist Kriteria Sandi */}
-                <div className="grid grid-cols-2 gap-1.5 rounded-2xl border border-border bg-white/60 p-3 text-[11px] font-bold shadow-cartoon-sm mt-1">
-                  <div className={cn("flex items-center gap-1.5", hasMinLength ? "text-emerald-600" : "text-foreground/60")}>
-                    {hasMinLength ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
-                    <span>Min. 8 Karakter</span>
-                  </div>
-                  <div className={cn("flex items-center gap-1.5", hasUppercase ? "text-emerald-600" : "text-foreground/60")}>
-                    {hasUppercase ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
-                    <span>Huruf Besar (A-Z)</span>
-                  </div>
-                  <div className={cn("flex items-center gap-1.5", hasLowercase ? "text-emerald-600" : "text-foreground/60")}>
-                    {hasLowercase ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
-                    <span>Huruf Kecil (a-z)</span>
-                  </div>
-                  <div className={cn("flex items-center gap-1.5", hasNumber ? "text-emerald-600" : "text-foreground/60")}>
-                    {hasNumber ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
-                    <span>Angka (0-9)</span>
-                  </div>
-                  <div className={cn("flex items-center gap-1.5 col-span-2", hasSymbol ? "text-emerald-600" : "text-foreground/60")}>
-                    {hasSymbol ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
-                    <span>Simbol (@$!%*?&)</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Input Ulangi Kata Sandi */}
-              <div className="grid gap-1.5">
-                <Label htmlFor="repeat-password" className="text-xs font-black text-foreground">
-                  Ulangi Kata Sandi <span className="text-primary">*</span>
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="repeat-password"
-                    type={showRepeatPassword ? "text" : "password"}
-                    placeholder="Ulangi Kata Sandi"
-                    required
-                    value={repeatPassword}
-                    onChange={(e) => setRepeatPassword(e.target.value)}
-                    className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground transition-colors p-1"
-                    aria-label={showRepeatPassword ? "Sembunyikan ulangi kata sandi" : "Lihat ulangi kata sandi"}
-                  >
-                    {showRepeatPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {error && (
-                <div className="rounded-2xl border border-border bg-primary/10 p-3 text-xs font-black text-foreground shadow-cartoon-sm">
-                  {error}
-                </div>
-              )}
-
+          ) : (
+            /* FORM PENDAFTARAN AWAL */
+            <div className="flex flex-col gap-4">
+              {/* Tombol Daftar dengan Google */}
               <button
-                type="submit"
-                className="cartoon-btn w-full bg-primary text-white py-3 text-sm font-black disabled:opacity-50"
-                disabled={isLoading || isGoogleLoading || !isPasswordValid}
+                type="button"
+                onClick={handleGoogleSignUp}
+                disabled={isGoogleLoading || isLoading}
+                className="w-full flex items-center justify-center gap-3 py-3 font-black text-xs sm:text-sm rounded-full border border-border bg-white text-foreground shadow-cartoon-sm hover:-translate-y-1 hover:shadow-cartoon active:scale-95 transition-all disabled:opacity-50"
               >
-                {isLoading ? "Membuat Akun..." : "Daftar Akun"}
+                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
+                </svg>
+                {isGoogleLoading ? "Menghubungkan..." : "Daftar dengan Google"}
               </button>
-            </form>
 
-            <div className="text-center text-xs font-bold text-foreground/70">
-              Sudah memiliki akun?{" "}
-              <Link
-                href="/auth/login"
-                className="font-black text-primary underline underline-offset-4 hover:opacity-80"
-              >
-                Masuk di sini
-              </Link>
+              <div className="relative flex items-center justify-center my-1">
+                <div className="w-full border-t border-border" />
+                <span className="absolute bg-white px-3 text-[10px] font-black uppercase tracking-widest text-foreground/60">
+                  atau isi formulir
+                </span>
+              </div>
+
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="grid gap-1.5">
+                  <Label htmlFor="username" className="text-xs font-black text-foreground">
+                    Username <span className="text-primary">*</span>
+                  </Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder="Contoh: nama_kamu"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid gap-1.5">
+                  <Label htmlFor="email" className="text-xs font-black text-foreground">
+                    Alamat Email (Gmail) <span className="text-primary">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="nama@gmail.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none"
+                  />
+                  <span className="text-[10px] font-semibold text-muted-foreground">
+                    Kode OTP akan dikirimkan langsung ke email ini untuk verifikasi.
+                  </span>
+                </div>
+
+                {/* Input Kata Sandi dengan Ikon Mata */}
+                <div className="grid gap-1.5">
+                  <Label htmlFor="password" className="text-xs font-black text-foreground">
+                    Kata Sandi <span className="text-primary">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Masukkan Kata Sandi"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground transition-colors p-1"
+                      aria-label={showPassword ? "Sembunyikan Kata Sandi" : "Lihat Kata Sandi"}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Indikator Checklist Kriteria Sandi */}
+                  <div className="grid grid-cols-2 gap-1.5 rounded-2xl border border-border bg-white/60 p-3 text-[11px] font-bold shadow-cartoon-sm mt-1">
+                    <div className={cn("flex items-center gap-1.5", hasMinLength ? "text-emerald-600" : "text-foreground/60")}>
+                      {hasMinLength ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
+                      <span>Min. 8 Karakter</span>
+                    </div>
+                    <div className={cn("flex items-center gap-1.5", hasUppercase ? "text-emerald-600" : "text-foreground/60")}>
+                      {hasUppercase ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
+                      <span>Huruf Besar (A-Z)</span>
+                    </div>
+                    <div className={cn("flex items-center gap-1.5", hasLowercase ? "text-emerald-600" : "text-foreground/60")}>
+                      {hasLowercase ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
+                      <span>Huruf Kecil (a-z)</span>
+                    </div>
+                    <div className={cn("flex items-center gap-1.5", hasNumber ? "text-emerald-600" : "text-foreground/60")}>
+                      {hasNumber ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
+                      <span>Angka (0-9)</span>
+                    </div>
+                    <div className={cn("flex items-center gap-1.5 col-span-2", hasSymbol ? "text-emerald-600" : "text-foreground/60")}>
+                      {hasSymbol ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : <X className="h-3.5 w-3.5" />}
+                      <span>Simbol (@$!%*?&)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Input Ulangi Kata Sandi */}
+                <div className="grid gap-1.5">
+                  <Label htmlFor="repeat-password" className="text-xs font-black text-foreground">
+                    Ulangi Kata Sandi <span className="text-primary">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="repeat-password"
+                      type={showRepeatPassword ? "text" : "password"}
+                      placeholder="Ulangi Kata Sandi"
+                      required
+                      value={repeatPassword}
+                      onChange={(e) => setRepeatPassword(e.target.value)}
+                      className="rounded-2xl border border-border bg-white/60 px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground shadow-cartoon-sm focus-visible:ring-0 focus:outline-none pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-foreground transition-colors p-1"
+                      aria-label={showRepeatPassword ? "Sembunyikan ulangi kata sandi" : "Lihat ulangi kata sandi"}
+                    >
+                      {showRepeatPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="rounded-2xl border border-border bg-primary/10 p-3 text-xs font-black text-foreground shadow-cartoon-sm">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="cartoon-btn w-full bg-primary text-white py-3 text-sm font-black disabled:opacity-50"
+                  disabled={isLoading || isGoogleLoading || !isPasswordValid}
+                >
+                  {isLoading ? "Mengirimkan OTP..." : "Daftar & Minta OTP"}
+                </button>
+              </form>
+
+              <div className="text-center text-xs font-bold text-foreground/70">
+                Sudah memiliki akun?{" "}
+                <Link
+                  href="/auth/login"
+                  className="font-black text-primary underline underline-offset-4 hover:opacity-80"
+                >
+                  Masuk di sini
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

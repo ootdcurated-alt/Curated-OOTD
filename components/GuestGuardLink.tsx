@@ -35,17 +35,26 @@ export default function GuestGuardLink({
     );
   }
 
+  const handleAction = () => {
+    onClick?.();
+    router.push(`/auth/login?next=${encodeURIComponent(href)}`);
+  };
+
   return (
-    <button
-      type="button"
-      className={className}
+    <div
+      role="button"
+      tabIndex={0}
+      className={`${className || ""} cursor-pointer`}
       aria-label={ariaLabel}
-      onClick={() => {
-        onClick?.();
-        router.push(`/auth/login?next=${encodeURIComponent(href)}`);
+      onClick={handleAction}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleAction();
+        }
       }}
     >
       {children}
-    </button>
+    </div>
   );
 }

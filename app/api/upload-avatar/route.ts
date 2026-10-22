@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "File tidak ditemukan" }, { status: 400 });
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: "Ukuran file maksimal 5MB" }, { status: 400 });
+    if (file.size > 2 * 1024 * 1024) {
+      return NextResponse.json({ error: "Ukuran file maksimal 2MB" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -29,6 +29,16 @@ export async function POST(request: NextRequest) {
     if (SUPABASE_URL && SUPABASE_KEY) {
       try {
         const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Pastikan bucket avatars sudah ada atau public
+        const { data: buckets } = await supabaseAdmin.storage.listBuckets();
+        const hasAvatarBucket = buckets?.some((b) => b.name === "avatars");
+        if (!hasAvatarBucket) {
+          await supabaseAdmin.storage.createBucket("avatars", {
+            public: true,
+            fileSizeLimit: 2 * 1024 * 1024,
+          });
+        }
 
         const { data, error } = await supabaseAdmin.storage
           .from("avatars")

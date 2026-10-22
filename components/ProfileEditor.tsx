@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { Camera, Eye, EyeOff, Check, X, ShieldCheck, User, Trash2 } from "lucide-react";
+import { Camera, Eye, EyeOff, Check, X, ShieldCheck, User, Trash2, AlertTriangle } from "lucide-react";
 
 interface ProfileEditorProps {
   initialUsername: string;
@@ -18,7 +19,9 @@ export default function ProfileEditor({
   initialAvatarUrl = "",
   isAdmin = false,
 }: ProfileEditorProps) {
-  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
+  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);      // untuk preview
+  const [uploadedAvatarUrl, setUploadedAvatarUrl] = useState(initialAvatarUrl); // URL final (bukan base64)
+  const [isUploading, setIsUploading] = useState(false);
   const [displayName, setDisplayName] = useState(initialUsername);
   const [email, setEmail] = useState(initialEmail);
   const [newPassword, setNewPassword] = useState("");
@@ -27,6 +30,11 @@ export default function ProfileEditor({
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [showDeletePassword, setShowDeletePassword] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const router = useRouter();
 
   const hasMinLength = newPassword.length >= 8;
   const hasUppercase = /[A-Z]/.test(newPassword);
@@ -40,35 +48,48 @@ export default function ProfileEditor({
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage({ type: "error", text: "Ukuran foto maksimal 5MB" });
+    if (file.size > 2 * 1024 * 1024) {
+      setMessage({ type: "error", text: "Ukuran foto maksimal 2MB. Silakan kompres gambar terlebih dahulu." });
+      e.target.value = "";
       return;
     }
 
-    // Preview lokal instan
+    // Preview lokal instan (base64 hanya untuk tampilan)
     const reader = new FileReader();
     reader.onloadend = () => setAvatarUrl(reader.result as string);
     reader.readAsDataURL(file);
 
+    // Upload ke server dan simpan URL final
+    setIsUploading(true);
     try {
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch("/api/upload-avatar", { method: "POST", body: formData });
       const contentType = res.headers.get("content-type") || "";
       if (!contentType.includes("application/json")) {
-        // Upload API not available (deployment issue), keep local preview
+        setMessage({ type: "error", text: "Gagal mengunggah foto. Coba lagi." });
+        setAvatarUrl(uploadedAvatarUrl); // rollback preview
         return;
       }
       const json = await res.json();
-      if (json.success && json.url) setAvatarUrl(json.url);
-      else if (json.error) setMessage({ type: "error", text: json.error });
+      if (json.success && json.url) {
+        setAvatarUrl(json.url);           // update preview ke URL asli
+        setUploadedAvatarUrl(json.url);   // simpan URL final
+      } else {
+        setMessage({ type: "error", text: json.error || "Gagal mengunggah foto." });
+        setAvatarUrl(uploadedAvatarUrl); // rollback preview
+      }
     } catch {
-      // Tetap pakai data URL lokal
+      setMessage({ type: "error", text: "Gagal mengunggah foto. Periksa koneksi internet." });
+      setAvatarUrl(uploadedAvatarUrl); // rollback preview
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const handleRemoveAvatar = () => {
     setAvatarUrl("");
+    setUploadedAvatarUrl("");
   };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
@@ -94,7 +115,7 @@ export default function ProfileEditor({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             action: "update_profile",
-            avatar_url: avatarUrl,
+            avatar_url: uploadedAvatarUrl,  // gunakan URL final, bukan base64
             new_username: displayName || undefined,
             new_email: email || undefined,
             new_password: newPassword || undefined,
@@ -111,16 +132,23 @@ export default function ProfileEditor({
       } else {
         const supabase = createClient();
         const updateData: { data: Record<string, string>; password?: string } = {
-          data: { avatar_url: avatarUrl, display_name: displayName },
+          data: { avatar_url: uploadedAvatarUrl, username: displayName },
         };
         if (newPassword) updateData.password = newPassword;
         const { error } = await supabase.auth.updateUser(updateData);
         if (error) throw error;
 
-        // Update profiles table juga
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          await supabase.from("profiles").update({ avatar_url: avatarUrl }).eq("id", user.id);
+        const syncRes = await fetch("/api/profile/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            avatar_url: uploadedAvatarUrl,
+            username: displayName,
+          }),
+        });
+        const syncData = await syncRes.json();
+        if (!syncRes.ok || !syncData.success) {
+          throw new Error(syncData.message || "Gagal menyimpan foto profil ke database.");
         }
       }
 
@@ -138,6 +166,47 @@ export default function ProfileEditor({
     }
   };
 
+  const handleDeleteAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isAdmin) return;
+
+    setDeleteMessage(null);
+    if (!deletePassword) {
+      setDeleteMessage({ type: "error", text: "Masukkan kata sandi akun Anda untuk melanjutkan penghapusan." });
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Akun Anda akan dihapus permanen dan tidak dapat dipulihkan. Lanjutkan?"
+    );
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/auth/delete-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: deletePassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Gagal menghapus akun.");
+      }
+
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      setDeleteMessage({ type: "success", text: data.message });
+      setTimeout(() => router.push("/auth/login"), 1200);
+    } catch (err: unknown) {
+      setDeleteMessage({
+        type: "error",
+        text: err instanceof Error ? err.message : "Terjadi kesalahan saat menghapus akun.",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="cartoon-card bg-white p-6 sm:p-8 space-y-6">
       <div className="border-b border-border pb-4">
@@ -151,55 +220,57 @@ export default function ProfileEditor({
       </div>
 
       <form onSubmit={handleSaveProfile} className="space-y-6">
-        {/* ── Foto Profil ── */}
-        <div className="flex flex-col sm:flex-row items-center gap-6 p-5 rounded-2xl bg-primary/5 border border-border shadow-cartoon-sm">
-          <div className="relative group">
-            <div className="h-24 w-24 rounded-2xl border border-border shadow-cartoon-sm flex items-center justify-center overflow-hidden bg-white">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
-              ) : (
-                <User className="h-10 w-10 text-foreground/50" />
-              )}
-            </div>
-            <label
-              htmlFor="profile-avatar-upload"
-              className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/50 text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
-            >
-              <Camera className="h-6 w-6 text-white" />
-            </label>
-            <input
-              id="profile-avatar-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarChange}
-              className="hidden"
-            />
-          </div>
-          <div className="space-y-2 text-center sm:text-left">
-            <h3 className="font-black font-nunito text-sm sm:text-base text-foreground">Foto Profil</h3>
-            <p className="text-xs font-bold text-foreground/70">
-              Format JPG, PNG, atau WEBP. Ukuran file maksimal 5MB.
-            </p>
-            <div className="flex items-center gap-3 justify-center sm:justify-start">
+        {/* ── Foto Profil — hanya untuk admin ── */}
+        {isAdmin && (
+          <div className="flex flex-col sm:flex-row items-center gap-6 p-5 rounded-2xl bg-primary/5 border border-border shadow-cartoon-sm">
+            <div className="relative group">
+              <div className="h-24 w-24 rounded-2xl border border-border shadow-cartoon-sm flex items-center justify-center overflow-hidden bg-white">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+                ) : (
+                  <User className="h-10 w-10 text-foreground/50" />
+                )}
+              </div>
               <label
                 htmlFor="profile-avatar-upload"
-                className="inline-block text-xs font-black text-primary hover:underline cursor-pointer"
+                className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/50 text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
               >
-                Pilih Foto Baru
+                <Camera className="h-6 w-6 text-white" />
               </label>
-              {avatarUrl && (
-                <button
-                  type="button"
-                  onClick={handleRemoveAvatar}
-                  className="inline-flex items-center gap-1 text-xs font-black text-foreground/60 hover:text-primary transition-colors"
+              <input
+                id="profile-avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+            </div>
+            <div className="space-y-2 text-center sm:text-left">
+              <h3 className="font-black font-nunito text-sm sm:text-base text-foreground">Foto Profil</h3>
+              <p className="text-xs font-bold text-foreground/70">
+                Format JPG, PNG, atau WEBP. Ukuran file maksimal 5MB.
+              </p>
+              <div className="flex items-center gap-3 justify-center sm:justify-start">
+                <label
+                  htmlFor="profile-avatar-upload"
+                  className="inline-block text-xs font-black text-primary hover:underline cursor-pointer"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  Hapus Foto
-                </button>
-              )}
+                  Pilih Foto Baru
+                </label>
+                {avatarUrl && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveAvatar}
+                    className="inline-flex items-center gap-1 text-xs font-black text-foreground/60 hover:text-primary transition-colors"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Hapus Foto
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* ── Username & Email ── */}
         <div className="grid gap-4 sm:grid-cols-2">
@@ -317,6 +388,65 @@ export default function ProfileEditor({
           {isLoading ? "Menyimpan Perubahan..." : "Simpan Perubahan Profil"}
         </button>
       </form>
+
+      {!isAdmin && (
+        <div className="border-t border-border pt-6 space-y-4">
+          <div className="flex items-start gap-2.5">
+            <AlertTriangle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-black font-nunito text-base text-foreground">Hapus Akun</h3>
+              <p className="text-xs font-bold text-foreground/70 mt-0.5">
+                Akun akan dihapus permanen dan tidak dapat dipulihkan. Masukkan kata sandi untuk mengonfirmasi.
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={handleDeleteAccount} className="space-y-3">
+            <div className="space-y-1.5 max-w-md">
+              <label htmlFor="delete-account-password" className="text-xs font-black text-foreground">
+                Kata Sandi Akun (wajib)
+              </label>
+              <div className="relative">
+                <input
+                  id="delete-account-password"
+                  type={showDeletePassword ? "text" : "password"}
+                  placeholder="Masukkan kata sandi saat ini"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  autoComplete="current-password"
+                  className="w-full rounded-xl border border-border bg-primary/5 px-3.5 py-2.5 pr-10 text-xs sm:text-sm font-bold text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowDeletePassword(!showDeletePassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/70 hover:text-foreground p-1"
+                >
+                  {showDeletePassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            {deleteMessage && (
+              <div
+                className={cn(
+                  "rounded-xl p-3.5 text-xs sm:text-sm font-black border border-border max-w-md",
+                  deleteMessage.type === "success" ? "bg-secondary text-foreground" : "bg-primary text-white"
+                )}
+              >
+                {deleteMessage.text}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isDeleting}
+              className="cartoon-btn bg-white text-primary border border-primary px-5 py-2.5 text-xs sm:text-sm font-black hover:bg-primary/5 disabled:opacity-50"
+            >
+              {isDeleting ? "Memproses..." : "Hapus Akun Saya"}
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

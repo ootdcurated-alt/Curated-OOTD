@@ -46,13 +46,15 @@ export async function createClient() {
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll();
+          // Abaikan cookie abnormal yang ukurannya > 3000 byte agar tidak memicu HTTP 431
+          return cookieStore.getAll().filter((c) => (c.value ? c.value.length < 3072 : true));
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
-            );
+            cookiesToSet.forEach(({ name, value, options }) => {
+              if (value && value.length > 3072) return; // Lindungi agar cookie raksasa tidak diset
+              cookieStore.set(name, value, options);
+            });
           } catch {
             // The `setAll` method was called from a Server Component.
             // This can be ignored if you have proxy refreshing

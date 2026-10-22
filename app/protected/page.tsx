@@ -1,27 +1,15 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getUserProfile } from "@/lib/userServer";
 import { ShieldCheck, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import ProfileEditor from "@/components/ProfileEditor";
 
-
 export default async function ProtectedPage() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
+  const profile = await getUserProfile();
 
-  if (error || !data?.claims) {
+  if (!profile) {
     redirect("/auth/login");
   }
-
-  const user = data.claims;
-  const username =
-    (user as any)?.user_metadata?.username ||
-    (user as any)?.user_metadata?.name ||
-    user?.email?.split("@")[0] ||
-    "Pengguna";
-
-  const avatarUrl = (user as any)?.user_metadata?.avatar_url || "";
-  const email = user.email || "";
 
   return (
     <div className="container max-w-4xl py-10 px-4 sm:px-6 space-y-6">
@@ -40,9 +28,9 @@ export default async function ProtectedPage() {
       </div>
 
       <ProfileEditor
-        initialUsername={username}
-        initialEmail={email}
-        initialAvatarUrl={avatarUrl}
+        initialUsername={profile.username}
+        initialEmail={profile.email}
+        initialAvatarUrl={profile.avatar_url}
         isAdmin={false}
       />
     </div>
