@@ -76,11 +76,18 @@ async function resolveModelOrder(apiKey: string, envModel?: string): Promise<str
   return ordered;
 }
 
+export interface GeminiResult {
+  text: string;
+  model: string;
+  /** true = quota/rate-limit habis (HTTP 429) → langsung fallback ke AI lain */
+  quotaExhausted?: boolean;
+}
+
 export async function generateGeminiText(
   apiKey: string,
   prompt: string,
   envModel?: string
-): Promise<{ text: string; model: string } | null> {
+): Promise<GeminiResult | null> {
   const key = apiKey.trim();
   if (!key) return null;
 
@@ -112,19 +119,36 @@ export async function generateGeminiText(
         if (res.ok) {
           const data = await res.json();
           const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
-          if (text) return { text, model };
-          break;
+
+          // HTTP 200 tapi isi kosong → anggap quota exhausted, langsung fallback
+          if (!text) {
+            console.warn(`[Gemini] ${model} → response kosong (kemungkinan quota habis)`);
+            return { text: "", model, quotaExhausted: true };
+          }
+
+          return { text, model };
         }
 
         const errBody = await res.text();
-        const retryable = res.status === 503 || res.status === 429;
+
+        // ── 429 Rate limit / quota habis ───────────────────────────────────────
+        // Jangan retry, langsung kembalikan sinyal quotaExhausted
+        if (res.status === 429) {
+          console.warn(
+            `[Gemini] ${model} → 429 QUOTA HABIS. Langsung fallback ke AI lain.`,
+            errBody.slice(0, 200)
+          );
+          return { text: "", model, quotaExhausted: true };
+        }
+
         console.error(
-          `Gemini (${model}, json=${useJsonMime}, attempt ${attempt + 1}, ${res.status}):`,
+          `[Gemini] ${model} (json=${useJsonMime}, attempt ${attempt + 1}, status ${res.status}):`,
           errBody.slice(0, 400)
         );
 
         if (res.status === 400 && useJsonMime) break;
 
+        const retryable = res.status === 503;
         if (retryable && attempt < 2) {
           await new Promise((r) => setTimeout(r, 700 * (attempt + 1)));
           continue;
