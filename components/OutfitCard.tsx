@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import GuestGuardLink from "@/components/GuestGuardLink";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -105,7 +106,7 @@ export default function OutfitCard({ outfit, isLoggedIn: initialIsLoggedIn, onSe
   return (
     <div className="group relative overflow-hidden cartoon-card bg-white/60 backdrop-blur-xl transition-all duration-500 border-white/40">
       <div className="relative">
-        <Link href={`/outfit/${outfit.id}`} className="block">
+        <GuestGuardLink href={`/outfit/${outfit.id}`} isLoggedIn={isAuth === true} className="block">
           <div className="relative aspect-[4/5] w-full overflow-hidden bg-primary/5 border-b border-border">
             <img
               src={outfit.image_url}
@@ -114,7 +115,7 @@ export default function OutfitCard({ outfit, isLoggedIn: initialIsLoggedIn, onSe
               loading="lazy"
             />
           </div>
-        </Link>
+        </GuestGuardLink>
 
         {/* Tombol Wishlist di pojok kanan atas gambar outfit */}
         <button
@@ -138,7 +139,7 @@ export default function OutfitCard({ outfit, isLoggedIn: initialIsLoggedIn, onSe
         </button>
       </div>
 
-      <Link href={`/outfit/${outfit.id}`} className="block">
+      <GuestGuardLink href={`/outfit/${outfit.id}`} isLoggedIn={isAuth === true} className="block">
         <div className="p-5 sm:p-6 space-y-3">
           <div className="flex items-start justify-between gap-2">
             <h3 className="line-clamp-1 font-black text-lg text-foreground font-nunito tracking-tight group-hover:text-primary transition-colors duration-300">
@@ -180,7 +181,7 @@ export default function OutfitCard({ outfit, isLoggedIn: initialIsLoggedIn, onSe
             </div>
           )}
         </div>
-      </Link>
+      </GuestGuardLink>
     </div>
   );
 }
