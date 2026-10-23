@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Sparkles, Heart, Coffee, Copy, Check, ExternalLink, X } from "lucide-react";
 
@@ -8,12 +9,26 @@ export default function Footer() {
   const [showDonateModal, setShowDonateModal] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   // Dihitung di client setelah mount. `new Date()` saat prerender dianggap
   // unstable value oleh Cache Components dan menggagalkan static shell.
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
+    setMounted(true);
   }, []);
+
+  // Kunci scroll saat modal terbuka agar user langsung fokus pada modal di viewport saat ini
+  useEffect(() => {
+    if (showDonateModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showDonateModal]);
 
   // Nomor rekening / e-wallet untuk donasi
   const donateAccounts: Record<
@@ -212,13 +227,18 @@ export default function Footer() {
         </div>
       </footer>
 
-      {/* Modal / Dialog Fitur Dukung (DANA & GoPay) */}
-      {showDonateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-6 animate-in fade-in duration-300">
-          <div className="relative w-full max-w-md rounded-[2.5rem] border border-white/20 bg-white/80 backdrop-blur-2xl p-8 shadow-cartoon-lg space-y-8 animate-in zoom-in-95 duration-300">
+      {/* Modal / Dialog Fitur Dukung (DANA & GoPay) yang di-render langsung ke body via Portal */}
+      {showDonateModal && mounted && typeof document !== "undefined" && createPortal(
+        <div 
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6 animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowDonateModal(false);
+          }}
+        >
+          <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-[2.5rem] border border-white/20 bg-white/95 backdrop-blur-2xl p-6 sm:p-8 shadow-cartoon-lg space-y-6 sm:space-y-8 animate-in zoom-in-95 duration-200">
             <button
               onClick={() => setShowDonateModal(false)}
-              className="absolute right-6 top-6 rounded-full p-2.5 text-foreground/40 hover:bg-foreground/5 hover:text-foreground transition-all"
+              className="absolute right-5 top-5 sm:right-6 sm:top-6 rounded-full p-2.5 text-foreground/40 hover:bg-foreground/5 hover:text-foreground transition-all"
             >
               <X className="h-6 w-6" />
             </button>
@@ -233,9 +253,9 @@ export default function Footer() {
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Opsi DANA */}
-              <div className="rounded-[2rem] border border-blue-500/20 bg-blue-500/5 p-6 space-y-4">
+              <div className="rounded-[2rem] border border-blue-500/20 bg-blue-500/5 p-5 sm:p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="px-3 py-1 rounded-full bg-blue-500 text-white font-black text-[10px] tracking-widest">
@@ -271,7 +291,7 @@ export default function Footer() {
               </div>
 
               {/* Opsi GoPay */}
-              <div className="rounded-[2rem] border border-emerald-500/20 bg-emerald-500/5 p-6 space-y-4">
+              <div className="rounded-[2rem] border border-emerald-500/20 bg-emerald-500/5 p-5 sm:p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="px-3 py-1 rounded-full bg-emerald-600 text-white font-black text-[10px] tracking-widest">
@@ -311,7 +331,8 @@ export default function Footer() {
               Nomor akan otomatis tersalin ke clipboard saat Anda menekan tombol buka aplikasi
             </p>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
