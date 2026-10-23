@@ -63,6 +63,21 @@ export default function RootLayout({
           {children}
         </LayoutWrapper>
         <InstallPwaPrompt />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                function purgeNetlify() {
+                  var els = document.querySelectorAll('netlify-drawer, #netlify-drawer, iframe[src*="netlify"], [data-netlify-drawer], [data-netlify-deploy-preview]');
+                  els.forEach(function(el) { el.remove(); });
+                }
+                purgeNetlify();
+                var observer = new MutationObserver(purgeNetlify);
+                observer.observe(document.documentElement, { childList: true, subtree: true });
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   );

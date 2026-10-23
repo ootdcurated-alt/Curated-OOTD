@@ -2,15 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Sembunyikan badge & toolbar bawaan Netlify */
+/* Sembunyikan badge, toolbar, dan floating drawer bawaan Netlify */
 netlify-drawer,
 #netlify-drawer,
+.netlify-drawer,
 iframe[src*="netlify"],
-[data-netlify-drawer] {
+iframe[id*="netlify"],
+iframe[class*="netlify"],
+div[id*="netlify-drawer"],
+div[class*="netlify-drawer"],
+[data-netlify-drawer],
+[data-netlify-deploy-preview],
+#netlify-feedback,
+.netlify-feedback {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
 }
 
 @layer base {
