@@ -63,7 +63,7 @@ export async function GET() {
     }
 
     // Filter: sembunyikan review dari akun pending deletion, kecuali review milik diri sendiri
-    const filtered = (data ?? []).filter((r) => {
+    const filtered = (data ?? []).filter((r: any) => {
       if (!r.user_id) return true; // review admin (user_id null) selalu tampil
       if (r.user_id === userId) return true; // review milik sendiri tetap tampil
       return !pendingDeletionUserIds.has(r.user_id);
