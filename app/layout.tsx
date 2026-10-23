@@ -30,6 +30,9 @@ export const metadata: Metadata = {
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
+  verification: {
+    google: "google20edaadf71d53857",
+  },
 };
 
 import { Nunito } from "next/font/google";
