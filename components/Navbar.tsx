@@ -20,14 +20,14 @@ export default async function Navbar() {
   return (
     <header className="panel-3d sticky top-0 z-50 w-full border-b border-border bg-white/70 backdrop-blur-xl pt-[env(safe-area-inset-top,0px)]">
       <div className="container flex h-14 sm:h-20 max-w-7xl items-center justify-between gap-2 px-3 sm:px-8 min-w-0">
-        <Link href="/" className="flex min-w-0 shrink items-center gap-1.5 sm:gap-2 group">
-          <div className="icon-3d h-9 w-9 sm:h-12 sm:w-12 shrink-0 rounded-xl sm:rounded-[1.25rem] border border-border bg-white p-1.5 sm:p-2 shadow-cartoon-sm transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
-            <img src="/logo-icon.png" alt="Curated OOTD Logo" className="h-full w-full object-contain" />
+        <Link href="/" className="flex shrink-0 items-center gap-1.5 sm:gap-2.5 group">
+          <div className="icon-3d h-8 w-8 sm:h-12 sm:w-12 shrink-0 rounded-xl sm:rounded-[1.25rem] border border-border bg-white p-1 sm:p-2 shadow-cartoon-sm transition-all duration-300 group-hover:rotate-6 group-hover:scale-110">
+            <img src="/logo-icon.png" alt="My Curated OOTD Logo" className="h-full w-full object-contain" />
           </div>
-          <div className="flex min-w-0 flex-col">
-            <div className="flex items-center text-lg sm:text-2xl font-black tracking-tighter font-nunito leading-none text-foreground truncate">
-              <span>Curated</span>
-              <span className="text-primary ml-0.5 sm:ml-1">OOTD</span>
+          <div className="flex flex-col">
+            <div className="flex items-center text-[15px] xs:text-base sm:text-2xl font-black tracking-tight sm:tracking-tighter font-nunito leading-none text-foreground whitespace-nowrap">
+              <span>My Curated</span>
+              <span className="text-primary ml-1">OOTD</span>
             </div>
             <span className="text-[9px] sm:text-[10px] tracking-widest text-foreground/60 hidden sm:block font-black uppercase mt-0.5 sm:mt-1">
               Pakaian Pilihan • Gaya Lebih Baik

@@ -117,7 +117,7 @@ export default function InstallPwaPrompt() {
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-black/5 shadow-md">
             <Image
               src="/logo-icon.png"
-              alt="Curated OOTD"
+              alt="My Curated OOTD"
               fill
               className="object-cover"
               sizes="48px"
@@ -127,7 +127,7 @@ export default function InstallPwaPrompt() {
           {/* Teks Judul dan Deskripsi */}
           <div className="space-y-1">
             <h4 className="text-sm sm:text-base font-black leading-snug text-foreground">
-              Pasang Curated OOTD di HP Anda seperti aplikasi biasa?
+              Pasang My Curated OOTD di HP Anda seperti aplikasi biasa?
             </h4>
             <p className="text-xs font-semibold text-foreground/60 leading-relaxed">
               Buka lebih cepat dari layar utama, tanpa repot buka browser.

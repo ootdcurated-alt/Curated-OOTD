@@ -27,9 +27,24 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
   // Scroll langsung ke koleksi outfit (bukan ke studio kreasi atau paling atas)
   const scrollToCollection = () => {
     if (collectionRef.current) {
-      const yOffset = -90; // offset untuk navbar
-      const y = collectionRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+      // Prioritaskan scrollIntoView dengan block start + offset
+      collectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      
+      // Cadangan penghitungan posisi presisi untuk mobile browser (Safari/Chrome Mobile)
+      setTimeout(() => {
+        if (!collectionRef.current) return;
+        const navHeight = 70; // tinggi navbar sticky di mobile
+        const elementPosition = collectionRef.current.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+        
+        // Hanya scroll jika belum pas di area atas viewport
+        if (Math.abs(elementPosition - navHeight) > 20) {
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: "smooth",
+          });
+        }
+      }, 50);
     }
   };
 
@@ -232,7 +247,7 @@ export default function HomeClient({ outfits, isLoggedIn = false }: HomeClientPr
       </div>
 
       {/* Header Kategori Aktif + Deskripsi */}
-      <div ref={collectionRef} className="flex flex-col gap-2 px-1 sm:px-2 scroll-mt-24">
+      <div ref={collectionRef} className="flex flex-col gap-2 px-1 sm:px-2 scroll-mt-20 sm:scroll-mt-24">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-lg sm:text-2xl font-black tracking-tighter text-foreground font-nunito uppercase break-words">

@@ -11,7 +11,7 @@ export function getSiteUrl(): string {
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.URL ||
     process.env.DEPLOY_PRIME_URL ||
-    "https://curatedootdyou.netlify.app";
+    "https://mycuratedootd.netlify.app";
 
   return raw.replace(/\/+$/, "");
 }

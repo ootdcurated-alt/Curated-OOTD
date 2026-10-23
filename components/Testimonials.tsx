@@ -196,7 +196,7 @@ export default function Testimonials({
               Testimoni Pengguna
             </span>
             <h2 className="mt-2 text-xl sm:text-2xl font-black font-nunito tracking-tight text-foreground">
-              Kata Mereka Tentang Curated OOTD
+              Kata Mereka Tentang My Curated OOTD
             </h2>
             <p className="mt-1 text-xs font-semibold text-foreground/70 leading-relaxed">
               Ulasan asli dari pengguna yang sudah terdaftar dan masuk ke akun mereka.
@@ -362,7 +362,7 @@ export default function Testimonials({
         <div className="cartoon-card bg-secondary p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h3 className="text-base font-black font-nunito text-foreground">
-              Sudah pernah mencoba Curated OOTD?
+              Sudah pernah mencoba My Curated OOTD?
             </h3>
             <p className="max-w-md text-xs font-semibold text-foreground/75 leading-relaxed">
               Masuk atau daftar akun terlebih dahulu untuk menulis ulasan dan memberi penilaian bintang 1-5.
@@ -391,7 +391,7 @@ export default function Testimonials({
           <Star className="mx-auto h-8 w-8 fill-secondary text-foreground" strokeWidth={2.5} />
           <p className="text-sm font-black font-nunito text-foreground">Belum Ada Ulasan</p>
           <p className="text-xs font-semibold text-foreground/70">
-            Jadilah yang pertama membagikan pengalaman Anda memakai Curated OOTD.
+            Jadilah yang pertama membagikan pengalaman Anda memakai My Curated OOTD.
           </p>
         </div>
       ) : (

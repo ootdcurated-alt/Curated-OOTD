@@ -16,7 +16,7 @@ export const viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Curated OOTD - Temukan Inspirasi Outfit & Belanja Produk",
+  title: "My Curated OOTD - Temukan Inspirasi Outfit & Belanja Produk",
   description: "Kurasi koleksi outfit harian dengan hotspot interaktif untuk belanja produk fashion",
   manifest: "/manifest.json",
   icons: {

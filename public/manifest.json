@@ -1,6 +1,6 @@
 {
-  "name": "Curated OOTD",
-  "short_name": "CuratedOOTD",
+  "name": "My Curated OOTD",
+  "short_name": "MyCuratedOOTD",
   "description": "Temukan Inspirasi Outfit & Belanja Produk Fashion",
   "start_url": "/",
   "display": "standalone",

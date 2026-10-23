@@ -266,7 +266,7 @@ export function SignUpForm({
           <CardDescription className="text-xs font-bold text-foreground/70">
             {step === "otp"
               ? `Masukkan 6 digit kode OTP yang dikirimkan ke ${email}`
-              : "Bergabunglah bersama komunitas fashion Curated OOTD"}
+              : "Bergabunglah bersama komunitas fashion My Curated OOTD"}
           </CardDescription>
         </CardHeader>
         <CardContent>
