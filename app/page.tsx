@@ -41,7 +41,7 @@ export default async function Home() {
   const currentUserId = (user as any)?.sub ?? null;
 
   return (
-    <main className="container max-w-7xl py-3 sm:py-8 px-3 sm:px-6 space-y-5 sm:space-y-8 w-full min-w-0">
+    <main className="container mx-auto max-w-7xl py-3 sm:py-8 px-3 sm:px-6 space-y-5 sm:space-y-8 w-full min-w-0">
       {/* ====  Hero Section — tanpa kotak, rata tengah atas ==== */}
       <section className="mx-auto w-full max-w-2xl pt-1 sm:pt-4 pb-1 text-center flex flex-col items-center justify-start gap-3 sm:gap-5 px-1">
         <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[9px] sm:text-xs font-black uppercase tracking-wide sm:tracking-[0.2em] text-foreground/50 leading-snug max-w-[320px] sm:max-w-none">
